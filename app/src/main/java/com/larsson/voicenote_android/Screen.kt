@@ -1,15 +1,24 @@
 package com.larsson.voicenote_android
 
 
-const val EDIT_NOTE_ARGUMENT_KEY = "title"
-const val EDIT_NOTE_ARGUMENT_KEY2 = "txtContent"
-const val EDIT_NOTE_ARGUMENT_KEY3 = "id"
+const val NOTE_ARGUMENT_KEY = "title"
+const val NOTE_ARGUMENT_KEY2 = "txtContent"
+const val NOTE_ARGUMENT_KEY3 = "id"
 
 sealed class Screen(val route: String) {
     object Home:
         Screen("main_screen")
+
+    object NewNote: Screen("new_note_screen?{$NOTE_ARGUMENT_KEY3}")
     object EditNote:
-        Screen("edit_note_screen?title={$EDIT_NOTE_ARGUMENT_KEY}&txtContent={$EDIT_NOTE_ARGUMENT_KEY2}&id={$EDIT_NOTE_ARGUMENT_KEY3}")
+        Screen("edit_note_screen?title={$NOTE_ARGUMENT_KEY}&txtContent={$NOTE_ARGUMENT_KEY2}&id={$NOTE_ARGUMENT_KEY3}")
+
+    fun passId(
+        id: String,
+    ) {
+
+    }
+
 
     // Optionally pass information
     fun passTitleAndContent(
