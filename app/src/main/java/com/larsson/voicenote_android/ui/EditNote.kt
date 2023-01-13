@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.larsson.voicenote_android.NotesViewModel
+import com.larsson.voicenote_android.data.getUUID
 
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
@@ -71,7 +72,7 @@ fun NewNoteScreen(
         textFieldValueTitle = textFieldValueTitle,
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
-            viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
+            viewModel.createNote(getUUID(), textFieldValueTitle, textFieldValueContent)
                 navController.popBackStack()
         },
         onTextChangeTitle = { textFieldValueTitle = it },
@@ -94,59 +95,14 @@ fun EditNoteScreen(
     NoteView(
         onBackClick = {
             viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
-            navController.popBackStack() },
+            navController.popBackStack()
+            println("id: $id")
+                      },
         textFieldValueContent = textFieldValueContent,
         textFieldValueTitle = textFieldValueTitle,
         onTextChangeTitle = { textFieldValueTitle = it },
         onTextChangeContent = { textFieldValueContent = it }
     )
-}
-@Composable
-fun EditNoteScreen2(
-    viewModel: NotesViewModel,
-    navController: NavController,
-    title: String,
-    txtContent: String,
-    id: String,
-) {
-    var textFieldValueContent by remember { mutableStateOf(txtContent) }
-    var textFieldValueTitle by remember { mutableStateOf(title) }
-
-    
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colors.background)) {
-
-        BackHandler() {
-            viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
-            navController.popBackStack()
-        }
-        TopAppBar(
-            onTextChangeTitle = { textFieldValueTitle = it },
-            value = textFieldValueTitle,
-            onBackClick = {
-                viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
-                navController.popBackStack()
-            }
-     )
-
-        TextField(
-            textStyle = MaterialTheme.typography.body1,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.background,
-                textColor = MaterialTheme.colors.primary,
-                focusedIndicatorColor =  Color.Black, //hide the indicator
-                cursorColor = Color.Black
-            ),
-
-
-            value = textFieldValueContent,
-            onValueChange = {
-                textFieldValueContent = it
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
 }
 
 @Preview(showBackground = true)

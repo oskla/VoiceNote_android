@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.larsson.voicenote_android.*
 import com.larsson.voicenote_android.ui.EditNoteScreen
+import com.larsson.voicenote_android.ui.NewNoteScreen
 
 @Composable
 fun SetupNavGraph(
@@ -32,19 +33,26 @@ fun SetupNavGraph(
                     type = NavType.StringType
                 },
                 navArgument(NOTE_ARGUMENT_KEY3) {
-                    type = NavType.IntType
+                    type = NavType.StringType
                 }
             )
         ) {
             val title = it.arguments?.getString(NOTE_ARGUMENT_KEY).toString()
             val txtContent = it.arguments?.getString(NOTE_ARGUMENT_KEY2).toString()
             val id = it.arguments?.getInt(NOTE_ARGUMENT_KEY3).toString()
-            EditNoteScreen(notesViewModel, navController, title, txtContent, id,)
+            EditNoteScreen(notesViewModel, navController, title, txtContent, id)
 
         }
 
-        composable(route = Screen.Home.route) {
-            HomeScreen(navController, notesViewModel)
+        composable(
+            route = Screen.NewNote.route,
+            arguments = listOf(
+                navArgument(NOTE_ARGUMENT_KEY3) {
+                type = NavType.StringType
+            })
+        ) {
+            val id = it.arguments?.getString(NOTE_ARGUMENT_KEY3).toString()
+            NewNoteScreen(viewModel = notesViewModel, navController = navController, id = id)
         }
     }
 }

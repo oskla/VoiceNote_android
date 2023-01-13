@@ -11,9 +11,19 @@ import com.larsson.voicenote_android.ui.NoteItem
 
 class NotesViewModel: ViewModel() {
 
-    private var notes = mutableStateListOf(note1, note2, note3, note4, note5, note6, note7, note8, note9, note10)
+    private var notes = mutableStateListOf<Note>()
     private var currentNote: Note? by  mutableStateOf(null)
 
+    fun createNote(id: String, title: String, txtContent: String) {
+        notes.add(Note(id, title, txtContent ))
+    }
+
+    fun addNotes() {
+        for (i in 1..10) {
+           val newNote = Note(getUUID(),"title$i","Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique." )
+            notes.add(newNote)
+        }
+    }
     fun getNoteById(id: String): Note {
         return notes.first { it.id.toString() == id }
     }

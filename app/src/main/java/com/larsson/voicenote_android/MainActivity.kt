@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.material.*
@@ -24,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.larsson.voicenote_android.components.SetupNavGraph
 import com.larsson.voicenote_android.data.Note
+import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.ui.NotesList
 
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
@@ -36,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         setContent {
+           // notesViewModel.addNotes()
             VoiceNote_androidTheme {
 
                 // A surface container using the 'background' color from the theme
@@ -66,6 +69,8 @@ fun HomeScreen(
 
     ) {
     val getAllNotes = notesViewModel.getAllNotes()
+    val newNoteId = getUUID()
+
 
     Column() {
 
@@ -73,10 +78,13 @@ fun HomeScreen(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier,
         ) {
-            Box(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
+            Box(modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp)) {
                 NotesList(navController, getAllNotes)
             }
-            BottomBox()
+
+            BottomBox(navController, newNoteId)
         }
 
 
@@ -85,7 +93,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun BottomBox() {
+fun BottomBox(
+    navController: NavController,
+    newNoteId: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,11 +109,18 @@ fun BottomBox() {
 
         Row(
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable { navController.navigate(Screen.NewNote.passId(newNoteId)) },
 
             ) {
 
-            Box(modifier = Modifier.padding(end = 6.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(end = 6.dp)
+
+
+            ) {
                 Icon(
                     Icons.Filled.Add,
                     "add",
@@ -116,7 +134,7 @@ fun BottomBox() {
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
 
             Box(modifier = Modifier.padding(end = 6.dp)) {
@@ -144,7 +162,7 @@ fun BottomBox() {
 @Composable
 fun DefaultPreview() {
     VoiceNote_androidTheme {
-        // HomeScreen(null)
-        BottomBox()
+        // HomeScreen()
+       // BottomBox(rememberNavController(), "")
     }
 }

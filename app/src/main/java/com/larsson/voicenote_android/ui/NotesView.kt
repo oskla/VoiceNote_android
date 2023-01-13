@@ -20,13 +20,17 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.larsson.voicenote_android.Screen
 import com.larsson.voicenote_android.data.Note
+import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.ui.theme.IBMFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 
 
 @Composable
-fun NotesList(navController: NavController, getAllNotes: () -> List<Note> ) {
+fun NotesList(
+    navController: NavController,
+    getAllNotes: () -> List<Note>
+) {
 
     val notes = getAllNotes()
 
@@ -58,6 +62,7 @@ fun NoteItem(
             .fillMaxWidth()
             .padding(vertical = 12.dp, horizontal = 12.dp)
             .clickable {
+                println(getUUID())
                 navController.navigate(
                     route = Screen.EditNote.passTitleAndContent(
                         title,
@@ -91,7 +96,7 @@ fun NoteItem(
 @Composable
 fun NotesPreview() {
     VoiceNote_androidTheme {
-        //NotesList(rememberNavController())
-        NoteItem(navController = rememberNavController(), title = "hej", txtContent = "content ara asf  asf  asf as  asf as f ", id = "4")
+       // NotesList(rememberNavController())
+       // NoteItem(navController = rememberNavController(), title = "hej", txtContent = "content ara asf  asf  asf as  asf as f ", id = "4")
     }
 }

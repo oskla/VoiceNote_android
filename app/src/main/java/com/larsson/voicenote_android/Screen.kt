@@ -15,8 +15,8 @@ sealed class Screen(val route: String) {
 
     fun passId(
         id: String,
-    ) {
-
+    ): String {
+        return "new_note_screen?id={$NOTE_ARGUMENT_KEY3}"
     }
 
 
