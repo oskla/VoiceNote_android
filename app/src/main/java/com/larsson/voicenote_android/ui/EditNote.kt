@@ -1,5 +1,6 @@
 package com.larsson.voicenote_android.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -9,13 +10,17 @@ import androidx.compose.runtime.*
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.larsson.voicenote_android.NotesViewModel
 import com.larsson.voicenote_android.data.getUUID
+import com.larsson.voicenote_android.datastore.StoreNote
 
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 // TODO - Create a Composable that can be used as template for both EditNote And NewNote
@@ -27,8 +32,15 @@ fun NoteView(
     textFieldValueTitle: String,
     onBackClick: () -> Unit,
     onTextChangeTitle: (String) -> Unit,
-    onTextChangeContent: (String) -> Unit
+    onTextChangeContent: (String) -> Unit,
+  /*  saveToDS: () -> Unit,
+    context: Context,
+    scope: CoroutineScope,
+    dataStore: StoreNote*/
 ) {
+  /*  val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val dataStore = StoreNote(context)*/
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -65,18 +77,32 @@ fun NewNoteScreen(
     navController: NavController,
     id: String
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val dataStore = StoreNote(context)
+    val savedTitle = dataStore.getNoteTitle.collectAsState(initial = "")
+
     var textFieldValueContent by remember { mutableStateOf("") }
     var textFieldValueTitle by remember { mutableStateOf("title") }
+
 
     NoteView(
         textFieldValueTitle = textFieldValueTitle,
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
             viewModel.createNote(getUUID(), textFieldValueTitle, textFieldValueContent)
+
+            scope.launch {
+                dataStore.saveNoteTitle(textFieldValueTitle)
+            }
+
                 navController.popBackStack()
+
+            println(savedTitle.value!!)
         },
         onTextChangeTitle = { textFieldValueTitle = it },
-        onTextChangeContent = { textFieldValueContent = it }
+        onTextChangeContent = { textFieldValueContent = it },
+
     )
 
 }
