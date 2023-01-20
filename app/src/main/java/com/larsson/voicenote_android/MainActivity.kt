@@ -101,7 +101,7 @@ fun BottomBox(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .background(MaterialTheme.colors.secondary),
+            .background(MaterialTheme.colors.background),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
 

@@ -30,7 +30,7 @@ val PoppinsFontFamily = FontFamily(
     Font(googleFont = PoppinsFont, fontProvider = provider, FontWeight.Medium)
 )*/
 
-
+/*
 @OptIn(ExperimentalTextApi::class)
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
@@ -39,7 +39,7 @@ val provider = GoogleFont.Provider(
 )
 
 @OptIn(ExperimentalTextApi::class)
-val IBMFont = GoogleFont(name = "IBM_Plex_Sans")
+val IBMFont = GoogleFont(name = "IBM_Plex_Sans")*/
 
 
 @OptIn(ExperimentalTextApi::class)
@@ -48,21 +48,25 @@ val IBMFontFamily = FontFamily(
     androidx.compose.ui.text.font.Font(resId = R.font.ibmplexsansdevanagaribold, FontWeight.Bold)
 )
 
+val SpaceGroteskFontFamily = FontFamily(
+        androidx.compose.ui.text.font.Font( resId = R.font.space_grotesk_variable_fontwght )
+)
+
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     body1 = TextStyle(
-        fontFamily = IBMFontFamily,
+        fontFamily = SpaceGroteskFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
     body2 = TextStyle(
-        fontFamily = IBMFontFamily,
+        fontFamily = SpaceGroteskFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp
     ),
     caption = TextStyle(
-        fontFamily = IBMFontFamily,
+        fontFamily = SpaceGroteskFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
         textAlign = TextAlign.Center

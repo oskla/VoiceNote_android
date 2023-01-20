@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import com.larsson.voicenote_android.Screen
 import com.larsson.voicenote_android.data.Note
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.ui.theme.IBMFontFamily
+import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 
@@ -36,8 +38,8 @@ fun NotesList(
 
     LazyColumn() {
             itemsIndexed(notes) { index, note ->
-                Box(modifier = Modifier.padding(5.dp)) {
-                    NoteItem(navController, note.title, note.txtContent, note.id.toString())
+                Box(modifier = Modifier.padding(horizontal = 5.dp)) {
+                    NoteItem(navController, note.title, note.txtContent, note.id)
                 }
             }
 
@@ -54,15 +56,15 @@ fun NoteItem(
 
     Card(
         backgroundColor = Color.Transparent,
-        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier.wrapContentSize(),
+        elevation = 0.dp
     ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 12.dp)
+            .padding(vertical = 4.dp, horizontal = 12.dp)
             .clickable {
-                println(getUUID())
+                println("id: $id")
                 navController.navigate(
                     route = Screen.EditNote.passTitleAndContent(
                         title,
@@ -76,15 +78,16 @@ fun NoteItem(
             text = title,
             color = MaterialTheme.colors.primary,
             fontSize = 14.sp,
-            fontFamily = IBMFontFamily,
-            fontWeight = FontWeight.Bold
+            fontFamily = SpaceGroteskFontFamily,
+            fontWeight = FontWeight.W700
         )
         Text(
             text = txtContent,
             color = MaterialTheme.colors.primary,
-            fontFamily = IBMFontFamily,
+            fontFamily = SpaceGroteskFontFamily,
+            fontWeight = FontWeight.Thin,
             style = LocalTextStyle.current.copy(lineHeight = 15.sp),
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             maxLines = 2
         )
 

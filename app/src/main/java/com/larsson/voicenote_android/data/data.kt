@@ -1,16 +1,27 @@
 package com.larsson.voicenote_android.data
 
+import android.provider.DocumentsContract
+import java.lang.annotation.Documented
 import java.util.*
 
 
+
 data class Note(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = generateId(),
     var title: String,
     var txtContent: String
-)
+) {
+    companion object {
+         fun generateId(): String {
+            return UUID.randomUUID().toString()
+        }
+    }
+
+}
 
 
 
+/*
 var note1 = Note(getUUID(),"Title1", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
 var note2 = Note("1","Title2", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
 var note3 = Note("2","Title3", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
@@ -21,5 +32,6 @@ var note7 = Note("6","Title8", "Lorem ipsum dolor sit amet consectetur. Sed odio
 var note8 = Note("7","Title9", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
 var note9 = Note("8","Title10", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
 var note10 = Note("9","Title11", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
+*/
 
 fun getUUID() = UUID.randomUUID().toString()

@@ -14,8 +14,8 @@ class NotesViewModel: ViewModel() {
     private var notes = mutableStateListOf<Note>()
 
 
-    fun createNote(id: String, title: String, txtContent: String) {
-        notes.add(Note(id, title, txtContent ))
+    fun createNote(title: String, txtContent: String) {
+        notes.add(Note(Note.generateId(), title, txtContent ))
     }
 
     fun getNoteById(id: String): Note {

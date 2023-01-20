@@ -1,5 +1,6 @@
 package com.larsson.voicenote_android.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -11,7 +12,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
 
-    primary = ltRed,
+    primary = notWhite,
     onPrimary = ltGrey,
     primaryVariant = dkGrey,
     secondary = brightRed,
@@ -21,13 +22,14 @@ private val DarkColorPalette = darkColors(
 
 )
 
+@SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
-    primary = ltRed ,
-    onPrimary = Color.Black,
-    primaryVariant = Color.Black,
+    primary = Color.Black,
+    onPrimary = Color.Red,
+    primaryVariant = Color.Blue,
     secondary = brightRed,
-    onSecondary = white,
-    background = dkRed,
+    onSecondary = Color.Black,
+    background = notWhite,
 
 
     /* Other default colors to override

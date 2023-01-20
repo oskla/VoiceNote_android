@@ -33,15 +33,8 @@ fun NoteView(
     onBackClick: () -> Unit,
     onTextChangeTitle: (String) -> Unit,
     onTextChangeContent: (String) -> Unit,
-  /*  saveToDS: () -> Unit,
-    context: Context,
-    scope: CoroutineScope,
-    dataStore: StoreNote*/
-) {
-  /*  val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val dataStore = StoreNote(context)*/
 
+) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colors.background)
@@ -62,8 +55,6 @@ fun NoteView(
                 focusedIndicatorColor =  Color.Black, //hide the indicator
                 cursorColor = Color.Black
             ),
-
-
             value = textFieldValueContent,
             onValueChange =  onTextChangeContent,
             modifier = Modifier.fillMaxSize()
@@ -90,10 +81,10 @@ fun NewNoteScreen(
         textFieldValueTitle = textFieldValueTitle,
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
-            viewModel.createNote(getUUID(), textFieldValueTitle, textFieldValueContent)
+            viewModel.createNote(textFieldValueTitle, textFieldValueContent)
 
             scope.launch {
-                dataStore.saveNoteTitle(textFieldValueTitle)
+               // dataStore.saveNoteTitle(textFieldValueTitle)
             }
 
                 navController.popBackStack()
@@ -120,9 +111,11 @@ fun EditNoteScreen(
 
     NoteView(
         onBackClick = {
+            Log.d("OnBackClick", "id: $id")
             viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
             navController.popBackStack()
             println("id: $id")
+
                       },
         textFieldValueContent = textFieldValueContent,
         textFieldValueTitle = textFieldValueTitle,
