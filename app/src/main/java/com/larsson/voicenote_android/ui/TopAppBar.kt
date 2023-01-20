@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 fun TopAppBar(
     onTextChangeTitle: (String) -> Unit,
     value: String,
-    onBackClick:  () -> Unit = {}
+    onBackClick: () -> Unit = {}
 
 ) {
     TopAppBar(

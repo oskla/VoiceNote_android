@@ -1,26 +1,19 @@
 package com.larsson.voicenote_android.ui
 
-import android.content.Context
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.runtime.*
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.larsson.voicenote_android.NotesViewModel
-import com.larsson.voicenote_android.data.getUUID
-import com.larsson.voicenote_android.datastore.StoreNote
+import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 
 // TODO - Create a Composable that can be used as template for both EditNote And NewNote
@@ -55,6 +48,7 @@ fun NoteView(
                 focusedIndicatorColor =  Color.Black, //hide the indicator
                 cursorColor = Color.Black
             ),
+            shape = shapes.large,
             value = textFieldValueContent,
             onValueChange =  onTextChangeContent,
             modifier = Modifier.fillMaxSize()
@@ -64,14 +58,10 @@ fun NoteView(
 
 @Composable
 fun NewNoteScreen(
-    viewModel: NotesViewModel,
-    navController: NavController,
-    id: String
+    notesViewModel: NotesViewModel,
+    id: String,
+
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val dataStore = StoreNote(context)
-    val savedTitle = dataStore.getNoteTitle.collectAsState(initial = "")
 
     var textFieldValueContent by remember { mutableStateOf("") }
     var textFieldValueTitle by remember { mutableStateOf("title") }
@@ -81,15 +71,9 @@ fun NewNoteScreen(
         textFieldValueTitle = textFieldValueTitle,
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
-            viewModel.createNote(textFieldValueTitle, textFieldValueContent)
+            notesViewModel.createNote(textFieldValueTitle, textFieldValueContent)
+            notesViewModel.visibilityModifier(homeScreen = true)
 
-            scope.launch {
-               // dataStore.saveNoteTitle(textFieldValueTitle)
-            }
-
-                navController.popBackStack()
-
-            println(savedTitle.value!!)
         },
         onTextChangeTitle = { textFieldValueTitle = it },
         onTextChangeContent = { textFieldValueContent = it },
@@ -101,7 +85,6 @@ fun NewNoteScreen(
 @Composable
 fun EditNoteScreen(
     viewModel: NotesViewModel,
-    navController: NavController,
     title: String,
     txtContent: String,
     id: String,
@@ -113,9 +96,7 @@ fun EditNoteScreen(
         onBackClick = {
             Log.d("OnBackClick", "id: $id")
             viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
-            navController.popBackStack()
             println("id: $id")
-
                       },
         textFieldValueContent = textFieldValueContent,
         textFieldValueTitle = textFieldValueTitle,
@@ -128,7 +109,7 @@ fun EditNoteScreen(
 @Composable
 fun EditPreview() {
     VoiceNote_androidTheme {
-        EditNoteScreen(NotesViewModel(), rememberNavController(), "Title", "content", "1")
+        EditNoteScreen(NotesViewModel(), "Title", "content", "1")
     }
 }
 

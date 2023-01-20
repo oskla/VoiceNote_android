@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.ui
 
 
+import android.util.MutableBoolean
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
@@ -30,16 +32,15 @@ import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 @Composable
 fun NotesList(
-    navController: NavController,
-    getAllNotes: () -> List<Note>
+    getAllNotes: () -> List<Note>,
 ) {
 
     val notes = getAllNotes()
 
-    LazyColumn() {
+    LazyColumn(modifier = Modifier.padding(horizontal = 12.dp)) {
             itemsIndexed(notes) { index, note ->
-                Box(modifier = Modifier.padding(horizontal = 5.dp)) {
-                    NoteItem(navController, note.title, note.txtContent, note.id)
+                Box() {
+                    NoteItem(note.title, note.txtContent, note.id)
                 }
             }
 
@@ -48,10 +49,10 @@ fun NotesList(
 
 @Composable
 fun NoteItem(
-    navController: NavController,
+   // navController: NavController,
     title: String,
     txtContent: String,
-    id: String
+    id: String,
 ) {
 
     Card(
@@ -62,16 +63,10 @@ fun NoteItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 12.dp)
+            .padding(vertical = 4.dp)
             .clickable {
-                println("id: $id")
-                navController.navigate(
-                    route = Screen.EditNote.passTitleAndContent(
-                        title,
-                        txtContent,
-                        id
-                    )
-                )
+
+               // editNoteVisable.value = true
             }
         ) {
         Text(

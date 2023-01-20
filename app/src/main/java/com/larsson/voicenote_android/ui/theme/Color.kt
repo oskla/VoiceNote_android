@@ -14,3 +14,4 @@ val white = Color(0xFFEBDCDC)
 val brightRed = Color(0xFF462D37)
 // --------------------------
 val notWhite = Color(0xFFF9F9F5)
+val notBlack = Color(0xFF1D1D1D)

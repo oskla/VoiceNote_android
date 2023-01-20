@@ -1,3 +1,4 @@
+/*
 package com.larsson.voicenote_android.components
 
 import androidx.compose.runtime.Composable
@@ -19,7 +20,7 @@ fun SetupNavGraph(
         navController = navController,
         startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            HomeScreen(navController, notesViewModel)
+            HomeScreen(notesViewModel)
         }
 
         composable(
@@ -40,7 +41,7 @@ fun SetupNavGraph(
             val title = it.arguments?.getString(NOTE_ARGUMENT_KEY).toString()
             val txtContent = it.arguments?.getString(NOTE_ARGUMENT_KEY2).toString()
             val id = it.arguments?.getInt(NOTE_ARGUMENT_KEY3).toString()
-            EditNoteScreen(notesViewModel, navController, title, txtContent, id)
+            EditNoteScreen(notesViewModel, title, txtContent, id)
 
         }
 
@@ -55,4 +56,4 @@ fun SetupNavGraph(
             NewNoteScreen(viewModel = notesViewModel, navController = navController, id = id)
         }
     }
-}
+}*/
