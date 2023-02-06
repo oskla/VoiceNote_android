@@ -71,6 +71,7 @@ fun NewNoteScreen(
         textFieldValueTitle = textFieldValueTitle,
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
+
             notesViewModel.createNote(textFieldValueTitle, textFieldValueContent)
             notesViewModel.visibilityModifier(homeScreen = true)
 

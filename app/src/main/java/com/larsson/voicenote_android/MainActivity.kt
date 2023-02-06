@@ -11,9 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,16 +27,14 @@ import com.larsson.voicenote_android.viewmodels.NotesViewModel
 // TODO - Fill max height new note view
 
 class MainActivity : ComponentActivity() {
-    private val notesViewModel : NotesViewModel by viewModels()
+    private val notesViewModel: NotesViewModel by viewModels()
     val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContent {
-           // notesViewModel.addNotes()
+            // notesViewModel.addNotes()
             VoiceNote_androidTheme {
-
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -54,7 +49,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun VNApp(notesViewModel: NotesViewModel) {
-
     Column() {
         HomeScreen(notesViewModel)
     }
@@ -62,13 +56,10 @@ fun VNApp(notesViewModel: NotesViewModel) {
 
 @Composable
 fun HomeScreen(
-
     notesViewModel: NotesViewModel
-
-    ) {
+) {
     val getAllNotes = notesViewModel.getAllNotes()
     val newNoteId = getUUID()
-
 
     val newNoteVisible = notesViewModel.newNoteVisible
     val notesListVisible = notesViewModel.notesListVisible
@@ -76,23 +67,23 @@ fun HomeScreen(
     val topToggleBar = notesViewModel.topToggleBarVisible
 
     Column() {
-
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier,
+            modifier = Modifier
         ) {
             Spacer(modifier = Modifier.height(30.dp))
             if (topToggleBar) {
                 TopToggleBar()
             }
-            Box(modifier = Modifier
-                .weight(1f)
-                ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
                 if (newNoteVisible) {
                     NewNoteScreen(notesViewModel, newNoteId)
                 }
                 if (notesListVisible) {
-                    NotesList(getAllNotes)
+                    NotesList()
                 }
             }
             if (bottomBoxVisible) {
@@ -116,16 +107,14 @@ fun BottomBox(
         horizontalArrangement = Arrangement.SpaceEvenly
 
     ) {
-
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clickable {
-                        notesViewModel.visibilityModifier(homeScreen = false)
-                    },
-            ) {
-
+                    notesViewModel.visibilityModifier(homeScreen = false)
+                }
+        ) {
             Box(
                 modifier = Modifier
                     .padding(end = 6.dp)
@@ -136,16 +125,15 @@ fun BottomBox(
                     tint = MaterialTheme.colors.onSecondary,
                     modifier = Modifier
                         .height(40.dp)
-                        .width(40.dp),
+                        .width(40.dp)
                 )
             }
             Text(text = "New note", color = MaterialTheme.colors.onSecondary, fontSize = 14.sp)
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(modifier = Modifier.padding(end = 6.dp)) {
                 Icon(
                     imageVector = Icons.Filled.RadioButtonChecked,
@@ -153,7 +141,7 @@ fun BottomBox(
                     tint = MaterialTheme.colors.onSecondary,
                     modifier = Modifier
                         .height(30.dp)
-                        .width(30.dp),
+                        .width(30.dp)
                 )
             }
             Text(
@@ -162,8 +150,6 @@ fun BottomBox(
                 fontSize = 14.sp
             )
         }
-
-
     }
 }
 
@@ -171,7 +157,7 @@ fun BottomBox(
 @Composable
 fun DefaultPreview() {
     VoiceNote_androidTheme {
-        // HomeScreen()
-       // BottomBox(rememberNavController(), "")
+        HomeScreen(notesViewModel = NotesViewModel())
+        // BottomBox(rememberNavController(), "")
     }
 }
