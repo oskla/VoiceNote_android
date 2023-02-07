@@ -78,4 +78,12 @@ dependencies {
     debugImplementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     debugImplementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1'
 
+    // DI - koin
+    //implementation "org.koin:koin-androidx-viewmodel:2.1.7"
+    implementation "io.insert-koin:koin-core:3.2.2"
+    implementation "io.insert-koin:koin-android:3.2.0"
+    implementation "io.insert-koin:koin-androidx-navigation:3.2.0"
+    implementation "io.insert-koin:koin-androidx-compose:3.2.0"
+
+
 }

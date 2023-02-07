@@ -1,4 +1,4 @@
-package com.larsson.voicenote_android.components
+package com.larsson.voicenote_android.ui.components
 
 
 import androidx.compose.foundation.BorderStroke

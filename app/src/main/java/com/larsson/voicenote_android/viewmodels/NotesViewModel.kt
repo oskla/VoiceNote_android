@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.larsson.voicenote_android.data.*
 import java.util.*
 
-class NotesViewModel: ViewModel() {
+class NotesViewModel : ViewModel() {
 
     var editNoteVisible by mutableStateOf(false)
     var newNoteVisible by mutableStateOf(false)
@@ -17,7 +17,7 @@ class NotesViewModel: ViewModel() {
     private var notes = mutableStateListOf<Note>()
 
     fun createNote(title: String, txtContent: String) {
-        notes.add(Note(Note.generateId(), title, txtContent ))
+        notes.add(Note(Note.generateId(), title, txtContent))
     }
 
     fun getNoteById(id: String): Note {
@@ -25,7 +25,7 @@ class NotesViewModel: ViewModel() {
     }
 
     fun getAllNotes(): () -> List<Note> {
-        return  { notes.toList() }
+        return { notes.toList() }
     }
 
     fun saveNote(title: String, txtContent: String, id: String) {
@@ -37,7 +37,7 @@ class NotesViewModel: ViewModel() {
     }
 
     fun visibilityModifier(
-        homeScreen: Boolean,
+        homeScreen: Boolean
     ) {
         if (homeScreen) {
             editNoteVisible = false
@@ -52,8 +52,5 @@ class NotesViewModel: ViewModel() {
             newNoteVisible = true
             topToggleBarVisible = false
         }
-
-
     }
-
 }

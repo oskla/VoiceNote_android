@@ -17,7 +17,7 @@ private val DarkColorPalette = darkColors(
     primaryVariant = dkGrey,
     secondary = brightRed,
     onSecondary = white,
-    background = dkRed
+    background = notBlack
 
 
 )
