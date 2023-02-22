@@ -1,4 +1,4 @@
-package com.larsson.voicenote_android.features
+package com.larsson.voicenote_android.features // ktlint-disable package-name
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.ui.NotesList
-import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
@@ -47,7 +46,7 @@ fun HomeScreen(
                 }
             }
             if (bottomBoxVisible) {
-                BottomBox(newNoteId, notesViewModel)
+                // BottomBox()
             }
         }
     }

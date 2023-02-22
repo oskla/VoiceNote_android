@@ -1,4 +1,4 @@
-package com.larsson.voicenote_android.ui.theme
+package com.larsson.voicenote_android.ui.theme // ktlint-disable filename
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -9,17 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-
 private val DarkColorPalette = darkColors(
-
     primary = notWhite,
     onPrimary = ltGrey,
     primaryVariant = dkGrey,
-    secondary = brightRed,
+    secondary = ltGrey,
     onSecondary = white,
     background = notBlack
-
-
 )
 
 @SuppressLint("ConflictingOnColor")
@@ -29,8 +25,7 @@ private val LightColorPalette = lightColors(
     primaryVariant = Color.Blue,
     secondary = brightRed,
     onSecondary = Color.Black,
-    background = notWhite,
-
+    background = notWhite
 
     /* Other default colors to override
     background = Color.White,
@@ -42,10 +37,6 @@ private val LightColorPalette = lightColors(
     */
 )
 
-
-
-
-
 @Composable
 fun VoiceNote_androidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -55,11 +46,10 @@ fun VoiceNote_androidTheme(
     val systemUiController = rememberSystemUiController()
     val colors = if (darkTheme) {
         DarkColorPalette
-
     } else {
         LightColorPalette
     }
-   val hej = systemUiController.setSystemBarsColor(
+    val hej = systemUiController.setSystemBarsColor(
         color = Color.Black
     )
     MaterialTheme(
