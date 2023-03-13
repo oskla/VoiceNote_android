@@ -1,6 +1,9 @@
 package com.larsson.voicenote_android.ui.theme // ktlint-disable package-name
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
+
 
 val dkGrey = Color(0xFF494949)
 val white = Color(0xFFEBDCDC)

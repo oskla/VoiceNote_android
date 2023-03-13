@@ -1,40 +1,27 @@
 package com.larsson.voicenote_android.ui.theme // ktlint-disable filename
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val DarkColorPalette = darkColors(
-    primary = notWhite,
-    onPrimary = ltGrey,
-    primaryVariant = dkGrey,
-    secondary = ltGrey,
-    onSecondary = white,
-    background = notBlack
-)
-
-@SuppressLint("ConflictingOnColor")
-private val LightColorPalette = lightColors(
-    primary = Color.Black,
+val AppLightColorScheme = lightColorScheme(
+    onBackground = notBlack,
     onPrimary = notBlack,
-    primaryVariant = Color.Blue,
-    secondary = brightRed,
+    secondary = ltGrey,
     onSecondary = Color.Black,
     background = notWhite
+)
 
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+val AppDarkColorScheme = darkColorScheme(
+    onBackground = notWhite,
+    onPrimary = notWhite,
+    secondary = Color.Black,
+    onSecondary = white,
+    background = notBlack
 )
 
 @Composable
@@ -44,18 +31,16 @@ fun VoiceNote_androidTheme(
 
 ) {
     val systemUiController = rememberSystemUiController()
-    val colors = if (darkTheme) {
-        DarkColorPalette
+    val AppColorScheme = if (darkTheme) {
+        AppDarkColorScheme
     } else {
-        LightColorPalette
+        AppLightColorScheme
     }
-    val hej = systemUiController.setSystemBarsColor(
-        color = Color.Black
-    )
+
     MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
+        colorScheme = AppColorScheme,
+        typography = AppTypography,
+        shapes = AppShapes,
         content = content
     )
 }

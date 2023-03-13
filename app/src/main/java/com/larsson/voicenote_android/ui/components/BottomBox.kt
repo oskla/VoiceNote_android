@@ -1,113 +1,94 @@
 package com.larsson.voicenote_android.ui.components // ktlint-disable package-name
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+
+enum class Variant {
+    NEW_NOTE_RECORD,
+    RECORDINGS_RECORD
+}
 
 @Composable
 fun BottomBox(
     modifier: Modifier = Modifier,
-    textLeft: String,
-    iconLeft: ImageVector,
-    leftIconOffset: Dp = 0.dp,
-    textRight: String,
-    iconRight: ImageVector,
-    bgColorSelected: Color = MaterialTheme.colors.secondary,
-    onClickLeft: (() -> Unit)? = null,
-    onClickRight: (() -> Unit)? = null
+    variant: Variant,
+    onClickLeft: (() -> Unit),
+    onClickRight: (() -> Unit)
 ) {
+    var selectedButtonLeft by remember { mutableStateOf(false) }
+    var selectedButtonRight by remember { mutableStateOf(false) }
+
+    var buttonTextLeft: String
+    var buttonTextRight: String
+    var iconRight: ImageVector
+    var iconLeft: ImageVector
+
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(55.dp)
-            .background(MaterialTheme.colors.background),
+            .height(55.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
 
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable {
-                    // notesViewModel.visibilityModifier(homeScreen = false)
-                }
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(end = 6.dp)
-                    .align(CenterVertically)
-            ) {
-                Icon(
-                    imageVector = iconLeft,
-                    contentDescription = textLeft,
-                    tint = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier
-                        .height(35.dp)
-                        .width(35.dp)
-                        .offset(leftIconOffset)
-                )
+        when (variant) {
+            Variant.RECORDINGS_RECORD -> {
+                iconLeft = Icons.Filled.Add
+                iconRight = Icons.Filled.RadioButtonChecked
+                buttonTextLeft = "New note"
+                buttonTextRight = "Record"
             }
-            Text(
-                text = textLeft,
-                color = MaterialTheme.colors.onSecondary,
-                fontSize = 14.sp
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(end = 6.dp)
-                    .align(CenterVertically)
-            ) {
-                Icon(
-                    imageVector = iconRight,
-                    contentDescription = textRight,
-                    tint = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier
-                        .height(30.dp)
-                        .width(30.dp)
-
-                )
+            Variant.NEW_NOTE_RECORD -> {
+                iconLeft = Icons.Filled.List
+                iconRight = Icons.Filled.RadioButtonChecked
+                buttonTextLeft = "Recordings"
+                buttonTextRight = "Record"
             }
-            Text(
-                text = textRight,
-                color = MaterialTheme.colors.onSecondary,
-                fontSize = 14.sp
-            )
         }
+        BottomBoxButton(
+            text = buttonTextLeft,
+            icon = iconLeft,
+            modifier = Modifier.weight(1f),
+            selected = selectedButtonLeft,
+            onClick = {
+                selectedButtonLeft = true
+                selectedButtonRight = false
+                onClickLeft.invoke()
+            }
+        )
+        BottomBoxButton(
+            text = buttonTextRight,
+            icon = iconRight,
+            selected = selectedButtonRight,
+            modifier = Modifier.weight(1f),
+            onClick = {
+                selectedButtonRight = true
+                selectedButtonLeft = false
+                onClickRight.invoke()
+            }
+        )
     }
 }
 
@@ -122,21 +103,15 @@ private fun PreviewComponent() {
     VoiceNote_androidTheme {
         Column() {
             BottomBox(
-                textLeft = "New note",
-                textRight = "New recording",
-                iconLeft = Icons.Filled.Add,
-                iconRight = Icons.Filled.RadioButtonChecked,
                 onClickLeft = {},
-                onClickRight = {}
+                onClickRight = {},
+                variant = Variant.NEW_NOTE_RECORD
             )
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
             BottomBox(
-                textLeft = "Recordings",
-                textRight = "Record",
-                iconLeft = Icons.Filled.List,
-                iconRight = Icons.Filled.RadioButtonChecked,
                 onClickLeft = {},
-                onClickRight = {}
+                onClickRight = {},
+                variant = Variant.RECORDINGS_RECORD
             )
         }
     }

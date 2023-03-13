@@ -33,10 +33,10 @@ fun NotesScreen(navController: NavController, backPress: (() -> Unit)? = null) {
     NotesList()
 }*/
 
-@Preview("Profile screen", showBackground = true)
-@Preview("Profile screen (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("Profile screen (big font)", fontScale = 1.5f)
-@Preview("Profile screen (large screen)", device = Devices.PIXEL_C)
+@Preview("Notes view", showBackground = true)
+@Preview("Notes view (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("Notes view (big font)", fontScale = 1.5f)
+@Preview("Notes view (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun NotesPreview() {
     VoiceNote_androidTheme {

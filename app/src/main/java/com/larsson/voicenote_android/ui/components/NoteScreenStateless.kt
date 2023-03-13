@@ -10,7 +10,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.larsson.voicenote_android.ui.TopAppBar
+import com.larsson.voicenote_android.ui.TopAppBarCustom
 
 // Stateless reusable composable
 @Composable
@@ -29,7 +29,7 @@ fun NoteView(
     ) {
         BackHandler(true, onBackClick)
 
-        TopAppBar(
+        TopAppBarCustom(
             onTextChangeTitle = onTextChangeTitle,
             value = textFieldValueTitle,
             onBackClick = onBackClick
