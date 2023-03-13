@@ -5,7 +5,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 
 
-val dkGrey = Color(0xFF494949)
+val dkGrey = Color(0xFF646464)
 val white = Color(0xFFEBDCDC)
 val brightRed = Color(0xFF462D37)
 

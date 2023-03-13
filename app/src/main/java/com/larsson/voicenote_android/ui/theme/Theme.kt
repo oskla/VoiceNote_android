@@ -13,6 +13,7 @@ val AppLightColorScheme = lightColorScheme(
     onPrimary = notBlack,
     secondary = ltGrey,
     onSecondary = Color.Black,
+    outline = dkGrey,
     background = notWhite
 )
 
@@ -21,6 +22,7 @@ val AppDarkColorScheme = darkColorScheme(
     onPrimary = notWhite,
     secondary = Color.Black,
     onSecondary = white,
+    outline = dkGrey,
     background = notBlack
 )
 
