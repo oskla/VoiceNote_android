@@ -3,6 +3,7 @@ package com.larsson.voicenote_android.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.Text
@@ -21,7 +22,8 @@ import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 @Composable
 fun TopToggleBar() {
-    var selected by remember { mutableStateOf(false) }
+    var selectedLeft by remember { mutableStateOf(true) }
+    var selectedRight by remember { mutableStateOf(false) }
 
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -37,14 +39,28 @@ fun TopToggleBar() {
                 .weight(1f)
                 .padding(4.dp)
         ) {
-            ToggleBox(text = "Notes", selected = true)
+            ToggleBox(
+                text = "Notes",
+                selected = selectedLeft,
+                onClick = {
+                    selectedLeft = !selectedLeft
+                    selectedRight = !selectedRight
+                }
+            )
         }
         Column(
             Modifier
                 .weight(1f)
                 .padding(4.dp)
         ) {
-            ToggleBox(text = "Recordings", selected = false)
+            ToggleBox(
+                text = "Recordings",
+                onClick = {
+                    selectedRight = !selectedRight
+                    selectedLeft = !selectedLeft
+                },
+                selected = selectedRight
+            )
         }
     }
 }
@@ -53,13 +69,19 @@ fun TopToggleBar() {
 fun ToggleBox(
     text: String,
     height: Dp = 24.dp,
-    selected: Boolean
+    selected: Boolean,
+    onClick: () -> Unit
 ) {
+    var checked by remember { mutableStateOf(selected) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .background(if (selected) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.background, shapes.medium),
+            .background(if (selected) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.background, shapes.medium)
+            .clickable {
+                onClick()
+            },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
 
