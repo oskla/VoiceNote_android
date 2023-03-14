@@ -33,10 +33,11 @@ fun VoiceNote_androidTheme(
 
 ) {
     val systemUiController = rememberSystemUiController()
+
     val AppColorScheme = if (darkTheme) {
-        AppDarkColorScheme
+        AppDarkColorScheme.also { systemUiController.setSystemBarsColor(notBlack) }
     } else {
-        AppLightColorScheme
+        AppLightColorScheme.also { systemUiController.setSystemBarsColor(notWhite) }
     }
 
     MaterialTheme(
