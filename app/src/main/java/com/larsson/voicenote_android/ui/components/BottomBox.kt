@@ -2,6 +2,7 @@ package com.larsson.voicenote_android.ui.components // ktlint-disable package-na
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,50 +46,52 @@ fun BottomBox(
     var iconRight: ImageVector
     var iconLeft: ImageVector
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(55.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+    Box(modifier = Modifier) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
 
-    ) {
-        when (variant) {
-            Variant.RECORDINGS_RECORD -> {
-                iconLeft = Icons.Filled.Add
-                iconRight = Icons.Filled.RadioButtonChecked
-                buttonTextLeft = "New note"
-                buttonTextRight = "Record"
+        ) {
+            when (variant) {
+                Variant.RECORDINGS_RECORD -> {
+                    iconLeft = Icons.Filled.Add
+                    iconRight = Icons.Filled.RadioButtonChecked
+                    buttonTextLeft = "New note"
+                    buttonTextRight = "Record"
+                }
+                Variant.NEW_NOTE_RECORD -> {
+                    iconLeft = Icons.Filled.List
+                    iconRight = Icons.Filled.RadioButtonChecked
+                    buttonTextLeft = "Recordings"
+                    buttonTextRight = "Record"
+                }
             }
-            Variant.NEW_NOTE_RECORD -> {
-                iconLeft = Icons.Filled.List
-                iconRight = Icons.Filled.RadioButtonChecked
-                buttonTextLeft = "Recordings"
-                buttonTextRight = "Record"
-            }
+            BottomBoxButton(
+                text = buttonTextLeft,
+                icon = iconLeft,
+                modifier = Modifier.weight(1f),
+                selected = selectedButtonLeft,
+                onClick = {
+                    selectedButtonLeft = true
+                    selectedButtonRight = false
+                    onClickLeft.invoke()
+                }
+            )
+            BottomBoxButton(
+                text = buttonTextRight,
+                icon = iconRight,
+                selected = selectedButtonRight,
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    selectedButtonRight = true
+                    selectedButtonLeft = false
+                    onClickRight.invoke()
+                }
+            )
         }
-        BottomBoxButton(
-            text = buttonTextLeft,
-            icon = iconLeft,
-            modifier = Modifier.weight(1f),
-            selected = selectedButtonLeft,
-            onClick = {
-                selectedButtonLeft = true
-                selectedButtonRight = false
-                onClickLeft.invoke()
-            }
-        )
-        BottomBoxButton(
-            text = buttonTextRight,
-            icon = iconRight,
-            selected = selectedButtonRight,
-            modifier = Modifier.weight(1f),
-            onClick = {
-                selectedButtonRight = true
-                selectedButtonLeft = false
-                onClickRight.invoke()
-            }
-        )
     }
 }
 

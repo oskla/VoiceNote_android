@@ -32,8 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
-
-
 @Composable
 fun BottomBoxButton(
     modifier: Modifier = Modifier,
@@ -57,7 +55,6 @@ fun BottomBoxButton(
         Box(
             modifier = Modifier
                 .padding(end = 6.dp)
-                //.clickable { onClick.invoke() }
         ) {
             Icon(
                 imageVector = icon,
