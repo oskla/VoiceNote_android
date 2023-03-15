@@ -17,7 +17,7 @@ import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 @Composable
 fun NotesList() {
-    LazyColumn(modifier = Modifier.padding(horizontal = 12.dp)) {
+    LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(notes) { _, note ->
             Box() {
                 Log.d("NotesView", note.title)
