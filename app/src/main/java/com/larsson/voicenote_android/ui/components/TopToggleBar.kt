@@ -2,7 +2,6 @@ package com.larsson.voicenote_android.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -15,10 +14,8 @@ import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 enum class ToggleVariant {
     NOTES,
@@ -35,7 +33,8 @@ enum class ToggleVariant {
 
 @Composable
 fun TopToggleBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier? = Modifier,
+    viewModel: NotesViewModel
 
 ) {
     var currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
@@ -55,10 +54,14 @@ fun TopToggleBar(
             when (component) {
                 ToggleVariant.NOTES -> {
                     ToggleBar(selectedLeft = true, selectedRight = false, currentVariant = currentVariant)
+                    viewModel.notesListVisible = true
+                    viewModel.recordingsListVisible = false
                 }
 
                 ToggleVariant.RECORDINGS -> {
                     ToggleBar(selectedLeft = false, selectedRight = true, currentVariant = currentVariant)
+                    viewModel.notesListVisible = false
+                    viewModel.recordingsListVisible = true
                 }
             }
         }
@@ -141,6 +144,6 @@ private const val componentName = "Top Toggle Bar"
 @Composable
 fun TogglePreview() {
     VoiceNote_androidTheme {
-        TopToggleBar()
+        TopToggleBar(null, NotesViewModel())
     }
 }
