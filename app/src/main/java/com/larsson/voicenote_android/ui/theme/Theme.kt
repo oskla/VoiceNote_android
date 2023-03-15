@@ -30,7 +30,6 @@ val AppDarkColorScheme = darkColorScheme(
 fun VoiceNote_androidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
-
 ) {
     val systemUiController = rememberSystemUiController()
 
