@@ -57,15 +57,15 @@ fun BottomBox(
         ) {
             when (variant) {
                 Variant.RECORDINGS_RECORD -> {
-                    iconLeft = Icons.Filled.Add
-                    iconRight = Icons.Filled.RadioButtonChecked
-                    buttonTextLeft = "New note"
-                    buttonTextRight = "Record"
-                }
-                Variant.NEW_NOTE_RECORD -> {
                     iconLeft = Icons.Filled.List
                     iconRight = Icons.Filled.RadioButtonChecked
                     buttonTextLeft = "Recordings"
+                    buttonTextRight = "Record"
+                }
+                Variant.NEW_NOTE_RECORD -> {
+                    iconLeft = Icons.Filled.Add
+                    iconRight = Icons.Filled.RadioButtonChecked
+                    buttonTextLeft = "New note"
                     buttonTextRight = "Record"
                 }
             }
