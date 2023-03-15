@@ -10,8 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.larsson.voicenote_android.data.getUUID
-import com.larsson.voicenote_android.ui.NotesList
 import com.larsson.voicenote_android.ui.components.BottomBox
+import com.larsson.voicenote_android.ui.components.ListContent
+import com.larsson.voicenote_android.ui.components.ListVariant
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
@@ -27,15 +28,12 @@ fun HomeScreen(
 
     val newNoteVisible = notesViewModel.newNoteVisible
     val notesListVisible = notesViewModel.notesListVisible
-    val bottomBoxVisible = notesViewModel.bottomBoxVisible
-    val topToggleBar = notesViewModel.topToggleBarVisible
 
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
-        if (topToggleBar) {
-            TopToggleBar()
-        }
+        TopToggleBar(modifier = Modifier, viewModel = notesViewModel)
+
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -43,17 +41,13 @@ fun HomeScreen(
             if (newNoteVisible) {
                 NewNoteScreen(notesViewModel, newNoteId)
             }
-            if (notesListVisible) {
-                NotesList()
-            }
+            ListContent(listVariant = if (notesListVisible) ListVariant.NOTES else ListVariant.RECORDINGS)
         }
-        if (bottomBoxVisible) {
-            BottomBox(
-                variant = Variant.NEW_NOTE_RECORD,
-                onClickRight = {},
-                onClickLeft = {}
-            )
-        }
+        BottomBox(
+            variant = Variant.NEW_NOTE_RECORD,
+            onClickRight = {},
+            onClickLeft = {}
+        )
     }
 }
 
