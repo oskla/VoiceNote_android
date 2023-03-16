@@ -1,6 +1,8 @@
 package com.larsson.voicenote_android.ui.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.larsson.voicenote_android.data.Note
 import com.larsson.voicenote_android.ui.NotesList
 
 enum class ListVariant {
@@ -10,10 +12,11 @@ enum class ListVariant {
 
 @Composable
 fun ListContent(
-    listVariant: ListVariant
+    listVariant: ListVariant,
+    notes: List<Note>
 ) {
     when (listVariant) {
-        ListVariant.NOTES -> { NotesList() }
+        ListVariant.NOTES -> { NotesList(notes = notes) }
         ListVariant.RECORDINGS -> { RecordingsList() }
     }
 }
