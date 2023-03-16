@@ -1,7 +1,11 @@
 package com.larsson.voicenote_android.ui
 
 import android.util.Log
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -13,13 +17,12 @@ import com.larsson.voicenote_android.viewmodels.NotesViewModel
 fun EditNoteScreen(
     viewModel: NotesViewModel,
     navController: NavController
-/*    title: String, // TODO - handle this from viewModel instead
-    txtContent: String,
-    id: String*/
 ) {
-    val title by remember { mutableStateOf("") }
-    val textContent by remember { mutableStateOf("") }
-    val id by remember { mutableStateOf("") }
+    val selectedNote = viewModel.getSelectedNote()
+
+    val title by remember { mutableStateOf(selectedNote.title) }
+    val textContent by remember { mutableStateOf(selectedNote.txtContent) }
+    val id by remember { mutableStateOf(selectedNote.id) }
 
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
