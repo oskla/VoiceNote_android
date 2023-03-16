@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,7 +28,6 @@ fun TopAppBarCustom(
     onTextChangeTitle: (String) -> Unit,
     value: String,
     onBackClick: () -> Unit = {}
-
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colorScheme.background,
@@ -39,7 +37,7 @@ fun TopAppBarCustom(
             TextField(
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.background,
-                    textColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
                     cursorColor = Color.Black,
                     disabledTextColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
@@ -63,45 +61,6 @@ fun TopAppBarCustom(
         }
     )
 }
-
-/* TopAppBar(
-            backgroundColor = MaterialTheme.colors.background,
-            contentColor = MaterialTheme.colors.primary,
-            modifier = Modifier.height(60.dp),
-            title = {
-                TextField(
-                textStyle = MaterialTheme.typography.caption,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.background,
-                    textColor = MaterialTheme.colors.primary,
-                    cursorColor = Color.Black,
-                    disabledTextColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                    ),
-                value = textFieldValue2,
-                onValueChange = {
-                    textFieldValue2 = it
-                })
-            },
-            navigationIcon = {
-                IconButton(onClick = {
-                  viewModel.saveNote(textFieldValue2, textFieldValue, id)
-                    navController.popBackStack()
-                }) {
-                    Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                        Icon(
-                            Icons.Filled.ArrowBackIosNew,
-                            "arrow_back_ios_new",
-                            tint = MaterialTheme.colors.primary
-                        )
-                        Text(text = "Back")
-
-                    }
-                }
-            }
-        )*/
 
 @Preview("Top App Bar", showBackground = true)
 @Preview("Top App Bar (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
