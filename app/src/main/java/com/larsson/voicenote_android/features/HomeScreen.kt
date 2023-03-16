@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.larsson.voicenote_android.data.getUUID
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.ListContent
 import com.larsson.voicenote_android.ui.components.ListVariant
@@ -21,12 +23,10 @@ import com.larsson.voicenote_android.viewmodels.NotesViewModel
 @Composable
 fun HomeScreen(
     notesViewModel: NotesViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val getAllNotes = notesViewModel.getAllNotes()
-    val newNoteId = getUUID()
-
-    val newNoteVisible = notesViewModel.newNoteVisible
+    val allNotes = notesViewModel.notes
     val notesListVisible = notesViewModel.notesListVisible
 
     Column(
@@ -38,15 +38,15 @@ fun HomeScreen(
             modifier = Modifier
                 .weight(1f)
         ) {
-            if (newNoteVisible) {
-                NewNoteScreen(notesViewModel, newNoteId)
-            }
-            ListContent(listVariant = if (notesListVisible) ListVariant.NOTES else ListVariant.RECORDINGS)
+            ListContent(
+                listVariant = if (notesListVisible) ListVariant.NOTES else ListVariant.RECORDINGS,
+                notes = allNotes
+            )
         }
         BottomBox(
             variant = Variant.NEW_NOTE_RECORD,
-            onClickRight = {},
-            onClickLeft = {}
+            onClickRight = { },
+            onClickLeft = { navController.navigate(Screen.NewNote.route) }
         )
     }
 }
@@ -60,6 +60,9 @@ private const val componentName = "Home Screen"
 @Composable
 private fun PreviewComponent() {
     VoiceNote_androidTheme {
-        HomeScreen(notesViewModel = NotesViewModel())
+        HomeScreen(
+            notesViewModel = NotesViewModel(),
+            navController = rememberNavController()
+        )
     }
 }
