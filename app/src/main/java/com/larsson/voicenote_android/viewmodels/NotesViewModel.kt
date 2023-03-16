@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.larsson.voicenote_android.data.*
+import org.koin.androidx.compose.get
 import java.util.*
 
 class NotesViewModel : ViewModel() {
@@ -11,21 +12,32 @@ class NotesViewModel : ViewModel() {
     var editNoteVisible by mutableStateOf(false)
     var newNoteVisible by mutableStateOf(false)
     var notesListVisible by mutableStateOf(true)
+    var recordingsListVisible by mutableStateOf(false)
     var bottomBoxVisible by mutableStateOf(true)
     var topToggleBarVisible by mutableStateOf(true)
 
-    private var notes = mutableStateListOf<Note>()
+    private var _notes = mutableStateListOf<Note>(
+        Note("3", "Hej", "asg"),
+        Note("3", "Hsfej", "fsasg")
+    )
+    val notes: List<Note> = _notes
 
     fun createNote(title: String, txtContent: String) {
-        notes.add(Note(Note.generateId(), title, txtContent))
+        _notes.add(
+            Note(
+                "4",
+                title = title,
+                txtContent = txtContent
+            )
+        )
     }
 
     fun getNoteById(id: String): Note {
         return notes.first { it.id.toString() == id }
     }
 
-    fun getAllNotes(): () -> List<Note> {
-        return { notes.toList() }
+    fun getAllNotes(): List<Note> {
+        return notes
     }
 
     fun saveNote(title: String, txtContent: String, id: String) {
