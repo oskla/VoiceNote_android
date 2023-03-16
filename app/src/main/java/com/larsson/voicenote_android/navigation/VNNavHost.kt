@@ -16,7 +16,6 @@ import com.larsson.voicenote_android.features.HomeScreen
 import com.larsson.voicenote_android.features.NewNoteScreen
 import com.larsson.voicenote_android.ui.EditNoteScreen
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
-import org.koin.androidx.compose.get
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +41,14 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(Screen.NewNote.route) {
             NewNoteScreen(notesViewModel = notesViewModel, navController = navController)
         }
-        composable(Screen.EditNote.route) { EditNoteScreen(viewModel = notesViewModel, navController = navController) }
+        composable(Screen.EditNote.route) {
+            EditNoteScreen(
+                viewModel = notesViewModel,
+                navController = navController,
+                openBottomSheet = openBottomSheet,
+                bottomSheetState = bottomSheetState,
+                scope = scope
+            )
+        }
     }
 }

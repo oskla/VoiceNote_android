@@ -46,9 +46,9 @@ fun BottomBox(
     var iconRight: ImageVector
     var iconLeft: ImageVector
 
-    Box(modifier = Modifier) {
+    Box(modifier = modifier) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
             verticalAlignment = Alignment.CenterVertically,

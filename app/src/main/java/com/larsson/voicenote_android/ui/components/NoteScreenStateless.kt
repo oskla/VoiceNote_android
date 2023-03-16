@@ -2,6 +2,7 @@ package com.larsson.voicenote_android.ui.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.TextField
@@ -14,6 +15,7 @@ import com.larsson.voicenote_android.ui.TopAppBarCustom
 // Stateless reusable composable
 @Composable
 fun NoteView(
+    modifier: Modifier = Modifier,
     textFieldValueContent: String,
     textFieldValueTitle: String,
     onBackClick: () -> Unit,
@@ -21,31 +23,33 @@ fun NoteView(
     onTextChangeContent: (String) -> Unit
 
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        BackHandler(true, onBackClick)
+    Box(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            BackHandler(true, onBackClick)
 
-        TopAppBarCustom(
-            onTextChangeTitle = onTextChangeTitle,
-            value = textFieldValueTitle,
-            onBackClick = onBackClick
+            TopAppBarCustom(
+                onTextChangeTitle = onTextChangeTitle,
+                value = textFieldValueTitle,
+                onBackClick = onBackClick
 
-        )
-        TextField(
-            textStyle = MaterialTheme.typography.bodyMedium,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colorScheme.background,
-                textColor = MaterialTheme.colorScheme.onBackground,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onBackground, // hide the indicator
-                cursorColor = MaterialTheme.colorScheme.onBackground
-            ),
-            shape = MaterialTheme.shapes.large,
-            value = textFieldValueContent,
-            onValueChange = onTextChangeContent,
-            modifier = Modifier.fillMaxSize()
-        )
+            )
+            TextField(
+                textStyle = MaterialTheme.typography.bodyMedium,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    textColor = MaterialTheme.colorScheme.onBackground,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onBackground, // hide the indicator
+                    cursorColor = MaterialTheme.colorScheme.onBackground
+                ),
+                shape = MaterialTheme.shapes.large,
+                value = textFieldValueContent,
+                onValueChange = onTextChangeContent,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
