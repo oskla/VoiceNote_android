@@ -5,13 +5,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 @Composable
 fun NewNoteScreen(
     notesViewModel: NotesViewModel,
-    id: String
+    navController: NavController
 ) {
     var textFieldValueContent by remember { mutableStateOf("") }
     var textFieldValueTitle by remember { mutableStateOf("title") }
@@ -21,10 +22,9 @@ fun NewNoteScreen(
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
             notesViewModel.createNote(textFieldValueTitle, textFieldValueContent)
-            notesViewModel.visibilityModifier(homeScreen = true)
+            navController.popBackStack()
         },
         onTextChangeTitle = { textFieldValueTitle = it },
         onTextChangeContent = { textFieldValueContent = it }
-
     )
 }
