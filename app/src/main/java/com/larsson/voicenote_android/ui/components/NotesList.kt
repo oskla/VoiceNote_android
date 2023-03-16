@@ -12,17 +12,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.larsson.voicenote_android.data.Note
+import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.NoteItem
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 @Composable
-fun NotesList(notes: List<Note>) {
+fun NotesList(notes: List<Note>, navController: NavController, notesViewModel: NotesViewModel) {
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(notes) { _, note ->
             Box() {
                 Log.d("NotesView", note.title)
-                NoteItem(note.title, note.txtContent, note.id, onClick = {})
+                NoteItem(note.title, note.txtContent, note.id, onClick = {
+                    navController.navigate(Screen.EditNote.route)
+                    notesViewModel.selectNoteById(id = note.id)
+                    //notesViewModel.saveNote(title = note.title, txtContent = note.txtContent, id = note.id)
+                })
             }
         }
     }
@@ -36,7 +44,9 @@ fun NotesList(notes: List<Note>) {
 fun NotesPreview() {
     VoiceNote_androidTheme {
         NotesList(
-            notes = SnapshotStateList<Note>()
+            notes = SnapshotStateList<Note>(),
+            navController = rememberNavController(),
+            notesViewModel = NotesViewModel()
         )
     }
 }
