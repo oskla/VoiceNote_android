@@ -5,6 +5,12 @@ import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+var dataModule = module {}
+
 var viewModel = module {
     viewModel { NotesViewModel() }
 }
+
+var repositories = module {}
+
+var utils = module {}
