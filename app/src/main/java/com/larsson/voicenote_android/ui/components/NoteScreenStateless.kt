@@ -4,12 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.larsson.voicenote_android.ui.TopAppBarCustom
 
 // Stateless reusable composable
@@ -25,7 +24,7 @@ fun NoteView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         BackHandler(true, onBackClick)
 
@@ -36,12 +35,12 @@ fun NoteView(
 
         )
         TextField(
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.background,
-                textColor = MaterialTheme.colors.primary,
-                focusedIndicatorColor = Color.Black, // hide the indicator
-                cursorColor = Color.Black
+                backgroundColor = MaterialTheme.colorScheme.background,
+                textColor = MaterialTheme.colorScheme.onBackground,
+                focusedIndicatorColor = MaterialTheme.colorScheme.onBackground, // hide the indicator
+                cursorColor = MaterialTheme.colorScheme.onBackground
             ),
             shape = MaterialTheme.shapes.large,
             value = textFieldValueContent,
