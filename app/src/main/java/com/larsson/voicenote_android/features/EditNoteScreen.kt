@@ -1,5 +1,6 @@
 package com.larsson.voicenote_android.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,7 +52,6 @@ fun EditNoteScreen(
                 Log.d("OnBackClick", "id: $id")
                 viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
                 navController.popBackStack()
-                println("id: $id")
             },
             textFieldValueContent = textFieldValueContent,
             textFieldValueTitle = textFieldValueTitle,
@@ -63,6 +63,7 @@ fun EditNoteScreen(
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable

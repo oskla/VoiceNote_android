@@ -8,23 +8,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.R
+import com.airbnb.lottie.compose.LottieConstants
+import com.larsson.voicenote_android.ui.lottie.LottieLRecording
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,25 +42,15 @@ fun BottomSheet(
 
                 Column(
                     modifier = Modifier.padding(vertical = 40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    IconButton(
-                        modifier = Modifier.size(71.dp),
-                        onClick = {
-                            scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                                if (!bottomSheetState.isVisible) {
-                                    openBottomSheet.value = false
-                                }
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.stop_icon),
-                            "stop recording",
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
+                    // Spacer(modifier = Modifier.height(16.dp))
+                    LottieLRecording(
+                        file = "sound-wave.json",
+                        modifier = modifier.fillMaxWidth().height(120.dp),
+                        iterations = LottieConstants.IterateForever
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("Recording...")
                 }
