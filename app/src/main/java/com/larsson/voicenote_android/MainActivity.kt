@@ -1,52 +1,49 @@
 package com.larsson.voicenote_android
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.viewModelFactory
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.larsson.voicenote_android.components.SetupNavGraph
-import com.larsson.voicenote_android.data.Note
-import com.larsson.voicenote_android.data.getUUID
-import com.larsson.voicenote_android.ui.NotesList
-
+import com.larsson.voicenote_android.di.dataModule
+import com.larsson.voicenote_android.di.repositories
+import com.larsson.voicenote_android.di.utils
+import com.larsson.voicenote_android.di.viewModel
+import com.larsson.voicenote_android.navigation.NavGraph
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.viewmodels.NotesViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+
+// TODO - Create reusable bottomBox
+// TODO - Fill max height new note view
 
 class MainActivity : ComponentActivity() {
-    private val notesViewModel : NotesViewModel by viewModels()
+    private val notesViewModel: NotesViewModel by viewModels()
     val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContent {
-           // notesViewModel.addNotes()
-            VoiceNote_androidTheme {
 
-                // A surface container using the 'background' color from the theme
+        startKoin {
+            androidLogger()
+            androidContext(applicationContext)
+            koin.loadModules(listOf(dataModule, viewModel, repositories, utils))
+        }
+
+        setContent {
+            VoiceNote_androidTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    VNApp(notesViewModel)
+                    VNApp()
                 }
             }
         }
@@ -54,107 +51,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun VNApp(notesViewModel: NotesViewModel) {
-    val navController = rememberNavController()
-
+fun VNApp() {
     Column() {
-        SetupNavGraph(navController = navController, notesViewModel)
-    }
-}
-
-@Composable
-fun HomeScreen(
-    navController: NavController,
-    notesViewModel: NotesViewModel,
-
-    ) {
-    val getAllNotes = notesViewModel.getAllNotes()
-    val newNoteId = getUUID()
-
-
-    Column() {
-
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier,
-        ) {
-            Box(modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp)) {
-                NotesList(navController, getAllNotes)
-            }
-
-            BottomBox(navController, newNoteId)
-        }
-
-
-    }
-
-}
-
-@Composable
-fun BottomBox(
-    navController: NavController,
-    newNoteId: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(MaterialTheme.colors.background),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-
-    ) {
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable { navController.navigate(Screen.NewNote.passId(newNoteId)) },
-
-            ) {
-
-            Box(
-                modifier = Modifier
-                    .padding(end = 6.dp)
-
-
-            ) {
-                Icon(
-                    Icons.Filled.Add,
-                    "add",
-                    tint = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier
-                        .height(40.dp)
-                        .width(40.dp),
-                )
-            }
-            Text(text = "New note", color = MaterialTheme.colors.onSecondary, fontSize = 14.sp)
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-
-            Box(modifier = Modifier.padding(end = 6.dp)) {
-                Icon(
-                    imageVector = Icons.Filled.RadioButtonChecked,
-                    "radio_button_checked",
-                    tint = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier
-                        .height(30.dp)
-                        .width(30.dp),
-                )
-            }
-            Text(
-                text = "New recording",
-                color = MaterialTheme.colors.onSecondary,
-                fontSize = 14.sp
-            )
-        }
-
-
+        NavGraph()
     }
 }
 
@@ -162,7 +61,6 @@ fun BottomBox(
 @Composable
 fun DefaultPreview() {
     VoiceNote_androidTheme {
-        // HomeScreen()
-       // BottomBox(rememberNavController(), "")
+        VNApp()
     }
 }
