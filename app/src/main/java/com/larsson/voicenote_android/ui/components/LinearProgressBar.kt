@@ -27,7 +27,7 @@ Box(
         value = progress,
         onValueChange = { onProgressChanged.invoke(it) },
         colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),
-        valueRange = 0f..100f
+        valueRange = 0f..1f
     )
 }
 }
