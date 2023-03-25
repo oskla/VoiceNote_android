@@ -47,7 +47,7 @@ fun RecordingMenuItemPlayer(
 // TODO take in state?
 ) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.background,
+        backgroundColor = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.wrapContentSize(),
         elevation = 0.dp,
         shape = RectangleShape,

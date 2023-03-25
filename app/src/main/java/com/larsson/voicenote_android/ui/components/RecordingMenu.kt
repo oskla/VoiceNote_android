@@ -1,12 +1,16 @@
 package com.larsson.voicenote_android.ui.components
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,12 +23,18 @@ import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.recordings
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun RecordingMenu() {
 
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
-    LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.secondary),
+        userScrollEnabled = true
+    ) {
         itemsIndexed(recordings) { _, recording ->
             val isSelected = (recording.id == selectedRecordingId) // Checks what recording is actually pressed.
 
@@ -40,7 +50,7 @@ fun RecordingMenu() {
                         selectedRecordingId = if (isSelected) null else recording.id
                     }
                 )
-                Divider()
+                Divider(color = MaterialTheme.colorScheme.background)
         }
     }
 }

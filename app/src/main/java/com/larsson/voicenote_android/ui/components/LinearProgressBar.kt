@@ -20,7 +20,7 @@ fun LinearProgressBar(
     onProgressChanged: (Float) -> Unit
 ) {
 Box(
-    modifier = modifier.background(MaterialTheme.colorScheme.background)
+    modifier = modifier.background(MaterialTheme.colorScheme.secondary)
 ) {
     Slider(
         modifier = Modifier,

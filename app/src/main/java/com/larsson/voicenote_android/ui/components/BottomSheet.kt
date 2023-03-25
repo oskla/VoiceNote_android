@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,10 @@ fun BottomSheet(
             onDismissRequest = { openBottomSheet.value = false },
             sheetState = bottomSheetState
         ) {
-            Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background), horizontalArrangement = Arrangement.Center) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background), horizontalArrangement = Arrangement.Center) {
                 // Note: If you provide logic outside of onDismissRequest to remove the sheet,
                 // you must additionally handle intended state cleanup, if any.
 
@@ -47,8 +51,10 @@ fun BottomSheet(
                 ) {
                     // Spacer(modifier = Modifier.height(16.dp))
                     LottieLRecording(
-                        file = "sound-wave.json",
-                        modifier = modifier.fillMaxWidth().height(120.dp),
+                        file = if (isSystemInDarkTheme()) "sound-wave-dark-mode.json" else "sound-wave.json",
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(120.dp),
                         iterations = LottieConstants.IterateForever
                     )
                     Spacer(modifier = Modifier.height(16.dp))

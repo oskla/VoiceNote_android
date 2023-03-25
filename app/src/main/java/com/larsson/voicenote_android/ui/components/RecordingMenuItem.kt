@@ -1,6 +1,8 @@
 package com.larsson.voicenote_android.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Card
 import androidx.compose.material.LocalTextStyle
@@ -17,6 +20,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -34,8 +38,8 @@ fun RecordingMenuItemBase(
     duration: String,
 ) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.background,
-        modifier = Modifier.wrapContentSize(),
+        backgroundColor = MaterialTheme.colorScheme.secondary,
+        modifier = Modifier.wrapContentHeight(),
         elevation = 0.dp,
         shape = RectangleShape
     ) {
@@ -95,6 +99,7 @@ fun RecordingMenuItem(
     Column(
         modifier = Modifier
             .clickable { onClick.invoke() }
+            .background(MaterialTheme.colorScheme.secondary),
 
     ) {
             if (isSelected) {

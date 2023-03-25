@@ -10,6 +10,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.larsson.voicenote_android.ui.TopAppBarCustom
 
 // Stateless reusable composable
@@ -42,8 +43,10 @@ fun NoteView(
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = MaterialTheme.colorScheme.background,
                     textColor = MaterialTheme.colorScheme.onBackground,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.onBackground, // hide the indicator
-                    cursorColor = MaterialTheme.colorScheme.onBackground
+                    focusedIndicatorColor = Color.Transparent, // hide the underline
+                    cursorColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedIndicatorColor = Color.Transparent, // hide the underline
+                    disabledIndicatorColor = Color.Transparent // hide the underline
                 ),
                 shape = MaterialTheme.shapes.large,
                 value = textFieldValueContent,

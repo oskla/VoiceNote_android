@@ -3,7 +3,11 @@ package com.larsson.voicenote_android.ui
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -20,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.ui.components.NoteView
+import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
@@ -42,10 +47,11 @@ fun EditNoteScreen(
 
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
+    var showRecordingMenu by remember { mutableStateOf(false) }
 
     BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, scope = scope)
 
-    Column() {
+    Column {
         NoteView(
             modifier = Modifier.weight(1f),
             onBackClick = {
@@ -58,8 +64,20 @@ fun EditNoteScreen(
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it }
         )
-
-        BottomBox(variant = Variant.RECORDINGS_RECORD, onClickLeft = { /*TODO*/ }, onClickRight = { openBottomSheet.value = true })
+        if (showRecordingMenu) {
+            Column(modifier = Modifier.wrapContentHeight().weight(1f)) {
+                Divider(color = MaterialTheme.colorScheme.background)
+                RecordingMenu()
+            }
+        }
+        BottomBox(
+            variant = Variant.RECORDINGS_RECORD,
+            onClickLeft = { showRecordingMenu = !showRecordingMenu },
+            onClickRight = {
+                showRecordingMenu = false
+                openBottomSheet.value = true
+            }
+        )
     }
 }
 
