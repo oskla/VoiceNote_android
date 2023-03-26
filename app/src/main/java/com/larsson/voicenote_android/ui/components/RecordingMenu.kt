@@ -2,11 +2,9 @@ package com.larsson.voicenote_android.ui.components
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
@@ -19,25 +17,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.recordings
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun RecordingMenu() {
-
+fun RecordingMenu(
+    modifier: Modifier = Modifier,
+    noteId: String,
+) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
+            .wrapContentHeight()
             .background(MaterialTheme.colorScheme.secondary),
-        userScrollEnabled = true
+        userScrollEnabled = true,
     ) {
-        itemsIndexed(recordings) { _, recording ->
-            val isSelected = (recording.id == selectedRecordingId) // Checks what recording is actually pressed.
-
+        itemsIndexed(recordings) { index, recording ->
+            val isSelected =
+                (recording.id == selectedRecordingId) // Checks what recording is actually pressed.
+            if (noteId == recording.belongsToNoteId) { // Checks if these recordings belongs to this specific note.
                 RecordingMenuItem(
                     title = recording.title,
                     date = recording.date,
@@ -48,9 +49,10 @@ fun RecordingMenu() {
                     isSelected = isSelected,
                     onClick = {
                         selectedRecordingId = if (isSelected) null else recording.id
-                    }
+                    },
                 )
                 Divider(color = MaterialTheme.colorScheme.background)
+            }
         }
     }
 }
@@ -64,6 +66,6 @@ private const val componentName = "Recording Menu Item Player"
 @Composable
 fun RecordingMenuPreview() {
     VoiceNote_androidTheme {
-        RecordingMenu()
+        RecordingMenu(noteId = "2")
     }
 }

@@ -2,7 +2,6 @@ package com.larsson.voicenote_android.ui.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.TextField
@@ -21,38 +20,36 @@ fun NoteView(
     textFieldValueTitle: String,
     onBackClick: () -> Unit,
     onTextChangeTitle: (String) -> Unit,
-    onTextChangeContent: (String) -> Unit
+    onTextChangeContent: (String) -> Unit,
 
 ) {
-    Box(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            BackHandler(true, onBackClick)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        BackHandler(true, onBackClick)
 
-            TopAppBarCustom(
-                onTextChangeTitle = onTextChangeTitle,
-                value = textFieldValueTitle,
-                onBackClick = onBackClick
+        TopAppBarCustom(
+            onTextChangeTitle = onTextChangeTitle,
+            value = textFieldValueTitle,
+            onBackClick = onBackClick,
 
-            )
-            TextField(
-                textStyle = MaterialTheme.typography.bodyMedium,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colorScheme.background,
-                    textColor = MaterialTheme.colorScheme.onBackground,
-                    focusedIndicatorColor = Color.Transparent, // hide the underline
-                    cursorColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedIndicatorColor = Color.Transparent, // hide the underline
-                    disabledIndicatorColor = Color.Transparent // hide the underline
-                ),
-                shape = MaterialTheme.shapes.large,
-                value = textFieldValueContent,
-                onValueChange = onTextChangeContent,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        )
+        TextField(
+            textStyle = MaterialTheme.typography.bodyMedium,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = MaterialTheme.colorScheme.background,
+                textColor = MaterialTheme.colorScheme.onBackground,
+                focusedIndicatorColor = Color.Transparent, // hide the underline
+                cursorColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedIndicatorColor = Color.Transparent, // hide the underline
+                disabledIndicatorColor = Color.Transparent, // hide the underline
+            ),
+            shape = MaterialTheme.shapes.large,
+            value = textFieldValueContent,
+            onValueChange = onTextChangeContent,
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 }
