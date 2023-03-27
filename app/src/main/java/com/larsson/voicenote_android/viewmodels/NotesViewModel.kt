@@ -11,7 +11,6 @@ import com.larsson.voicenote_android.data.Note
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.repository.NotesRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -41,7 +40,6 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getAllNotesFromRoom(): List<NoteEntity> {
         var allNotes = mutableListOf<NoteEntity>()
         withContext(Dispatchers.IO) {
@@ -51,11 +49,13 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         return allNotes
     }
 
-    fun getNoteFromRoomById(id: Int) {
-        viewModelScope.launch {
-            val noteEntity = dbRepo.getNoteById("6")
-            Log.d("note room vm", "${noteEntity.noteTitle} and ${noteEntity.noteTxtContent},${noteEntity.noteId},")
+    suspend fun getNoteFromRoomById(id: String): NoteEntity {
+        var selectedNote: NoteEntity
+        withContext(Dispatchers.IO) {
+            selectedNote = dbRepo.getNoteById(id)
+            Log.d("note room vm", "${selectedNote.noteTitle} and ${selectedNote.noteTxtContent},${selectedNote.noteId},")
         }
+        return selectedNote
     }
 
     fun addNoteToRoom(title: String, txtContent: String, id: String) {
@@ -65,7 +65,17 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
     }
 
     fun selectNoteById(id: String) {
-        selectedNoteId = notes.first { it.id == id }.id
+        selectedNoteId = id
+    }
+
+    suspend fun getSelectedNoteFromRoom(): NoteEntity {
+        Log.d("note room, selected", selectedNoteId)
+        var localSelectedNote: NoteEntity? = null
+        withContext(Dispatchers.IO) {
+            val localSelectedNote2 = dbRepo.getNoteById(selectedNoteId)
+            Log.d("note room", localSelectedNote2.toString())
+        }
+        return localSelectedNote!!
     }
 
     fun getSelectedNote(): Note {

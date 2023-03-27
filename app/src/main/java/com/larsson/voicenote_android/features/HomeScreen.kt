@@ -63,7 +63,6 @@ fun HomeScreenContent(
     bottomSheetState: SheetState,
     scope: CoroutineScope,
 ) {
-    // val allNotes = notesViewModel.notes
     val notesListVisible = notesViewModel.notesListVisible
 
     BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, scope = scope)

@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.ui.components.NoteView
@@ -36,12 +38,26 @@ fun EditNoteScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     scope: CoroutineScope,
+    noteId: String,
 ) {
-    val selectedNote = viewModel.getSelectedNote()
+    var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
+    var isDataFetched by remember { mutableStateOf(false) }
 
-    val title by remember { mutableStateOf(selectedNote.title) }
-    val textContent by remember { mutableStateOf(selectedNote.txtContent) }
-    val id by remember { mutableStateOf(selectedNote.id) }
+    LaunchedEffect(key1 = true) {
+        val note = viewModel.getNoteFromRoomById(id = noteId)
+        selectedNote = note
+        isDataFetched = true
+        Log.d("note room selected", selectedNote!!.noteTitle)
+    }
+
+    if (!isDataFetched) {
+        // Show loader
+        return
+    }
+
+    val title by remember { mutableStateOf(selectedNote!!.noteTitle) }
+    val textContent by remember { mutableStateOf(selectedNote!!.noteTxtContent) }
+    val id by remember { mutableStateOf(noteId) }
 
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
@@ -63,8 +79,8 @@ fun EditNoteScreen(
                 },
             onBackClick = {
                 Log.d("OnBackClick", "id: $id")
-               // viewModel.addNoteToRoom(textFieldValueTitle, textFieldValueContent, id)
-                viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
+                // viewModel.addNoteToRoom(textFieldValueTitle, textFieldValueContent, id)
+                // viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
                 navController.popBackStack()
             },
             textFieldValueContent = textFieldValueContent,
@@ -86,7 +102,7 @@ fun EditNoteScreen(
             ) {
                 Divider(color = MaterialTheme.colorScheme.background)
                 RecordingMenu(
-                    noteId = selectedNote.id,
+                    noteId = "selectedNote.id",
                     // modifier = Modifier.border(1.dp, Color.Cyan)
                 )
             }

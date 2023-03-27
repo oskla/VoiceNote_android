@@ -13,6 +13,8 @@ data class NoteEntity(
     val noteTitle: String,
     @ColumnInfo(name = "note_desc")
     val noteTxtContent: String,
+
+    // hasNotes -> optional list?
 )
 
 

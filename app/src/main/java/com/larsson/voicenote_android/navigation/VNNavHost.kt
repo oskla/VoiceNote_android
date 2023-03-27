@@ -39,14 +39,20 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(Screen.NewNote.route) {
             NewNoteScreen(notesViewModel = get(), navController = navController)
         }
-        composable(Screen.EditNote.route) {
-            EditNoteScreen(
-                viewModel = get(),
-                navController = navController,
-                openBottomSheet = openBottomSheet,
-                bottomSheetState = bottomSheetState,
-                scope = scope,
-            )
+        composable(
+            route = "${Screen.EditNote.route}/{noteId}",
+        ) { navBackStackEntry ->
+            val noteId = navBackStackEntry.arguments?.getString("noteId")
+            if (noteId != null) {
+                EditNoteScreen(
+                    viewModel = get(),
+                    navController = navController,
+                    openBottomSheet = openBottomSheet,
+                    bottomSheetState = bottomSheetState,
+                    scope = scope,
+                    noteId = noteId,
+                )
+            }
         }
     }
 }

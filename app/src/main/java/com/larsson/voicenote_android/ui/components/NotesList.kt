@@ -26,13 +26,13 @@ fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavControlle
                     txtContent = note.noteTxtContent,
                     id = note.noteId.toString(),
                     onClick = {
-                        navController.navigate(Screen.EditNote.route)
-                       // notesViewModel.selectNoteById(id = note.id)
-                        //notesViewModel.saveNote(title = note.title, txtContent = note.txtContent, id = note.id)
+                        navController.navigate("${Screen.EditNote.route}/${note.noteId}")
+                        Log.d("note room, noteslist", note.noteId)
+                        // notesViewModel.selectNoteById(id = note.noteId)
+                        // notesViewModel.saveNote(title = note.title, txtContent = note.txtContent, id = note.id)
                     },
                 )
             }
         }
     }
 }
-
