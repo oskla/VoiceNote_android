@@ -30,6 +30,7 @@ fun TopAppBarCustom(
     onBackClick: () -> Unit = {},
 ) {
     TopAppBar(
+        elevation = 0.dp,
         backgroundColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.height(60.dp),

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.helpers.DateFormatter
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.ui.components.NoteView
@@ -31,7 +32,7 @@ import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import kotlinx.coroutines.CoroutineScope
 
 // TODO maybe state hoist
-
+// TODO on swipe back, do something else, now it's just empty
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(
@@ -88,6 +89,7 @@ fun EditNoteScreen(
             textFieldValueTitle = textFieldValueTitle,
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it },
+            date = DateFormatter(selectedNote!!.date).formattedDateTime
         )
         if (showRecordingMenu) {
             Column(
