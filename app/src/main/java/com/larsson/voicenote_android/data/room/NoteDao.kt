@@ -15,7 +15,7 @@ interface NoteDao {
     suspend fun getAllNotes(): MutableList<NoteEntity>
 
     @Query("SELECT * FROM $NOTES_TABLE WHERE noteId LIKE :id")
-    suspend fun getNote(id: Int): NoteEntity
+    suspend fun getNote(id: String): NoteEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(noteEntity: NoteEntity): Long

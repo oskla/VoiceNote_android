@@ -18,7 +18,7 @@ class NotesRepository(private val noteDao: NoteDao) {
         Log.d("note repo", id.toString())
     }
 
-    suspend fun getNoteById(id: Int): NoteEntity {
+    suspend fun getNoteById(id: String): NoteEntity {
         return noteDao.getNote(id)
     }
 

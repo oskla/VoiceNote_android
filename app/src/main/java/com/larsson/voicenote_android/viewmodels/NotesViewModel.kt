@@ -53,14 +53,14 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
     fun getNoteFromRoomById(id: Int) {
         viewModelScope.launch {
-            val noteEntity = dbRepo.getNoteById(2)
+            val noteEntity = dbRepo.getNoteById("6")
             Log.d("note room vm", "${noteEntity.noteTitle} and ${noteEntity.noteTxtContent},${noteEntity.noteId},")
         }
     }
 
     fun addNoteToRoom(title: String, txtContent: String, id: String) {
         viewModelScope.launch {
-            dbRepo.addNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = 3))
+            dbRepo.addNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id.toString()))
         }
     }
 
