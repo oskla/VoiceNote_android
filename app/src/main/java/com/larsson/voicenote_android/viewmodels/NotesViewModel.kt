@@ -6,9 +6,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.Note
+import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.repository.NotesRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class NotesViewModel : ViewModel() {
+class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
     var editNoteVisible by mutableStateOf(false)
     var newNoteVisible by mutableStateOf(false)
@@ -20,7 +26,7 @@ class NotesViewModel : ViewModel() {
 
     private var _notes = mutableStateListOf<Note>(
         Note("3", "Hej", "asg"),
-        Note("2", "Hsfej", "fsasg")
+        Note("2", "Hsfej", "fsasg"),
     )
     val notes: List<Note> = _notes
 
@@ -29,16 +35,56 @@ class NotesViewModel : ViewModel() {
             Note(
                 "4",
                 title = title,
-                txtContent = txtContent
-            )
+                txtContent = txtContent,
+            ),
         )
     }
 
+    suspend fun getAllNotesFromRoom(): List<NoteEntity> {
+        var allNotes = mutableListOf<NoteEntity>()
+        withContext(Dispatchers.IO) {
+            allNotes = dbRepo.getNotes()
+            Log.d("note room vm ALL notes", "$allNotes")
+        }
+        return allNotes
+    }
+
+    suspend fun getNoteFromRoomById(id: String): NoteEntity {
+        var selectedNote: NoteEntity
+        withContext(Dispatchers.IO) {
+            selectedNote = dbRepo.getNoteById(id)
+            Log.d("note room vm", "${selectedNote.noteTitle} and ${selectedNote.noteTxtContent},${selectedNote.noteId},")
+        }
+        return selectedNote
+    }
+
+    fun addNoteToRoom(title: String, txtContent: String, id: String) {
+        viewModelScope.launch {
+            dbRepo.addNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id.toString()))
+        }
+    }
+
+    fun updateNoteRoom(title: String, txtContent: String, id: String) {
+        viewModelScope.launch {
+            dbRepo.updateNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id))
+        }
+    }
     fun selectNoteById(id: String) {
-        selectedNoteId = notes.first { it.id == id }.id
+        selectedNoteId = id
+    }
+
+    suspend fun getSelectedNoteFromRoom(): NoteEntity {
+        Log.d("note room, selected", selectedNoteId)
+        var localSelectedNote: NoteEntity? = null
+        withContext(Dispatchers.IO) {
+            val localSelectedNote2 = dbRepo.getNoteById(selectedNoteId)
+            Log.d("note room", localSelectedNote2.toString())
+        }
+        return localSelectedNote!!
     }
 
     fun getSelectedNote(): Note {
+        Log.d("selected note GET", selectedNoteId)
         return getNoteById(selectedNoteId)
     }
 
@@ -59,7 +105,7 @@ class NotesViewModel : ViewModel() {
     }
 
     fun visibilityModifier(
-        homeScreen: Boolean
+        homeScreen: Boolean,
     ) {
         if (homeScreen) {
             editNoteVisible = false

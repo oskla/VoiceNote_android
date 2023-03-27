@@ -19,7 +19,7 @@ fun RecordingsList() {
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(recordings) { _, recording ->
             Box() {
-                Log.d("NotesView", recording.title)
+               // Log.d("NotesView", recording.title)
                 RecordingItem(title = recording.title, date = recording.date, duration = recording.duration, onClick = {}, id = recording.id)
             }
         }

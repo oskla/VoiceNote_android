@@ -2,7 +2,6 @@ package com.larsson.voicenote_android.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Card
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
@@ -20,7 +18,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -41,24 +38,24 @@ fun RecordingMenuItemBase(
         backgroundColor = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.wrapContentHeight(),
         elevation = 0.dp,
-        shape = RectangleShape
+        shape = RectangleShape,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp,
                 fontFamily = SpaceGroteskFontFamily,
-                fontWeight = FontWeight.W700
+                fontWeight = FontWeight.W700,
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = date,
@@ -67,7 +64,7 @@ fun RecordingMenuItemBase(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
                 Text(
                     text = duration,
@@ -76,13 +73,12 @@ fun RecordingMenuItemBase(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun RecordingMenuItem(
@@ -93,35 +89,33 @@ fun RecordingMenuItem(
     isPlaying: Boolean?, // TODO maybe this will come from viewmodel
     progress: Float?,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-
     Column(
         modifier = Modifier
             .clickable { onClick.invoke() }
             .background(MaterialTheme.colorScheme.secondary),
 
     ) {
-            if (isSelected) {
-                RecordingMenuItemPlayer(
-                    title = title,
-                    date = date,
-                    id = id,
-                    duration = duration,
-                    isPlaying = isPlaying ?: false,
-                    progress = progress ?: 0f
-                )
-            } else {
-                RecordingMenuItemBase(
-                    title = title,
-                    date = date,
-                    id = id,
-                    duration = duration
-                )
-            }
+        if (isSelected) {
+            RecordingMenuItemPlayer(
+                title = title,
+                date = date,
+                id = id,
+                duration = duration,
+                isPlaying = isPlaying ?: false,
+                progress = progress ?: 0f,
+            )
+        } else {
+            RecordingMenuItemBase(
+                title = title,
+                date = date,
+                id = id,
+                duration = duration,
+            )
         }
+    }
 }
-
 
 private const val componentName = "Recording Menu Item"
 
@@ -133,7 +127,7 @@ private const val componentName = "Recording Menu Item"
 fun RecordingMenuItemPreview() {
     VoiceNote_androidTheme {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
         ) {
             RecordingMenuItem(
                 title = "hej",
@@ -144,8 +138,7 @@ fun RecordingMenuItemPreview() {
                 isPlaying = true,
                 isSelected = true,
                 onClick = {
-
-                }
+                },
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -157,7 +150,7 @@ fun RecordingMenuItemPreview() {
                 progress = null,
                 isPlaying = null,
                 isSelected = false,
-                onClick = {  }
+                onClick = { },
             )
         }
     }
