@@ -30,6 +30,8 @@ import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import kotlinx.coroutines.CoroutineScope
 
+// TODO maybe state hoist
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(
@@ -47,7 +49,6 @@ fun EditNoteScreen(
         val note = viewModel.getNoteFromRoomById(id = noteId)
         selectedNote = note
         isDataFetched = true
-        Log.d("note room selected", selectedNote!!.noteTitle)
     }
 
     if (!isDataFetched) {
