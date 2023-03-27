@@ -9,9 +9,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.larsson.voicenote_android.di.daoModule
 import com.larsson.voicenote_android.di.dataModule
-import com.larsson.voicenote_android.di.repositories
+import com.larsson.voicenote_android.di.repositoryModule
 import com.larsson.voicenote_android.di.utils
 import com.larsson.voicenote_android.di.viewModel
 import com.larsson.voicenote_android.navigation.NavGraph
@@ -34,14 +34,14 @@ class MainActivity : ComponentActivity() {
         startKoin {
             androidLogger()
             androidContext(applicationContext)
-            koin.loadModules(listOf(dataModule, viewModel, repositories, utils))
+            koin.loadModules(listOf(dataModule, utils, viewModel, repositoryModule, daoModule))
         }
 
         setContent {
             VoiceNote_androidTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
                     VNApp()
                 }
@@ -54,13 +54,5 @@ class MainActivity : ComponentActivity() {
 fun VNApp() {
     Column() {
         NavGraph()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    VoiceNote_androidTheme {
-        VNApp()
     }
 }
