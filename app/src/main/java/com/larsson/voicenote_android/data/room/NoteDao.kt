@@ -11,7 +11,7 @@ import com.larsson.voicenote_android.data.entity.NoteEntity
 
 @Dao
 interface NoteDao {
-    @Query(value = "SELECT * FROM $NOTES_TABLE ORDER BY noteId DESC")
+    @Query(value = "SELECT * FROM $NOTES_TABLE ORDER BY date DESC")
     suspend fun getAllNotes(): MutableList<NoteEntity>
 
     @Query("SELECT * FROM $NOTES_TABLE WHERE noteId LIKE :id")

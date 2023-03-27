@@ -13,7 +13,8 @@ data class NoteEntity(
     val noteTitle: String,
     @ColumnInfo(name = "note_desc")
     val noteTxtContent: String,
-
+    @ColumnInfo(name = "date")
+    val date: String
     // hasNotes -> optional list?
 )
 

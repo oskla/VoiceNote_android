@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.Note
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.repository.NotesRepository
+import java.time.LocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,13 +61,13 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
     fun addNoteToRoom(title: String, txtContent: String, id: String) {
         viewModelScope.launch {
-            dbRepo.addNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id.toString()))
+            dbRepo.addNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id.toString(), date = LocalDateTime.now().toString()))
         }
     }
 
     fun updateNoteRoom(title: String, txtContent: String, id: String) {
         viewModelScope.launch {
-            dbRepo.updateNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id))
+            dbRepo.updateNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id, date = LocalDateTime.now().toString()))
         }
     }
     fun selectNoteById(id: String) {
