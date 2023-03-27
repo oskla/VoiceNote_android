@@ -64,6 +64,11 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         }
     }
 
+    fun updateNoteRoom(title: String, txtContent: String, id: String) {
+        viewModelScope.launch {
+            dbRepo.updateNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id))
+        }
+    }
     fun selectNoteById(id: String) {
         selectedNoteId = id
     }

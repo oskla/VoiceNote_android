@@ -57,7 +57,6 @@ fun EditNoteScreen(
 
     val title by remember { mutableStateOf(selectedNote!!.noteTitle) }
     val textContent by remember { mutableStateOf(selectedNote!!.noteTxtContent) }
-    val id by remember { mutableStateOf(noteId) }
 
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
@@ -78,9 +77,10 @@ fun EditNoteScreen(
                     bottom.linkTo(bottomBox.top)
                 },
             onBackClick = {
-                Log.d("OnBackClick", "id: $id")
+                Log.d("OnBackClick", "id: $noteId")
                 // viewModel.addNoteToRoom(textFieldValueTitle, textFieldValueContent, id)
                 // viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
+                viewModel.addNoteToRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId)
                 navController.popBackStack()
             },
             textFieldValueContent = textFieldValueContent,
