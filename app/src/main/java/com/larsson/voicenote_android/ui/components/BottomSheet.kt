@@ -1,5 +1,6 @@
 package com.larsson.voicenote_android.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
+import com.larsson.voicenote_android.data.entity.Recording
 import com.larsson.voicenote_android.ui.lottie.LottieLRecording
 import kotlinx.coroutines.CoroutineScope
 
@@ -29,25 +31,35 @@ fun BottomSheet(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     scope: CoroutineScope,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (openBottomSheet.value) {
         ModalBottomSheet(
             containerColor = MaterialTheme.colorScheme.background,
-            onDismissRequest = { openBottomSheet.value = false },
-            sheetState = bottomSheetState
+            onDismissRequest = {
+                openBottomSheet.value = false
+                val recording = Recording(
+                    recordingDate = "2023",
+                    recordingLink = "www.link.se",
+                    recordingTitle = "The recording"
+                )
+                Log.d("Recording", recording.toString())
+            },
+            sheetState = bottomSheetState,
         ) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background), horizontalArrangement = Arrangement.Center) {
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalArrangement = Arrangement.Center,
+            ) {
                 // Note: If you provide logic outside of onDismissRequest to remove the sheet,
                 // you must additionally handle intended state cleanup, if any.
 
                 Column(
                     modifier = Modifier.padding(vertical = 40.dp),
                     horizontalAlignment = CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     // Spacer(modifier = Modifier.height(16.dp))
                     LottieLRecording(
@@ -55,7 +67,7 @@ fun BottomSheet(
                         modifier = modifier
                             .fillMaxWidth()
                             .height(120.dp),
-                        iterations = LottieConstants.IterateForever
+                        iterations = LottieConstants.IterateForever,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("Recording...")

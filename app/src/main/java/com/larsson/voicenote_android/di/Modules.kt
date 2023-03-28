@@ -18,7 +18,7 @@ var repositoryModule = module {
 }
 
 var daoModule = module {
-    single { NoteDatabase.getInstance(androidContext()).dao() }
+    single { NoteDatabase.getInstance(androidContext()).noteDao() }
 }
 
 var utils = module {}

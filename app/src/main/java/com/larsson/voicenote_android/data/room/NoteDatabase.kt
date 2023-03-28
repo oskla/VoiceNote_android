@@ -5,10 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.entity.RecordingEntity
 
-@Database(entities = [NoteEntity::class], version = 3, exportSchema = false)
+@Database(entities = [NoteEntity::class, RecordingEntity::class], version = 6, exportSchema = false)
 abstract class NoteDatabase : RoomDatabase() {
-    abstract fun dao(): NoteDao
+    abstract fun noteDao(): NoteDao
+    abstract fun recordingDao(): RecordingDao
     companion object {
 
         private var INSTANCE: NoteDatabase? = null

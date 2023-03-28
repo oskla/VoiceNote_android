@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
@@ -79,17 +78,17 @@ fun EditNoteScreen(
                     bottom.linkTo(bottomBox.top)
                 },
             onBackClick = {
-                Log.d("OnBackClick", "id: $noteId")
-                // viewModel.addNoteToRoom(textFieldValueTitle, textFieldValueContent, id)
-                // viewModel.saveNote(textFieldValueTitle, textFieldValueContent, id)
-                viewModel.addNoteToRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId)
+                // If note has not been change, don't update the note
+                if (title != textFieldValueTitle || textContent != textFieldValueContent) {
+                    viewModel.updateNoteRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId)
+                }
                 navController.popBackStack()
             },
             textFieldValueContent = textFieldValueContent,
             textFieldValueTitle = textFieldValueTitle,
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it },
-            date = DateFormatter(selectedNote!!.date).formattedDateTime
+            date = DateFormatter(selectedNote!!.date).formattedDateTime,
         )
         if (showRecordingMenu) {
             Column(

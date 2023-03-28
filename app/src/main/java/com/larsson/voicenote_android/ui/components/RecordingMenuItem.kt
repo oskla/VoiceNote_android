@@ -3,6 +3,7 @@ package com.larsson.voicenote_android.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,9 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -33,9 +36,11 @@ fun RecordingMenuItemBase(
     date: String,
     id: String,
     duration: String,
+    color: Color = MaterialTheme.colorScheme.secondary,
+
 ) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.secondary,
+        backgroundColor = color,
         modifier = Modifier.wrapContentHeight(),
         elevation = 0.dp,
         shape = RectangleShape,
@@ -82,29 +87,37 @@ fun RecordingMenuItemBase(
 
 @Composable
 fun RecordingMenuItem(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.secondary,
     title: String,
     date: String,
     id: String,
     duration: String,
-    isPlaying: Boolean?, // TODO maybe this will come from viewmodel
-    progress: Float?,
-    isSelected: Boolean,
+    isPlaying2: Boolean? = null, // TODO maybe this will come from viewmodel
+    progress: Float? = null,
+    isSelected: Boolean? = null,
     onClick: () -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
-        modifier = Modifier
-            .clickable { onClick.invoke() }
-            .background(MaterialTheme.colorScheme.secondary),
+        modifier = modifier
+            .clickable(interactionSource = interactionSource, indication = null) {
+               onClick.invoke()
+            }
+            .background(color = color),
 
     ) {
-        if (isSelected) {
+        if (isSelected == true) {
             RecordingMenuItemPlayer(
                 title = title,
                 date = date,
                 id = id,
                 duration = duration,
-                isPlaying = isPlaying ?: false,
+                // isPlaying = isPlaying ?: false,
                 progress = progress ?: 0f,
+                color = color,
+                // onClickPlay = { isPlaying == it },
             )
         } else {
             RecordingMenuItemBase(
@@ -112,6 +125,7 @@ fun RecordingMenuItem(
                 date = date,
                 id = id,
                 duration = duration,
+                color = color,
             )
         }
     }
@@ -135,7 +149,6 @@ fun RecordingMenuItemPreview() {
                 id = "5",
                 duration = "02:21",
                 progress = 0.4F,
-                isPlaying = true,
                 isSelected = true,
                 onClick = {
                 },
@@ -148,7 +161,6 @@ fun RecordingMenuItemPreview() {
                 id = "5",
                 duration = "02:21",
                 progress = null,
-                isPlaying = null,
                 isSelected = false,
                 onClick = { },
             )

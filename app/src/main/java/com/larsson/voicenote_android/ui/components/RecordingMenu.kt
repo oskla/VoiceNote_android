@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.ui.components
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.larsson.voicenote_android.data.recordings
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
-@SuppressLint("SuspiciousIndentation")
 @Composable
 fun RecordingMenu(
     modifier: Modifier = Modifier,
@@ -44,7 +42,6 @@ fun RecordingMenu(
                     date = recording.date,
                     duration = recording.duration,
                     id = recording.id,
-                    isPlaying = true, // TODO should come from viewmodel
                     progress = 0.6f, // TODO should come from viewmodel,
                     isSelected = isSelected,
                     onClick = {

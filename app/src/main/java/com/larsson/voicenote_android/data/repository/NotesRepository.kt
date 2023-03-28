@@ -6,8 +6,6 @@ import com.larsson.voicenote_android.data.room.NoteDao
 
 class NotesRepository(private val noteDao: NoteDao) {
 
-    // val readAllData: MutableList<NoteEntity> = noteDao.getAllNotes()
-
     suspend fun getNotes(): MutableList<NoteEntity> {
         return noteDao.getAllNotes()
     }

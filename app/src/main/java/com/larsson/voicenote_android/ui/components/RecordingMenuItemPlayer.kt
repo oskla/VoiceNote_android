@@ -1,8 +1,10 @@
 package com.larsson.voicenote_android.ui.components
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,10 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,22 +47,23 @@ fun RecordingMenuItemPlayer(
     date: String,
     id: String,
     duration: String,
-    onClick: (() -> Unit)? = null,
-    isPlaying: Boolean,
+    // onClickPlay: (Boolean) -> Boolean,
+    // isPlaying: Boolean,
     progress: Float,
+    color: Color = MaterialTheme.colorScheme.secondary,
 // TODO take in state?
 ) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.secondary,
+        backgroundColor = color,
         modifier = Modifier.wrapContentSize(),
         elevation = 0.dp,
         shape = RectangleShape,
 
-        ) {
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
             Row(
 
@@ -69,7 +76,7 @@ fun RecordingMenuItemPlayer(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 14.sp,
                     fontFamily = SpaceGroteskFontFamily,
-                    fontWeight = FontWeight.W700
+                    fontWeight = FontWeight.W700,
                 )
                 Text(
                     text = duration,
@@ -78,20 +85,23 @@ fun RecordingMenuItemPlayer(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
             }
 
-
             LinearProgressBar(
+                backgroundColor = color,
                 progress = progress,
                 color = MaterialTheme.colorScheme.onBackground,
                 onProgressChanged = {
-
-                }
+                },
             )
-            AudioPlayerRow(date = date, onClickDelete = { TODO() }, onClickPlay = { TODO() }, isPlaying = isPlaying)
-
+            AudioPlayerRow(
+                date = date,
+                onClickDelete = { TODO() },
+                // onClickPlay = { onClickPlay.invoke(!isPlaying) },
+                // isPlaying = isPlaying,
+            )
         }
     }
 }
@@ -99,32 +109,36 @@ fun RecordingMenuItemPlayer(
 @Composable
 fun AudioPlayerRow(
     date: String,
-    onClickPlay: () -> Unit,
+    // onClickPlay: () -> Unit,
     onClickDelete: () -> Unit,
-    isPlaying: Boolean
+    // isPlaying: Boolean,
 ) {
+    var isPlaying by remember { mutableStateOf<Boolean>(false) }
+    val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
                 .background(Color.Transparent),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
-                imageVector = if (isPlaying) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+                imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 contentDescription = "play",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .height(35.dp)
                     .width(35.dp)
-                    .clickable { onClickPlay.invoke() }
+                    .clickable(indication = null, interactionSource = interactionSource) {
+                       isPlaying = !isPlaying
+                    },
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = date,
@@ -133,9 +147,8 @@ fun AudioPlayerRow(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
-
 
                 Icon(
                     imageVector = Icons.Default.Delete,
@@ -144,7 +157,7 @@ fun AudioPlayerRow(
                     modifier = Modifier
                         .clickable { onClickDelete.invoke() }
                         .height(30.dp)
-                        .width(30.dp)
+                        .width(30.dp),
 
                 )
             }
@@ -154,6 +167,7 @@ fun AudioPlayerRow(
 
 private const val componentName = "Recording Menu Item Player"
 
+@SuppressLint("UnrememberedMutableState")
 @Preview("$componentName (light)", showBackground = true)
 @Preview("$componentName (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("$componentName (big font)", fontScale = 1.5f, showBackground = true)
@@ -168,7 +182,8 @@ fun RecordingMenuItemPlayerPreview() {
                 id = "5",
                 duration = "02:21",
                 progress = 0.6F,
-                isPlaying = false
+                // isPlaying = false,
+                // onClickPlay = { true },
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -177,10 +192,10 @@ fun RecordingMenuItemPlayerPreview() {
                 id = "5",
                 duration = "02:21",
                 progress = 0.4F,
-                isPlaying = true
+                // isPlaying = true,
+                // onClickPlay = { true },
             )
             Divider()
-
         }
     }
 }
