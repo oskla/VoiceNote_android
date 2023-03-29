@@ -23,7 +23,6 @@ fun NewNoteScreen(
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
             notesViewModel.addNoteToRoom(title = textFieldValueTitle, textFieldValueContent, id = UUID.randomUUID().toString())
-            notesViewModel.createNote(textFieldValueTitle, textFieldValueContent)
             navController.popBackStack()
         },
         onTextChangeTitle = { textFieldValueTitle = it },

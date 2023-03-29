@@ -47,8 +47,6 @@ fun RecordingMenuItemPlayer(
     date: String,
     id: String,
     duration: String,
-    // onClickPlay: (Boolean) -> Boolean,
-    // isPlaying: Boolean,
     progress: Float,
     color: Color = MaterialTheme.colorScheme.secondary,
 // TODO take in state?
@@ -99,8 +97,6 @@ fun RecordingMenuItemPlayer(
             AudioPlayerRow(
                 date = date,
                 onClickDelete = { TODO() },
-                // onClickPlay = { onClickPlay.invoke(!isPlaying) },
-                // isPlaying = isPlaying,
             )
         }
     }

@@ -3,11 +3,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.larsson.voicenote_android.di.daoModule
 import com.larsson.voicenote_android.di.dataModule
@@ -25,9 +23,6 @@ import org.koin.core.context.startKoin
 // TODO - Fill max height new note view
 
 class MainActivity : ComponentActivity() {
-    private val notesViewModel: NotesViewModel by viewModels()
-    val TAG = "MainActivity"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,16 +38,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
-                    VNApp()
+                    NavGraph()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun VNApp() {
-    Column() {
-        NavGraph()
     }
 }

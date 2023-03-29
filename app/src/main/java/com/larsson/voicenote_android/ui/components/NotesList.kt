@@ -27,9 +27,6 @@ fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavControlle
                     id = note.noteId.toString(),
                     onClick = {
                         navController.navigate("${Screen.EditNote.route}/${note.noteId}")
-                        Log.d("note room, noteslist", note.noteId)
-                        // notesViewModel.selectNoteById(id = note.noteId)
-                        // notesViewModel.saveNote(title = note.title, txtContent = note.txtContent, id = note.id)
                     },
                 )
             }

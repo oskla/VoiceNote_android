@@ -17,6 +17,9 @@ interface NoteDao {
     @Query("SELECT * FROM $NOTES_TABLE WHERE noteId LIKE :id")
     suspend fun getNote(id: String): NoteEntity
 
+    @Query("DELETE FROM $NOTES_TABLE")
+    suspend fun deleteAllNotes()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(noteEntity: NoteEntity): Long
 

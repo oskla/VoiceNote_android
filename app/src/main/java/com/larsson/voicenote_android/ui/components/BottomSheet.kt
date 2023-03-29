@@ -23,14 +23,12 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
 import com.larsson.voicenote_android.data.entity.Recording
 import com.larsson.voicenote_android.ui.lottie.LottieLRecording
-import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
-    scope: CoroutineScope,
     modifier: Modifier = Modifier,
 ) {
     if (openBottomSheet.value) {
@@ -38,10 +36,10 @@ fun BottomSheet(
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = {
                 openBottomSheet.value = false
-                val recording = Recording(
+                val recording = Recording( // TODO replace with actual Room-data
                     recordingDate = "2023",
                     recordingLink = "www.link.se",
-                    recordingTitle = "The recording"
+                    recordingTitle = "The recording",
                 )
                 Log.d("Recording", recording.toString())
             },
@@ -53,15 +51,11 @@ fun BottomSheet(
                     .background(MaterialTheme.colorScheme.background),
                 horizontalArrangement = Arrangement.Center,
             ) {
-                // Note: If you provide logic outside of onDismissRequest to remove the sheet,
-                // you must additionally handle intended state cleanup, if any.
-
                 Column(
                     modifier = Modifier.padding(vertical = 40.dp),
                     horizontalAlignment = CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    // Spacer(modifier = Modifier.height(16.dp))
                     LottieLRecording(
                         file = if (isSystemInDarkTheme()) "sound-wave-dark-mode.json" else "sound-wave.json",
                         modifier = modifier

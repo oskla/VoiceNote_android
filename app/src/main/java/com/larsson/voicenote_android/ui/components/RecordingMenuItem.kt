@@ -93,7 +93,6 @@ fun RecordingMenuItem(
     date: String,
     id: String,
     duration: String,
-    isPlaying2: Boolean? = null, // TODO maybe this will come from viewmodel
     progress: Float? = null,
     isSelected: Boolean? = null,
     onClick: () -> Unit,
@@ -103,7 +102,7 @@ fun RecordingMenuItem(
     Column(
         modifier = modifier
             .clickable(interactionSource = interactionSource, indication = null) {
-               onClick.invoke()
+                onClick.invoke()
             }
             .background(color = color),
 
@@ -114,10 +113,8 @@ fun RecordingMenuItem(
                 date = date,
                 id = id,
                 duration = duration,
-                // isPlaying = isPlaying ?: false,
                 progress = progress ?: 0f,
                 color = color,
-                // onClickPlay = { isPlaying == it },
             )
         } else {
             RecordingMenuItemBase(

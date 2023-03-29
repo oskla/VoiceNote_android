@@ -39,7 +39,7 @@ fun BottomBoxButton(
     icon: ImageVector,
     selected: Boolean = false,
     iconOffset: Dp = 0.dp,
-    onClick: (() -> Unit)
+    onClick: (() -> Unit),
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -48,13 +48,12 @@ fun BottomBoxButton(
             .fillMaxHeight()
             .background(if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.background)
             .clickable {
-                // notesViewModel.visibilityModifier(homeScreen = false)
                 onClick.invoke()
-            }
+            },
     ) {
         Box(
             modifier = Modifier
-                .padding(end = 6.dp)
+                .padding(end = 6.dp),
         ) {
             Icon(
                 imageVector = icon,
@@ -63,13 +62,13 @@ fun BottomBoxButton(
                 modifier = Modifier
                     .height(35.dp)
                     .width(35.dp)
-                    .offset(iconOffset)
+                    .offset(iconOffset),
             )
         }
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 14.sp
+            fontSize = 14.sp,
         )
     }
 }
@@ -88,21 +87,21 @@ private fun PreviewComponent() {
                 text = "New note",
                 icon = Icons.Filled.Add,
                 modifier = Modifier.fillMaxWidth().height(55.dp),
-                onClick = {}
+                onClick = {},
             )
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
             BottomBoxButton(
                 text = "Record",
                 icon = Icons.Filled.RadioButtonChecked,
                 modifier = Modifier.fillMaxWidth().height(55.dp),
-                onClick = {}
+                onClick = {},
             )
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
             BottomBoxButton(
                 text = "Recordings",
                 icon = Icons.Filled.List,
                 modifier = Modifier.fillMaxWidth().height(55.dp),
-                onClick = {}
+                onClick = {},
             )
         }
     }

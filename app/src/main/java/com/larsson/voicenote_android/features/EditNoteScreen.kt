@@ -28,7 +28,6 @@ import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
-import kotlinx.coroutines.CoroutineScope
 
 // TODO maybe state hoist
 // TODO on swipe back, do something else, now it's just empty
@@ -39,7 +38,6 @@ fun EditNoteScreen(
     navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
-    scope: CoroutineScope,
     noteId: String,
 ) {
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
@@ -63,7 +61,7 @@ fun EditNoteScreen(
     var textFieldValueTitle by remember { mutableStateOf(title) }
     var showRecordingMenu by remember { mutableStateOf(false) }
 
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, scope = scope)
+    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState)
 
     ConstraintLayout() {
         val (noteView, bottomBox, menu) = createRefs()

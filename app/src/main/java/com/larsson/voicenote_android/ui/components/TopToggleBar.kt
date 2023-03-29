@@ -44,8 +44,6 @@ fun TopToggleBar(
     var currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
 
     LaunchedEffect(key1 = true) {
-       // val allNotes = viewModel.getAllNotesFromRoom()
-       // Log.d("notes", allNotes.first().noteTitle)
     }
 
     Column(

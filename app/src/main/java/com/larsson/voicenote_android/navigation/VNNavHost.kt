@@ -5,7 +5,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,7 +20,6 @@ import org.koin.androidx.compose.get
 fun NavGraph(navController: NavHostController = rememberNavController()) {
     val openBottomSheet = rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
 
     NavHost(
         navController = navController,
@@ -33,7 +31,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 navController = navController,
                 openBottomSheet = openBottomSheet,
                 bottomSheetState = bottomSheetState,
-                scope = scope,
             )
         }
         composable(Screen.NewNote.route) {
@@ -49,7 +46,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     navController = navController,
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
-                    scope = scope,
                     noteId = noteId,
                 )
             }

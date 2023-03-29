@@ -23,14 +23,12 @@ import com.larsson.voicenote_android.ui.components.ListVariant
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
-import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     notesViewModel: NotesViewModel,
     navController: NavController,
-    scope: CoroutineScope,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
 ) {
@@ -45,7 +43,6 @@ fun HomeScreen(
         notesState = notesState,
         navController = navController,
         notesViewModel = notesViewModel,
-        scope = scope,
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
     )
@@ -61,14 +58,13 @@ fun HomeScreenContent(
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
-    scope: CoroutineScope,
 ) {
     val notesListVisible = notesViewModel.notesListVisible
 
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, scope = scope)
+    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState)
 
     Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
         TopToggleBar(modifier = Modifier, viewModel = notesViewModel)
 
