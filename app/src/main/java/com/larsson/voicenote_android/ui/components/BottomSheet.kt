@@ -18,14 +18,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
-import com.larsson.voicenote_android.data.entity.Recording
 import com.larsson.voicenote_android.ui.lottie.LottieLRecording
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
-import java.io.File
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,27 +37,25 @@ fun BottomSheet(
     recordingViewModel: RecordingViewModel,
 ) {
     val TAG = "Bottom Sheet"
-    var audioFile: File? = null
-
-    LaunchedEffect(key1 = true) {
-       /* recordingViewModel.startRecording()
-        Log.d(TAG, "recording started")*/
-    }
-
+    val coroutineScope = rememberCoroutineScope()
     if (openBottomSheet.value) {
+        LaunchedEffect(key1 = true) {
+            recordingViewModel.startRecording()
+            Log.d(TAG, "recording started")
+        }
+        String.format("%d min, %d sec",
+            TimeUnit.MILLISECONDS.toMinutes(3000),
+            TimeUnit.MILLISECONDS.toSeconds(3000) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(3000))
+        );
+
+
         ModalBottomSheet(
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = {
-                recordingViewModel.stopRecording()
-                Log.d(TAG, "recording stopped")
-
+                coroutineScope.launch {
+                    recordingViewModel.stopRecording()
+                }
                 openBottomSheet.value = false
-                val recording = Recording( // TODO replace with actual Room-data
-                    recordingDate = "2023",
-                    recordingLink = "www.link.se",
-                    recordingTitle = "The recording",
-                )
-               // Log.d("Recording", recording.toString())
             },
             sheetState = bottomSheetState,
         ) {

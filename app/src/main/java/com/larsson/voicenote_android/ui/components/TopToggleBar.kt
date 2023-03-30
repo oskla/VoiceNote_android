@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
+import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
 enum class ToggleVariant {
     NOTES,
@@ -39,6 +40,7 @@ enum class ToggleVariant {
 fun TopToggleBar(
     modifier: Modifier? = Modifier,
     viewModel: NotesViewModel,
+    recordingViewModel: RecordingViewModel,
 
 ) {
     var currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
@@ -60,13 +62,13 @@ fun TopToggleBar(
         ) { component ->
             when (component) {
                 ToggleVariant.NOTES -> {
-                    ToggleBar(selectedLeft = true, selectedRight = false, currentVariant = currentVariant)
+                    ToggleBar(selectedLeft = true, selectedRight = false, currentVariant = currentVariant, recordingViewModel = recordingViewModel)
                     viewModel.notesListVisible = true
                     viewModel.recordingsListVisible = false
                 }
 
                 ToggleVariant.RECORDINGS -> {
-                    ToggleBar(selectedLeft = false, selectedRight = true, currentVariant = currentVariant)
+                    ToggleBar(selectedLeft = false, selectedRight = true, currentVariant = currentVariant, recordingViewModel = recordingViewModel)
                     viewModel.notesListVisible = false
                     viewModel.recordingsListVisible = true
                 }
@@ -80,6 +82,7 @@ fun ToggleBar(
     selectedLeft: Boolean,
     selectedRight: Boolean,
     currentVariant: MutableState<ToggleVariant>,
+    recordingViewModel: RecordingViewModel
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -99,6 +102,7 @@ fun ToggleBar(
             selected = selectedLeft,
             onClick = {
                 currentVariant.value = ToggleVariant.NOTES
+               // recordingViewModel.fetchMetaData()
             },
             modifier = Modifier.weight(1f),
         )

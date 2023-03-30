@@ -1,7 +1,6 @@
 package com.larsson.voicenote_android.features // ktlint-disable package-name
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.BottomSheet
@@ -36,10 +36,13 @@ fun HomeScreen(
     bottomSheetState: SheetState,
 ) {
     val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
+    val recordingsState = remember { mutableStateOf(emptyList<RecordingEntity>()) }
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = bottomSheetState.currentValue) {
         val notes = notesViewModel.getAllNotesFromRoom()
+        val recordings = recordingViewModel.getAllRecordingsRoom()
         notesState.value = notes
+        recordingsState.value = recordings
     }
 
     HomeScreenContent(
@@ -49,6 +52,7 @@ fun HomeScreen(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
+        recordingsState = recordingsState,
     )
 }
 
@@ -59,6 +63,7 @@ fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     notesState: MutableState<List<NoteEntity>>,
+    recordingsState: MutableState<List<RecordingEntity>>,
     navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
@@ -73,7 +78,7 @@ fun HomeScreenContent(
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
-        TopToggleBar(modifier = Modifier, viewModel = notesViewModel)
+        TopToggleBar(modifier = Modifier, viewModel = notesViewModel, recordingViewModel = recordingViewModel)
 
         Box(
             modifier = Modifier
@@ -83,15 +88,13 @@ fun HomeScreenContent(
                 listVariant = if (notesListVisible) ListVariant.NOTES else ListVariant.RECORDINGS,
                 notes = notesState,
                 navController = navController,
-                notesViewModel = notesViewModel,
+                recordings = recordingsState,
             )
         }
         BottomBox(
             variant = Variant.NEW_NOTE_RECORD,
             onClickRight = {
                 openBottomSheet.value = true
-                recordingViewModel.startRecording()
-                Log.d(TAG, "recording started")
             },
             onClickLeft = { navController.navigate(Screen.NewNote.route) },
         )

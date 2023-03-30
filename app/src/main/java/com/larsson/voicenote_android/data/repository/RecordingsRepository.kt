@@ -6,7 +6,8 @@ import com.larsson.voicenote_android.data.room.RecordingDao
 
 class RecordingsRepository(private val recordingDao: RecordingDao) {
 
-    suspend fun getRecording(): MutableList<RecordingEntity> {
+    val TAG = "RecordingsRepo"
+    suspend fun getRecordings(): MutableList<RecordingEntity> {
         return recordingDao.getAllRecordings()
     }
 
@@ -17,6 +18,7 @@ class RecordingsRepository(private val recordingDao: RecordingDao) {
     }
 
     suspend fun getRecordingById(id: String): RecordingEntity {
+        Log.d(TAG, recordingDao.getRecording(id).recordingDuration)
         return recordingDao.getRecording(id)
     }
 

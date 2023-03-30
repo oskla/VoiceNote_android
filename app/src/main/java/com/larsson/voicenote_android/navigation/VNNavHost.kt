@@ -28,10 +28,10 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(Screen.Home.route) {
             HomeScreen(
                 notesViewModel = get(),
+                recordingViewModel = get(),
                 navController = navController,
                 openBottomSheet = openBottomSheet,
                 bottomSheetState = bottomSheetState,
-                recordingViewModel = get()
             )
         }
         composable(Screen.NewNote.route) {

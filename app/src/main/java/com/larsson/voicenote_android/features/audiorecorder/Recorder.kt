@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.features.audiorecorder
 
 import android.content.Context
+import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
@@ -13,6 +14,7 @@ class Recorder(private val context: Context) : AudioRecorder {
 
     private var recorder: MediaRecorder? = null
     private var audioFile: File? = null
+    private var metaData: String? = null
 
     private fun createRecorder(): MediaRecorder {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -21,15 +23,21 @@ class Recorder(private val context: Context) : AudioRecorder {
             MediaRecorder() // Deprecated but the new media recorder won't run on older devices
         }
     }
-    fun startRecording(fileName: String) {
-        File(context.cacheDir, fileName).also {
+
+    fun getMetaData(): String {
+        if (metaData != null) {
+            return metaData as String
+        }
+        return "no metadata fetched"
+    }
+
+    fun startRecording(fileName: String): File {
+        return File(context.cacheDir, fileName).also {
             recorder?.start()
             audioFile = it
             Log.d(TAG, "audioFile: $audioFile")
-        }.also {
+            Log.d(TAG, "audioFile absolute path: ${audioFile?.absolutePath}")
             start(it)
-            audioFile = it
-            Log.d(TAG, "audioFile: $audioFile")
         }
     }
 
@@ -41,6 +49,7 @@ class Recorder(private val context: Context) : AudioRecorder {
 
             recorder?.setAudioEncodingBitRate(128000)
             recorder?.setAudioSamplingRate(44100)
+            Log.d(TAG, "hay")
             setOutputFile(FileOutputStream(outputFile).fd)
 
             prepare()
@@ -53,8 +62,13 @@ class Recorder(private val context: Context) : AudioRecorder {
     override fun stop() {
         recorder?.stop()
         recorder?.reset()
-
         recorder = null
+
+        val metadataRetriever = MediaMetadataRetriever()
+        metadataRetriever.setDataSource(audioFile?.absolutePath)
+
+        metaData = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        Log.d(TAG, "Metadata: $metaData")
     }
 
     override fun pause() {
