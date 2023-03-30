@@ -78,7 +78,7 @@ fun HomeScreenContent(
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
-        TopToggleBar(modifier = Modifier, viewModel = notesViewModel, recordingViewModel = recordingViewModel)
+        TopToggleBar(modifier = Modifier, viewModel = notesViewModel)
 
         Box(
             modifier = Modifier

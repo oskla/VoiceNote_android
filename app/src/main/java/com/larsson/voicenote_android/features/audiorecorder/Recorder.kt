@@ -5,6 +5,8 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -28,7 +30,7 @@ class Recorder(private val context: Context) : AudioRecorder {
         if (metaData != null) {
             return metaData as String
         }
-        return "no metadata fetched"
+        return "0"
     }
 
     fun startRecording(fileName: String): File {
@@ -59,16 +61,24 @@ class Recorder(private val context: Context) : AudioRecorder {
         }
     }
 
-    override fun stop() {
+    override suspend fun stop() {
         recorder?.stop()
         recorder?.reset()
         recorder = null
 
-        val metadataRetriever = MediaMetadataRetriever()
-        metadataRetriever.setDataSource(audioFile?.absolutePath)
+        Log.d(TAG, "pathhh: ${audioFile?.path}")
+        fetchMetaData()
 
-        metaData = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         Log.d(TAG, "Metadata: $metaData")
+    }
+    private suspend fun fetchMetaData() {
+        withContext(Dispatchers.IO) {
+            val metadataRetriever = MediaMetadataRetriever()
+            metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
+            metaData = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            val files = context.cacheDir.listFiles()
+            files?.forEach { Log.d(TAG, it.toString()) }
+        }
     }
 
     override fun pause() {
