@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.features // ktlint-disable package-name
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,11 +24,13 @@ import com.larsson.voicenote_android.ui.components.ListVariant
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
+import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     notesViewModel: NotesViewModel,
+    recordingViewModel: RecordingViewModel,
     navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
@@ -45,6 +48,7 @@ fun HomeScreen(
         notesViewModel = notesViewModel,
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
+        recordingViewModel = recordingViewModel,
     )
 }
 
@@ -53,15 +57,18 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     notesViewModel: NotesViewModel,
+    recordingViewModel: RecordingViewModel,
     notesState: MutableState<List<NoteEntity>>,
     navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
 ) {
+    val TAG = "HOME SCREEN"
+
     val notesListVisible = notesViewModel.notesListVisible
 
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState)
+    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel)
 
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
@@ -81,7 +88,11 @@ fun HomeScreenContent(
         }
         BottomBox(
             variant = Variant.NEW_NOTE_RECORD,
-            onClickRight = { openBottomSheet.value = true },
+            onClickRight = {
+                openBottomSheet.value = true
+                recordingViewModel.startRecording()
+                Log.d(TAG, "recording started")
+            },
             onClickLeft = { navController.navigate(Screen.NewNote.route) },
         )
     }
