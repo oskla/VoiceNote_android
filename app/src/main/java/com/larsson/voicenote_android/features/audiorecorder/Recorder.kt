@@ -5,10 +5,10 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class Recorder(private val context: Context) : AudioRecorder {
 
@@ -74,10 +74,12 @@ class Recorder(private val context: Context) : AudioRecorder {
     private suspend fun fetchMetaData() {
         withContext(Dispatchers.IO) {
             val metadataRetriever = MediaMetadataRetriever()
-            metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
-            metaData = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            val files = context.cacheDir.listFiles()
-            files?.forEach { Log.d(TAG, it.toString()) }
+            try {
+                metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
+                metaData = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error setting dataSource when retrieving metadata. Error: ${e.message}")
+            }
         }
     }
 

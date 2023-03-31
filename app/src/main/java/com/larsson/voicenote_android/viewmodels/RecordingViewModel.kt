@@ -5,15 +5,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.data.recordings
+import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.DateFormatter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
 
@@ -22,8 +22,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
 
     private var audioFile: File? = null
     fun startRecording() {
-        val dateTimeString = LocalDateTime.now().toString()
-        recorder.startRecording(fileName = dateTimeString).also {
+        recorder.startRecording(fileName = getUUID()).also {// TODO fileName was an issue before. Find a way to increment ++ in name (both in Room and in cacheDir)
             audioFile = it
         }
     }
@@ -32,7 +31,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         withContext(Dispatchers.IO) {
             allRecordings = recordingsRepo.getRecordings()
         }
-        Log.d("Recording Room", recordings.toString())
+        Log.d("Recording Room", allRecordings.toList().toString())
         recordingsState = allRecordings.toMutableStateList()
         return allRecordings
     }
@@ -47,7 +46,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         recorder.stop()
 
         recordingsRepo.addRecording(
-            recordingEntity = RecordingEntity(
+            RecordingEntity(
                 recordingTitle = DateFormatter(dateTimeString).getFormattedTime(),
                 recordingId = id,
                 recordingLink = audioFile?.path.toString(),
@@ -55,7 +54,11 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
                 recordingDuration = recorder.getMetaData(),
             ),
         )
+
         getRecordingByIdRoom(id)
         getAllRecordingsRoom()
+    }
+
+    fun updateFileNameRecording() {
     }
 }
