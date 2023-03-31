@@ -19,14 +19,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
-// TODO - Create reusable bottomBox
-// TODO - Fill max height new note view
-
 class MainActivity : ComponentActivity() {
-
-  /*  private val recorder by lazy {
-        Recorder(context = applicationContext)
-    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
