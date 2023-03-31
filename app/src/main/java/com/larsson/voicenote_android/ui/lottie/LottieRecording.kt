@@ -1,6 +1,9 @@
 package com.larsson.voicenote_android.ui.lottie
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -13,7 +16,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 fun LottieLRecording(
     file: String,
     modifier: Modifier = Modifier,
-    iterations: Int = 10
+    iterations: Int = 10,
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.Asset(file))
     Box(modifier = modifier) {

@@ -31,31 +31,31 @@ fun RecordingItem(
     date: String,
     id: String,
     duration: String,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     Card(
         backgroundColor = MaterialTheme.colorScheme.background,
         modifier = Modifier.wrapContentSize(),
         elevation = 0.dp,
-        shape = RectangleShape
+        shape = RectangleShape,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 8.dp)
-                .clickable(onClick = {})
+                .clickable(onClick = {}),
         ) {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp,
                 fontFamily = SpaceGroteskFontFamily,
-                fontWeight = FontWeight.W700
+                fontWeight = FontWeight.W700,
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = date,
@@ -64,7 +64,7 @@ fun RecordingItem(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
                 Text(
                     text = duration,
@@ -73,7 +73,7 @@ fun RecordingItem(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
             }
         }

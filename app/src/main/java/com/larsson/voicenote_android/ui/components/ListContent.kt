@@ -1,10 +1,11 @@
 package com.larsson.voicenote_android.ui.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
-import com.larsson.voicenote_android.data.Note
+import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.ui.NotesList
-import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 enum class ListVariant {
     NOTES,
@@ -14,12 +15,12 @@ enum class ListVariant {
 @Composable
 fun ListContent(
     listVariant: ListVariant,
-    notes: List<Note>,
+    notes: MutableState<List<NoteEntity>>,
+    recordings: MutableState<List<RecordingEntity>>,
     navController: NavController,
-    notesViewModel: NotesViewModel
 ) {
     when (listVariant) {
-        ListVariant.NOTES -> { NotesList(notes = notes, navController = navController, notesViewModel = notesViewModel) }
-        ListVariant.RECORDINGS -> { RecordingsList() }
+        ListVariant.NOTES -> { NotesList(notes = notes, navController = navController) }
+        ListVariant.RECORDINGS -> { RecordingsList(recordings = recordings) }
     }
 }

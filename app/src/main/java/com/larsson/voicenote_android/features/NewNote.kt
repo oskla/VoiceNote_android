@@ -8,11 +8,12 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
+import java.util.UUID
 
 @Composable
 fun NewNoteScreen(
     notesViewModel: NotesViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     var textFieldValueContent by remember { mutableStateOf("") }
     var textFieldValueTitle by remember { mutableStateOf("title") }
@@ -21,10 +22,10 @@ fun NewNoteScreen(
         textFieldValueTitle = textFieldValueTitle,
         textFieldValueContent = textFieldValueContent,
         onBackClick = {
-            notesViewModel.createNote(textFieldValueTitle, textFieldValueContent)
+            notesViewModel.addNoteToRoom(title = textFieldValueTitle, textFieldValueContent, id = UUID.randomUUID().toString())
             navController.popBackStack()
         },
         onTextChangeTitle = { textFieldValueTitle = it },
-        onTextChangeContent = { textFieldValueContent = it }
+        onTextChangeContent = { textFieldValueContent = it },
     )
 }

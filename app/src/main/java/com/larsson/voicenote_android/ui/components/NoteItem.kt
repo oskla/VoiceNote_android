@@ -29,26 +29,26 @@ fun NoteItem(
     title: String,
     txtContent: String,
     id: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         backgroundColor = MaterialTheme.colorScheme.background,
         modifier = Modifier.wrapContentSize(),
         elevation = 0.dp,
         shape = RectangleShape,
-        onClick = onClick
+        onClick = onClick,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp,
                 fontFamily = SpaceGroteskFontFamily,
-                fontWeight = FontWeight.W700
+                fontWeight = FontWeight.W700,
             )
             Text(
                 text = txtContent,
@@ -57,7 +57,7 @@ fun NoteItem(
                 fontWeight = FontWeight.Thin,
                 style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                 fontSize = 14.sp,
-                maxLines = 2
+                maxLines = 2,
             )
         }
     }

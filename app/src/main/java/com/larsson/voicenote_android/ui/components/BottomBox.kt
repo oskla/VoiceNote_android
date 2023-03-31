@@ -28,7 +28,7 @@ import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 enum class Variant {
     NEW_NOTE_RECORD,
-    RECORDINGS_RECORD
+    RECORDINGS_RECORD,
 }
 
 @Composable
@@ -36,7 +36,7 @@ fun BottomBox(
     modifier: Modifier = Modifier,
     variant: Variant,
     onClickLeft: (() -> Unit),
-    onClickRight: (() -> Unit)
+    onClickRight: (() -> Unit),
 ) {
     var selectedButtonLeft by remember { mutableStateOf(false) }
     var selectedButtonRight by remember { mutableStateOf(false) }
@@ -46,13 +46,13 @@ fun BottomBox(
     var iconRight: ImageVector
     var iconLeft: ImageVector
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
 
         ) {
             when (variant) {
@@ -78,7 +78,7 @@ fun BottomBox(
                     selectedButtonLeft = true
                     selectedButtonRight = false
                     onClickLeft.invoke()
-                }
+                },
             )
             BottomBoxButton(
                 text = buttonTextRight,
@@ -88,7 +88,7 @@ fun BottomBox(
                 onClick = {
                     selectedButtonLeft = false
                     onClickRight.invoke()
-                }
+                },
             )
         }
     }
@@ -107,13 +107,13 @@ private fun PreviewComponent() {
             BottomBox(
                 onClickLeft = {},
                 onClickRight = {},
-                variant = Variant.NEW_NOTE_RECORD
+                variant = Variant.NEW_NOTE_RECORD,
             )
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
             BottomBox(
                 onClickLeft = {},
                 onClickRight = {},
-                variant = Variant.RECORDINGS_RECORD
+                variant = Variant.RECORDINGS_RECORD,
             )
         }
     }

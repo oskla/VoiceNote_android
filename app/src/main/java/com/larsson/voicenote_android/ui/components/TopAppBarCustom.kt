@@ -27,9 +27,10 @@ import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 fun TopAppBarCustom(
     onTextChangeTitle: (String) -> Unit,
     value: String,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
 ) {
     TopAppBar(
+        elevation = 0.dp,
         backgroundColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.height(60.dp),
@@ -42,10 +43,10 @@ fun TopAppBarCustom(
                     disabledTextColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                    disabledIndicatorColor = Color.Transparent,
                 ),
                 value = value,
-                onValueChange = onTextChangeTitle
+                onValueChange = onTextChangeTitle,
             )
         },
         navigationIcon = {
@@ -54,11 +55,11 @@ fun TopAppBarCustom(
                     Icon(
                         painterResource(com.larsson.voicenote_android.R.drawable.custom_back_btn),
                         "backArrow",
-                        tint = MaterialTheme.colorScheme.onBackground
+                        tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
             }
-        }
+        },
     )
 }
 
