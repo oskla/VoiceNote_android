@@ -10,6 +10,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,15 +38,16 @@ fun HomeScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
 ) {
+    val recordingsState by recordingViewModel.recordings.collectAsState()
     val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
-    val recordingsState = remember { mutableStateOf(emptyList<RecordingEntity>()) }
+    val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = recordingsState) {
         val notes = notesViewModel.getAllNotesFromRoom()
-        val recordings = recordingViewModel.getAllRecordingsRoom()
+        val fetchedRecordings = recordingViewModel.getAllRecordingsRoom()
         notesState.value = notes
-        recordingsState.value = recordings
+        recordings.value = fetchedRecordings
         isDataFetched = true
     }
 
@@ -61,7 +63,7 @@ fun HomeScreen(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
-        recordingsState = recordingsState,
+        recordingsState = recordings,
     )
 }
 
