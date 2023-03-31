@@ -18,6 +18,11 @@ interface RecordingDao {
     @Query("SELECT * FROM $RECORDINGS_TABLE WHERE recordingId LIKE :id")
     suspend fun getRecording(id: String): RecordingEntity
 
+    @Query(
+        "SELECT * FROM $RECORDINGS_TABLE WHERE RECORDINGS_TABLE.noteId LIKE :id",
+    )
+    suspend fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
 

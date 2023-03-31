@@ -15,6 +15,5 @@ data class NoteEntity(
     val noteTxtContent: String,
     @ColumnInfo(name = "date")
     val date: String,
-    // hasNotes -> Boolean
     // notes -> optional list
 )

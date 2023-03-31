@@ -29,4 +29,10 @@ class RecordingsRepository(private val recordingDao: RecordingDao) {
     suspend fun deleteRecording(recordingEntity: RecordingEntity) {
         recordingDao.deleteRecording(recordingEntity)
     }
+
+    //////////////////
+
+    suspend fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity> {
+        return recordingDao.getRecordingsTiedToNoteById(id = id)
+    }
 }

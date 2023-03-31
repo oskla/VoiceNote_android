@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
 import com.larsson.voicenote_android.ui.lottie.LottieLRecording
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +34,7 @@ fun BottomSheet(
     bottomSheetState: SheetState,
     modifier: Modifier = Modifier,
     recordingViewModel: RecordingViewModel,
+    recordingNoteId: String? = null
 ) {
     val TAG = "Bottom Sheet"
     val coroutineScope = rememberCoroutineScope()
@@ -43,17 +43,13 @@ fun BottomSheet(
             recordingViewModel.startRecording()
             Log.d(TAG, "recording started")
         }
-        String.format("%d min, %d sec",
-            TimeUnit.MILLISECONDS.toMinutes(3000),
-            TimeUnit.MILLISECONDS.toSeconds(3000) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(3000))
-        );
-
 
         ModalBottomSheet(
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = {
                 coroutineScope.launch {
-                    recordingViewModel.stopRecording()
+                    recordingViewModel.stopRecording(noteId = recordingNoteId)
+                    recordingViewModel.getAllRecordingsRoom()
                 }
                 openBottomSheet.value = false
             },

@@ -16,11 +16,8 @@ data class RecordingEntity(
     @ColumnInfo(name = "recording_date")
     val recordingDate: String,
     @ColumnInfo(name = "recording_duration")
-    val recordingDuration: String
+    val recordingDuration: String,
+    @ColumnInfo(name = "noteId")
+    val noteId: String
 )
 
-data class Recording(
-    val recordingTitle: String,
-    val recordingLink: String,
-    val recordingDate: String,
-)

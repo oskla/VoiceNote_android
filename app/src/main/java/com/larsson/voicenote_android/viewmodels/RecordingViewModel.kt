@@ -1,28 +1,32 @@
 package com.larsson.voicenote_android.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.DateFormatter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
 
     val TAG = "RecordingViewModel"
-    var recordingsState = mutableStateListOf<RecordingEntity>()
+    var recordingsState = mutableListOf<RecordingEntity>()
+
+    private val _recordings = MutableStateFlow<List<RecordingEntity>>(emptyList())
+    val recordings: StateFlow<List<RecordingEntity>> = _recordings
 
     private var audioFile: File? = null
     fun startRecording() {
-        recorder.startRecording(fileName = getUUID()).also {// TODO fileName was an issue before. Find a way to increment ++ in name (both in Room and in cacheDir)
+        recorder.startRecording(fileName = getUUID()).also {
+            // TODO fileName was an issue before. Find a way to increment ++ in name (both in Room and in cacheDir)
             audioFile = it
         }
     }
@@ -32,7 +36,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
             allRecordings = recordingsRepo.getRecordings()
         }
         Log.d("Recording Room", allRecordings.toList().toString())
-        recordingsState = allRecordings.toMutableStateList()
+        _recordings.value = allRecordings
         return allRecordings
     }
 
@@ -40,7 +44,11 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         recordingsRepo.getRecordingById(id)
     }
 
-    suspend fun stopRecording() {
+    suspend fun getRecordingsTiedToNoteById(id: String): List<RecordingEntity> {
+        return recordingsRepo.getRecordingsTiedToNoteById(id = id)
+    }
+
+    suspend fun stopRecording(noteId: String? = "0000") {
         val id = UUID.randomUUID().toString()
         val dateTimeString = LocalDateTime.now().toString()
         recorder.stop()
@@ -52,6 +60,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
                 recordingLink = audioFile?.path.toString(),
                 recordingDate = dateTimeString,
                 recordingDuration = recorder.getMetaData(),
+                noteId = noteId ?: "0000",
             ),
         )
 

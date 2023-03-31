@@ -10,8 +10,10 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.entity.NoteEntity
@@ -37,12 +39,19 @@ fun HomeScreen(
 ) {
     val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
     val recordingsState = remember { mutableStateOf(emptyList<RecordingEntity>()) }
+    var isDataFetched by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = bottomSheetState.currentValue) {
+    LaunchedEffect(key1 = true) {
         val notes = notesViewModel.getAllNotesFromRoom()
         val recordings = recordingViewModel.getAllRecordingsRoom()
         notesState.value = notes
         recordingsState.value = recordings
+        isDataFetched = true
+    }
+
+    if (!isDataFetched) {
+        // Show loader
+        return
     }
 
     HomeScreenContent(
