@@ -38,7 +38,6 @@ fun RecordingMenu(
         itemsIndexed(recordings) { index, recording ->
             val isSelected =
                 (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
-            //     if (noteId == recording.belongsToNoteId) { // Checks if these recordings belongs to this specific note.
             RecordingMenuItem(
                 title = recording.recordingTitle,
                 date = recording.recordingDate,
@@ -51,7 +50,6 @@ fun RecordingMenu(
                 },
             )
             Divider(color = MaterialTheme.colorScheme.background)
-            // }
         }
     }
 }

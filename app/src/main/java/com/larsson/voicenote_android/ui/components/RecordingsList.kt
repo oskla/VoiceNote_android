@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.helpers.TimeFormatter
 
 @Composable
 fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
@@ -31,7 +30,7 @@ fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
                     title = recording.recordingTitle,
                     date = recording.recordingDate,
                     id = recording.recordingId,
-                    duration = TimeFormatter().timeFormatter(recording.recordingDuration.toLong()),
+                    duration = recording.recordingDuration,
                     isSelected = isSelected,
                     onClick = { selectedRecordingId = if (isSelected) null else recording.recordingId },
                 )

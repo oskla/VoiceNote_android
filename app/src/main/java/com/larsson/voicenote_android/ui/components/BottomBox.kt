@@ -75,7 +75,7 @@ fun BottomBox(
                 modifier = Modifier.weight(1f),
                 selected = selectedButtonLeft,
                 onClick = {
-                    selectedButtonLeft = true
+                    selectedButtonLeft = !selectedButtonLeft
                     selectedButtonRight = false
                     onClickLeft.invoke()
                 },
