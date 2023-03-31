@@ -28,6 +28,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(Screen.Home.route) {
             HomeScreen(
                 notesViewModel = get(),
+                recordingViewModel = get(),
                 navController = navController,
                 openBottomSheet = openBottomSheet,
                 bottomSheetState = bottomSheetState,
@@ -47,6 +48,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
                     noteId = noteId,
+                    recordingViewModel = get()
                 )
             }
         }

@@ -28,6 +28,7 @@ import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
+import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
 // TODO maybe state hoist
 // TODO on swipe back, do something else, now it's just empty
@@ -35,6 +36,7 @@ import com.larsson.voicenote_android.viewmodels.NotesViewModel
 @Composable
 fun EditNoteScreen(
     viewModel: NotesViewModel,
+    recordingViewModel: RecordingViewModel,
     navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
@@ -61,7 +63,7 @@ fun EditNoteScreen(
     var textFieldValueTitle by remember { mutableStateOf(title) }
     var showRecordingMenu by remember { mutableStateOf(false) }
 
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState)
+    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel)
 
     ConstraintLayout() {
         val (noteView, bottomBox, menu) = createRefs()

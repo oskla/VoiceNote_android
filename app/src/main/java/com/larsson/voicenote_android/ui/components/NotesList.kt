@@ -13,10 +13,9 @@ import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.NoteItem
-import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 @Composable
-fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavController, notesViewModel: NotesViewModel) {
+fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavController) {
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(notes.value) { _, note ->
             Box() {

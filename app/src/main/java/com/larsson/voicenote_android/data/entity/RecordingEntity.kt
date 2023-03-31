@@ -17,8 +17,6 @@ data class RecordingEntity(
     val recordingDate: String,
     @ColumnInfo(name = "recording_duration")
     val recordingDuration: String
-    // hasNotes -> Boolean
-    // notes -> optional list
 )
 
 data class Recording(

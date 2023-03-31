@@ -28,7 +28,9 @@ fun NoteView(
     onBackClick: () -> Unit,
     onTextChangeTitle: (String) -> Unit,
     onTextChangeContent: (String) -> Unit,
-    date: String = DateFormatter(dateString = LocalDateTime.now().toString()).formattedDateTime
+    date: String = DateFormatter(
+        dateString = LocalDateTime.now().toString(),
+    ).getFormattedTime(),
 ) {
     Column(
         modifier = Modifier

@@ -23,7 +23,6 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         var allNotes: MutableList<NoteEntity>
         withContext(Dispatchers.IO) {
             allNotes = dbRepo.getNotes()
-            Log.d("note room vm ALL notes", "$allNotes")
         }
         return allNotes
     }
