@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -20,7 +21,7 @@ fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
-        itemsIndexed(recordings.value) { _, recording ->
+        itemsIndexed(recordings.value) { index, recording ->
             val isSelected =
                 (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
 
@@ -33,9 +34,13 @@ fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
                     duration = recording.recordingDuration,
                     isSelected = isSelected,
                     onClick = { selectedRecordingId = if (isSelected) null else recording.recordingId },
+                    isFirstItem = false,
                 )
 
                 // RecordingItem(title = recording.title, date = recording.date, duration = recording.duration, onClick = {}, id = recording.id)
+            }
+            if (index != recordings.value.size-1) {
+                Divider(color = MaterialTheme.colorScheme.onBackground.copy(0.1f))
             }
         }
     }

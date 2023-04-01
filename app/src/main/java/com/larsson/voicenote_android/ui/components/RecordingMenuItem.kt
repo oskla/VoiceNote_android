@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
@@ -27,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.larsson.voicenote_android.helpers.DateFormatter
 import com.larsson.voicenote_android.helpers.TimeFormatter
+import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
@@ -39,18 +40,20 @@ fun RecordingMenuItemBase(
     id: String,
     duration: String,
     color: Color = MaterialTheme.colorScheme.secondary,
+    isFirstItem: Boolean,
 
 ) {
+    val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
     Card(
-        backgroundColor = color,
         modifier = Modifier.wrapContentHeight(),
+        backgroundColor = MaterialTheme.colorScheme.background,
         elevation = 0.dp,
-        shape = RectangleShape,
+        shape = if (isFirstItem) roundedCornerShape else RectangleShape,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Text(
                 text = title,
@@ -59,7 +62,7 @@ fun RecordingMenuItemBase(
                 fontFamily = SpaceGroteskFontFamily,
                 fontWeight = FontWeight.W700,
             )
-
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,7 +93,7 @@ fun RecordingMenuItemBase(
 @Composable
 fun RecordingMenuItem(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.secondary,
+    color: Color = MaterialTheme.colorScheme.background,
     title: String,
     date: String,
     id: String,
@@ -98,33 +101,36 @@ fun RecordingMenuItem(
     progress: Float? = null,
     isSelected: Boolean? = null,
     onClick: () -> Unit,
+    isFirstItem: Boolean,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
         modifier = modifier
+            .background(Color.Transparent)
             .clickable(interactionSource = interactionSource, indication = null) {
                 onClick.invoke()
-            }
-            .background(color = color),
+            },
 
     ) {
         if (isSelected == true) {
             RecordingMenuItemPlayer(
                 title = title,
-                date = DateFormatter(date).getFormattedTime(),
+                date = dateFormatter(date),
                 id = id,
                 duration = TimeFormatter().timeFormatter(duration.toLong()),
                 progress = progress ?: 0f,
                 color = color,
+                isFirstItem = isFirstItem,
             )
         } else {
             RecordingMenuItemBase(
                 title = title,
-                date = DateFormatter(date).getFormattedTime(),
+                date = dateFormatter(date),
                 id = id,
-                duration = TimeFormatter().timeFormatter(duration.toLong()),
+                duration = if (duration.isNotBlank()) TimeFormatter().timeFormatter(duration.toLong()) else "",
                 color = color,
+                isFirstItem = isFirstItem,
             )
         }
     }
@@ -151,6 +157,7 @@ fun RecordingMenuItemPreview() {
                 isSelected = true,
                 onClick = {
                 },
+                isFirstItem = false,
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -162,6 +169,7 @@ fun RecordingMenuItemPreview() {
                 progress = null,
                 isSelected = false,
                 onClick = { },
+                isFirstItem = true,
             )
         }
     }

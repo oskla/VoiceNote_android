@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
@@ -48,20 +50,22 @@ fun RecordingMenuItemPlayer(
     id: String,
     duration: String,
     progress: Float,
-    color: Color = MaterialTheme.colorScheme.secondary,
+    color: Color = MaterialTheme.colorScheme.background,
+    isFirstItem: Boolean,
 // TODO take in state?
 ) {
-    Card(
-        backgroundColor = color,
-        modifier = Modifier.wrapContentSize(),
-        elevation = 0.dp,
-        shape = RectangleShape,
+    val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
 
+    Card(
+        modifier = Modifier.wrapContentHeight(),
+        backgroundColor = MaterialTheme.colorScheme.background,
+        elevation = 0.dp,
+        shape = if (isFirstItem) roundedCornerShape else RectangleShape,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Row(
 
@@ -128,7 +132,7 @@ fun AudioPlayerRow(
                     .height(35.dp)
                     .width(35.dp)
                     .clickable(indication = null, interactionSource = interactionSource) {
-                       isPlaying = !isPlaying
+                        isPlaying = !isPlaying
                     },
             )
             Row(
@@ -178,6 +182,7 @@ fun RecordingMenuItemPlayerPreview() {
                 id = "5",
                 duration = "02:21",
                 progress = 0.6F,
+                isFirstItem = true,
                 // isPlaying = false,
                 // onClickPlay = { true },
             )
@@ -188,6 +193,7 @@ fun RecordingMenuItemPlayerPreview() {
                 id = "5",
                 duration = "02:21",
                 progress = 0.4F,
+                isFirstItem = false,
                 // isPlaying = true,
                 // onClickPlay = { true },
             )

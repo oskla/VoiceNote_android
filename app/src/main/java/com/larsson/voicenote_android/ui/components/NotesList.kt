@@ -17,7 +17,7 @@ import com.larsson.voicenote_android.ui.components.NoteItem
 @Composable
 fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavController) {
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
-        itemsIndexed(notes.value) { _, note ->
+        itemsIndexed(notes.value) { index, note ->
             Box() {
                 Log.d("NotesView", note.noteTitle)
                 NoteItem(

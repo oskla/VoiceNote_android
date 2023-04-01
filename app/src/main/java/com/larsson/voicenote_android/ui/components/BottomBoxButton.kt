@@ -46,7 +46,7 @@ fun BottomBoxButton(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxHeight()
-            .background(if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background)
             .clickable {
                 onClick.invoke()
             },

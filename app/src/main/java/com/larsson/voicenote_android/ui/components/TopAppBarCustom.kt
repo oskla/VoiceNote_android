@@ -37,6 +37,7 @@ fun TopAppBarCustom(
     onTextChangeTitle: (String) -> Unit,
     value: String,
     onBackClick: () -> Unit = {},
+    onMoreClick: () -> Unit
 ) {
     TopAppBar(
         elevation = 0.dp,
@@ -75,7 +76,7 @@ fun TopAppBarCustom(
         actions = {
             IconButton(
                 modifier = Modifier.size(36.dp),
-                onClick = { /*TODO*/ },
+                onClick = { onMoreClick.invoke() },
             ) {
                 Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "more")
             }
@@ -91,7 +92,7 @@ fun TopAppBarCustom(
 fun TopAppBarPreview() {
     VoiceNote_androidTheme {
         Column() {
-            TopAppBarCustom(onTextChangeTitle = { it }, value = "hej", onBackClick = {})
+            TopAppBarCustom(onTextChangeTitle = { it }, value = "hej", onBackClick = {}, onMoreClick = {})
         }
     }
 }

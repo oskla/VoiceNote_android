@@ -6,7 +6,7 @@ import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
-import com.larsson.voicenote_android.helpers.DateFormatter
+import com.larsson.voicenote_android.helpers.dateFormatter
 import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
@@ -53,7 +53,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
 
         recordingsRepo.addRecording(
             RecordingEntity(
-                recordingTitle = DateFormatter(dateTimeString).getFormattedTime(),
+                recordingTitle = dateFormatter(dateTimeString),
                 recordingId = id,
                 recordingLink = audioFile?.path.toString(),
                 recordingDate = dateTimeString,

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.larsson.voicenote_android.helpers.DateFormatter
+import com.larsson.voicenote_android.helpers.dateFormatter
 import java.time.LocalDateTime
 
 // Stateless reusable composable
@@ -26,11 +26,10 @@ fun NoteView(
     textFieldValueContent: String,
     textFieldValueTitle: String,
     onBackClick: () -> Unit,
+    onMoreClick: () -> Unit,
     onTextChangeTitle: (String) -> Unit,
     onTextChangeContent: (String) -> Unit,
-    date: String = DateFormatter(
-        dateString = LocalDateTime.now().toString(),
-    ).getFormattedTime(),
+    date: String = dateFormatter(LocalDateTime.now().toString()),
 ) {
     Column(
         modifier = Modifier
@@ -43,6 +42,7 @@ fun NoteView(
             onTextChangeTitle = onTextChangeTitle,
             value = textFieldValueTitle,
             onBackClick = onBackClick,
+            onMoreClick = onMoreClick
 
         )
         Text(
