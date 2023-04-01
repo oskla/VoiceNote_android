@@ -1,29 +1,27 @@
 package com.larsson.voicenote_android.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.DateFormatter
-import java.io.File
-import java.time.LocalDateTime
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.time.LocalDateTime
+import java.util.UUID
 
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
 
     val TAG = "RecordingViewModel"
-    var recordingsState = mutableListOf<RecordingEntity>()
 
     private val _recordings = MutableStateFlow<List<RecordingEntity>>(emptyList())
     val recordings: StateFlow<List<RecordingEntity>> = _recordings
-
     private var audioFile: File? = null
+
     fun startRecording() {
         recorder.startRecording(fileName = getUUID()).also {
             // TODO fileName was an issue before. Find a way to increment ++ in name (both in Room and in cacheDir)
@@ -35,7 +33,6 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         withContext(Dispatchers.IO) {
             allRecordings = recordingsRepo.getRecordings()
         }
-        Log.d("Recording Room", allRecordings.toList().toString())
         _recordings.value = allRecordings
         return allRecordings
     }

@@ -53,7 +53,6 @@ fun EditNoteScreen(
     val TAG = "EDIT NOTE SCREEN"
 
     val recordingState by recordingViewModel.recordings.collectAsState()
-
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
