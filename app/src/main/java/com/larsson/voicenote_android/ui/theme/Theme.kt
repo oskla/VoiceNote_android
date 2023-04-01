@@ -14,7 +14,7 @@ val AppLightColorScheme = lightColorScheme(
     secondary = ltGrey,
     onSecondary = Color.Black,
     outline = dkGrey,
-    background = notWhite
+    background = notWhite,
 )
 
 val AppDarkColorScheme = darkColorScheme(
@@ -23,26 +23,32 @@ val AppDarkColorScheme = darkColorScheme(
     secondary = dkdkGrey,
     onSecondary = white,
     outline = dkGrey,
-    background = notBlack
+    background = notBlack,
 )
 
 @Composable
 fun VoiceNote_androidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val systemUiController = rememberSystemUiController()
 
     val AppColorScheme = if (darkTheme) {
-        AppDarkColorScheme.also { systemUiController.setSystemBarsColor(notBlack) }
+        AppDarkColorScheme.also {
+            systemUiController.setSystemBarsColor(notBlack)
+            systemUiController.setNavigationBarColor(notBlack)
+        }
     } else {
-        AppLightColorScheme.also { systemUiController.setSystemBarsColor(notWhite) }
+        AppLightColorScheme.also {
+            systemUiController.setStatusBarColor(color = Color.Black.copy(0.3f), darkIcons = true)
+            systemUiController.setNavigationBarColor(notWhite)
+        }
     }
 
     MaterialTheme(
         colorScheme = AppColorScheme,
         typography = AppTypography,
         shapes = AppShapes,
-        content = content
+        content = content,
     )
 }

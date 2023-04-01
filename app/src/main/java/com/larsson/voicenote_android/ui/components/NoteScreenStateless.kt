@@ -42,8 +42,7 @@ fun NoteView(
             onTextChangeTitle = onTextChangeTitle,
             value = textFieldValueTitle,
             onBackClick = onBackClick,
-            onMoreClick = onMoreClick
-
+            onMoreClick = onMoreClick,
         )
         Text(
             fontSize = 12.sp,

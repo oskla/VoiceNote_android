@@ -2,10 +2,10 @@ package com.larsson.voicenote_android.ui.components
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Icon
@@ -37,7 +37,7 @@ fun TopAppBarCustom(
     onTextChangeTitle: (String) -> Unit,
     value: String,
     onBackClick: () -> Unit = {},
-    onMoreClick: () -> Unit
+    onMoreClick: () -> Unit,
 ) {
     TopAppBar(
         elevation = 0.dp,
@@ -46,6 +46,7 @@ fun TopAppBarCustom(
         modifier = Modifier.height(60.dp),
         title = {
             TextField(
+                modifier = Modifier.offset(x = (-6).dp), // This appbar provides a positive x offset, this is to mitigate that
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     focusedTextColor = MaterialTheme.colorScheme.onBackground,
@@ -64,13 +65,11 @@ fun TopAppBarCustom(
         },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    Icon(
-                        painterResource(com.larsson.voicenote_android.R.drawable.custom_back_btn),
-                        "backArrow",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
+                Icon(
+                    painter = painterResource(com.larsson.voicenote_android.R.drawable.custom_back_btn),
+                    "backArrow",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
             }
         },
         actions = {
