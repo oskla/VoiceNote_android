@@ -36,7 +36,7 @@ fun MoreCircleMenu(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        MoreCircleButton(icon = Icons.Default.Delete, onClick = { /*TODO*/ })
+        MoreCircleButton(icon = Icons.Default.Delete, onClick = onClickDelete)
         Spacer(modifier = Modifier.width(6.dp))
         MoreCircleButton(icon = Icons.Default.IosShare, onClick = { /*TODO*/ }, iconOffset = (-1).dp)
     }

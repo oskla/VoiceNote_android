@@ -2,6 +2,7 @@ package com.larsson.voicenote_android.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
@@ -13,6 +14,7 @@ import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
@@ -67,6 +69,12 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         Log.d(TAG, "NoteId on Recording: $noteId")
     }
 
-    fun updateFileNameRecording() {
+    suspend fun deleteRecordingFile() {
+    }
+
+    fun updateFileNameRecording(recording: RecordingEntity) {
+        viewModelScope.launch {
+            recordingsRepo.deleteRecording(recording)
+        }
     }
 }

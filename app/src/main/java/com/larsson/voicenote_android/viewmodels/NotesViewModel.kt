@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.NotesRepository
-import java.time.LocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 
 class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
@@ -52,6 +52,16 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
     fun updateNoteRoom(title: String, txtContent: String, id: String) {
         viewModelScope.launch {
             dbRepo.updateNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id, date = LocalDateTime.now().toString()))
+        }
+    }
+    suspend fun deleteNoteByIdRoom(id: String) {
+        getNoteFromRoomById(id).also {
+            deleteNoteRoom(it)
+        }
+    }
+    private fun deleteNoteRoom(note: NoteEntity) {
+        viewModelScope.launch {
+            dbRepo.deleteNote(note)
         }
     }
 

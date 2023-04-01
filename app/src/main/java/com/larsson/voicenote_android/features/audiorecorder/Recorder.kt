@@ -83,6 +83,10 @@ class Recorder(private val context: Context) : AudioRecorder {
         }
     }
 
+    fun deleteRecording(fileName: String) {
+        File(context.cacheDir, fileName).delete()
+    }
+
     override fun pause() {
         recorder?.pause()
     }
