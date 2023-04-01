@@ -107,7 +107,11 @@ fun HomeScreenContent(
             onClickRight = {
                 openBottomSheet.value = true
             },
-            onClickLeft = { navController.navigate(Screen.NewNote.route) },
+            onClickLeft = {
+                notesViewModel.addNoteToRoom("title", "").also { newNote ->
+                    navController.navigate("${Screen.NewNote.route}/${newNote.noteId}")
+                }
+            },
         )
     }
 }

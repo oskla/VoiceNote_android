@@ -5,8 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.helpers.DateFormatter
-import com.larsson.voicenote_android.ui.TopAppBarCustom
 import java.time.LocalDateTime
 
 // Stateless reusable composable
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteView(
     modifier: Modifier = Modifier,
@@ -52,15 +52,17 @@ fun NoteView(
             text = date,
             modifier = Modifier.fillMaxWidth().align(CenterHorizontally),
         )
-        TextField(
+        androidx.compose.material3.TextField(
             textStyle = MaterialTheme.typography.bodyMedium,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colorScheme.background,
-                textColor = MaterialTheme.colorScheme.onBackground,
-                focusedIndicatorColor = Color.Transparent, // hide the underline
-                cursorColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedIndicatorColor = Color.Transparent, // hide the underline
-                disabledIndicatorColor = Color.Transparent, // hide the underline
+            colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                cursorColor = Color.Black,
+                disabledTextColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.onBackground, backgroundColor = MaterialTheme.colorScheme.onBackground.copy(0.3f)),
             ),
             shape = MaterialTheme.shapes.large,
             value = textFieldValueContent,

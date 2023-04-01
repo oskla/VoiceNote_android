@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.NotesRepository
 import java.time.LocalDateTime
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ import kotlinx.coroutines.withContext
 
 class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
+    private val TAG = "NotesViewModel"
     var notesListVisible by mutableStateOf(true)
     var recordingsListVisible by mutableStateOf(false)
     private var selectedNoteId by mutableStateOf("")
@@ -36,10 +38,15 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         return selectedNote
     }
 
-    fun addNoteToRoom(title: String, txtContent: String, id: String) {
+    fun addNoteToRoom(title: String, txtContent: String): NoteEntity {
+        val id = getUUID()
+        val newNote = NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id.toString(), date = LocalDateTime.now().toString())
         viewModelScope.launch {
-            dbRepo.addNote(NoteEntity(noteTitle = title, noteTxtContent = txtContent, noteId = id.toString(), date = LocalDateTime.now().toString()))
+            dbRepo.addNote(newNote)
         }
+        Log.d(TAG, "NoteId on Note: $id")
+
+        return newNote
     }
 
     fun updateNoteRoom(title: String, txtContent: String, id: String) {

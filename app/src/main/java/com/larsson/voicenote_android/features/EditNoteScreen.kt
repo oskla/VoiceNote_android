@@ -86,7 +86,8 @@ fun EditNoteContent(
     selectedNote: NoteEntity,
     viewModel: NotesViewModel,
     navController: NavController,
-    noteId: String,
+    noteId: String?,
+    isNewNote: Boolean? = false,
     recordings: MutableState<List<RecordingEntity>>,
     openBottomSheet: MutableState<Boolean>,
 
@@ -113,8 +114,9 @@ fun EditNoteContent(
             onBackClick = {
                 // If note has not been change, don't update the note
                 if (title != textFieldValueTitle || textContent != textFieldValueContent) {
-                    viewModel.updateNoteRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId)
+                    viewModel.updateNoteRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId ?: "000")
                 }
+
                 navController.popBackStack()
             },
             textFieldValueContent = textFieldValueContent,
@@ -154,7 +156,6 @@ fun EditNoteContent(
                 RecordingMenu(
                     noteId = selectedNote.noteId,
                     recordings = recordings.value,
-                    // modifier = Modifier.border(1.dp, Color.Cyan)
                 )
             }
         }

@@ -1,18 +1,19 @@
 package com.larsson.voicenote_android.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.DateFormatter
+import java.io.File
+import java.time.LocalDateTime
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.time.LocalDateTime
-import java.util.UUID
 
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
 
@@ -63,6 +64,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
 
         getRecordingByIdRoom(id)
         getAllRecordingsRoom()
+        Log.d(TAG, "NoteId on Recording: $noteId")
     }
 
     fun updateFileNameRecording() {
