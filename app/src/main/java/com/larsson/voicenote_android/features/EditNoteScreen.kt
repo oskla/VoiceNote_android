@@ -1,16 +1,16 @@
 package com.larsson.voicenote_android.ui
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -106,20 +107,19 @@ fun EditNoteContent(
     var textFieldValueTitle by remember { mutableStateOf(title) }
     var showRecordingMenu by remember { mutableStateOf(false) }
     var showMoreMenu by remember { mutableStateOf(false) }
-    var coroutineScope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
-    ConstraintLayout() {
+    val blur = 3.dp
+
+    ConstraintLayout(
+        modifier = Modifier,
+    ) {
         val (noteView, bottomBox, menu, background, moreMenu) = createRefs()
 
         NoteView(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .constrainAs(noteView) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(bottomBox.top)
-                },
+                .constrainAs(noteView) {}
+                .blur(if (showMoreMenu) blur else 0.dp),
             onBackClick = {
                 // If note has not been change, don't update the note
                 if (title != textFieldValueTitle || textContent != textFieldValueContent) {
@@ -157,21 +157,27 @@ fun EditNoteContent(
             )
         }
 
-        if (showRecordingMenu) {
+        AnimatedVisibility(
+            visible = showRecordingMenu,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .constrainAs(background) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(bottomBox.top)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                },
+        ) {
             Box(
                 modifier = Modifier
+                    .fillMaxSize()
                     .background(Color.Black.copy(0.3f))
                     .zIndex(1F)
                     .clickable {
                         showRecordingMenu = false
-                    }
-                    .constrainAs(background) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(bottomBox.top)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
                     },
             ) {}
         }
@@ -199,6 +205,7 @@ fun EditNoteContent(
         BottomBox(
             modifier = Modifier
                 .zIndex(3f)
+                .blur(if (showMoreMenu) blur else 0.dp)
                 .constrainAs(bottomBox) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)

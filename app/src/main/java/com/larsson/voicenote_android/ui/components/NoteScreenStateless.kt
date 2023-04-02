@@ -32,8 +32,8 @@ fun NoteView(
     date: String = dateFormatter(LocalDateTime.now().toString()),
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            //.fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
         BackHandler(true, onBackClick)

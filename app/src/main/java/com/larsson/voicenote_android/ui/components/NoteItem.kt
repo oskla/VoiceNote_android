@@ -1,16 +1,22 @@
 package com.larsson.voicenote_android.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardVoice
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,6 +36,7 @@ fun NoteItem(
     txtContent: String,
     id: String,
     onClick: () -> Unit,
+    containsRecordings: Boolean
 ) {
     Card(
         backgroundColor = MaterialTheme.colorScheme.background,
@@ -43,13 +50,21 @@ fun NoteItem(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 14.sp,
-                fontFamily = SpaceGroteskFontFamily,
-                fontWeight = FontWeight.W700,
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = title,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 14.sp,
+                    fontFamily = SpaceGroteskFontFamily,
+                    fontWeight = FontWeight.W700,
+                )
+                if (containsRecordings) {
+                    Icon(imageVector = Icons.Outlined.KeyboardVoice, contentDescription = "mic", tint = MaterialTheme.colorScheme.onBackground, modifier = Modifier.size(20.dp))
+                }
+            }
             Text(
                 text = txtContent,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -73,9 +88,9 @@ private const val componentName = "Note Item"
 private fun PreviewComponent() {
     VoiceNote_androidTheme {
         Column() {
-            NoteItem(title = "Textidé 34", txtContent = "Det var en gång en katt som hette hund som drömde att han var en kanin", id = "1", onClick = {})
+            NoteItem(title = "Textidé 34", txtContent = "Det var en gång en katt som hette hund som drömde att han var en kanin", id = "1", onClick = {}, containsRecordings = true)
             Spacer(modifier = Modifier.height(1.dp))
-            NoteItem(title = "Textidé 421", txtContent = "Det var en gång en katt som hette hund som drömde att han var en kanin", id = "1", onClick = {})
+            NoteItem(title = "Textidé 421", txtContent = "Det var en gång en katt som hette hund som drömde att han var en kanin", id = "1", onClick = {}, containsRecordings = false)
         }
     }
 }

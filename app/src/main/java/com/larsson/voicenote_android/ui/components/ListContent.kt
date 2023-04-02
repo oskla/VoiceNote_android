@@ -20,7 +20,7 @@ fun ListContent(
     navController: NavController,
 ) {
     when (listVariant) {
-        ListVariant.NOTES -> { NotesList(notes = notes, navController = navController) }
+        ListVariant.NOTES -> { NotesList(notes = notes, navController = navController, recordings = recordings) }
         ListVariant.RECORDINGS -> { RecordingsList(recordings = recordings) }
     }
 }

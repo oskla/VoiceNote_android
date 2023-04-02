@@ -1,9 +1,13 @@
 package com.larsson.voicenote_android.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,17 +37,29 @@ fun MoreCircleMenu(
     onClickShare: () -> Unit,
     onClickDismiss: () -> Unit,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxSize()
-            .clickable { onClickDismiss.invoke() }
-            .background(Color.Black.copy(0.6f)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+    var animate by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = true) {
+        animate = true
+    }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize(),
+
     ) {
-        MoreCircleButton(icon = Icons.Default.Delete, onClick = onClickDelete)
-        Spacer(modifier = Modifier.width(6.dp))
-        MoreCircleButton(icon = Icons.Default.IosShare, onClick = { /*TODO*/ }, iconOffset = (-1).dp)
+        AnimatedVisibility(visible = animate, enter = fadeIn(), exit = fadeOut()) {
+            Box(modifier = Modifier.background(Color.Black.copy(0.3f)).fillMaxSize().clickable {
+                animate = false
+                onClickDismiss.invoke()
+            })
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            MoreCircleButton(icon = Icons.Default.Delete, onClick = onClickDelete)
+            Spacer(modifier = Modifier.width(6.dp))
+            MoreCircleButton(icon = Icons.Default.IosShare, onClick = { /*TODO*/ }, iconOffset = (-1).dp)
+        }
     }
 }
 
