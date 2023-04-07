@@ -27,6 +27,8 @@ import com.larsson.voicenote_android.ui.lottie.LottieLRecording
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import kotlinx.coroutines.launch
 
+// TODO ask for permission again if you say no
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(
