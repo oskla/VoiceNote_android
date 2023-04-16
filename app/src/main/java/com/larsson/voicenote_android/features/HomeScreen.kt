@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.features // ktlint-disable package-name
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -104,7 +105,10 @@ fun HomeScreenContent(
                 notes = notesState,
                 navController = navController,
                 recordings = recordingsState,
-                onClickPlay = { audioPlayerViewModel.play() }
+                onClickPlay = {
+                    Log.d(TAG, it)
+                    audioPlayerViewModel.play(it)
+                }
             )
         }
         BottomBox(

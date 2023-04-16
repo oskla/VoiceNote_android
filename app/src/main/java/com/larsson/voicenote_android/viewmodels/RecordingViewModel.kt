@@ -24,13 +24,15 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
     private val _recordings = MutableStateFlow<List<RecordingEntity>>(emptyList())
     val recordings: StateFlow<List<RecordingEntity>> = _recordings
     private var audioFile: File? = null
+    private var localUUID: String = ""
 
     fun startRecording() {
-        recorder.startRecording(fileName = getUUID()).also {
+        recorder.startRecording(fileName = setLocalUUID()).also {
             // TODO fileName was an issue before. Find a way to increment ++ in name (both in Room and in cacheDir)
             audioFile = it
         }
     }
+
     suspend fun getAllRecordingsRoom(): List<RecordingEntity> {
         var allRecordings: MutableList<RecordingEntity>
         withContext(Dispatchers.IO) {
@@ -49,7 +51,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
     }
 
     suspend fun stopRecording(noteId: String? = "0000") {
-        val id = UUID.randomUUID().toString()
+        val id = getLocalUUID()
         val dateTimeString = LocalDateTime.now().toString()
         recorder.stop()
 
@@ -60,8 +62,8 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
                 recordingLink = audioFile?.path.toString(),
                 recordingDate = dateTimeString,
                 recordingDuration = recorder.getMetaData(),
-                noteId = noteId ?: "0000",
-            ),
+                noteId = noteId ?: "0000"
+            )
         )
 
         getRecordingByIdRoom(id)
@@ -76,5 +78,14 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         viewModelScope.launch {
             recordingsRepo.deleteRecording(recording)
         }
+    }
+
+    private fun getLocalUUID(): String {
+        return localUUID
+    }
+
+    private fun setLocalUUID(): String {
+        localUUID = getUUID()
+        return localUUID
     }
 }

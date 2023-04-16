@@ -19,7 +19,7 @@ import com.larsson.voicenote_android.data.entity.RecordingEntity
 @Composable
 fun RecordingsList(
     recordings: MutableState<List<RecordingEntity>>,
-    onClickPlay: () -> Unit
+    onClickPlay: (String) -> Unit
 
 ) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
@@ -39,12 +39,14 @@ fun RecordingsList(
                     isSelected = isSelected,
                     onClick = { selectedRecordingId = if (isSelected) null else recording.recordingId },
                     isFirstItem = false,
-                    onClickPlay = onClickPlay
+                    onClickPlay = {
+                        onClickPlay(recording.recordingId)
+                    }
                 )
 
                 // RecordingItem(title = recording.title, date = recording.date, duration = recording.duration, onClick = {}, id = recording.id)
             }
-            if (index != recordings.value.size-1) {
+            if (index != recordings.value.size - 1) {
                 Divider(color = MaterialTheme.colorScheme.onBackground.copy(0.1f))
             }
         }

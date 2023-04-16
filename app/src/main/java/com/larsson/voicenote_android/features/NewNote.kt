@@ -56,16 +56,16 @@ fun NewNoteScreen(
         recordingNoteId = selectedNote?.noteId
     )
 
-    selectedNote?.let {
+    selectedNote?.let { noteEntity ->
         EditNoteContent(
-            selectedNote = it,
+            selectedNote = noteEntity,
             viewModel = notesViewModel,
             navController = navController,
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
             isNewNote = true,
-            onClickPlay = { audioPlayerViewModel.play() }
+            onClickPlay = { audioPlayerViewModel.play(it) }
         )
     }
 }

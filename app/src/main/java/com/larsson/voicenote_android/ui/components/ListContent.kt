@@ -18,10 +18,21 @@ fun ListContent(
     notes: MutableState<List<NoteEntity>>,
     recordings: MutableState<List<RecordingEntity>>,
     navController: NavController,
-    onClickPlay: () -> Unit
+    onClickPlay: (String) -> Unit
 ) {
     when (listVariant) {
-        ListVariant.NOTES -> { NotesList(notes = notes, navController = navController, recordings = recordings) }
-        ListVariant.RECORDINGS -> { RecordingsList(recordings = recordings, onClickPlay = onClickPlay) }
+        ListVariant.NOTES -> {
+            NotesList(
+                notes = notes,
+                navController = navController,
+                recordings = recordings
+            )
+        }
+        ListVariant.RECORDINGS -> {
+            RecordingsList(
+                recordings = recordings,
+                onClickPlay = { onClickPlay(it) }
+            )
+        }
     }
 }

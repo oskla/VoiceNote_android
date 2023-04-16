@@ -134,7 +134,7 @@ fun AudioPlayerRow(
                     .width(35.dp)
                     .clickable(indication = null, interactionSource = interactionSource) {
                         isPlaying = !isPlaying
-                        onClickPlay.invoke()
+                        onClickPlay()
                     }
             )
             Row(

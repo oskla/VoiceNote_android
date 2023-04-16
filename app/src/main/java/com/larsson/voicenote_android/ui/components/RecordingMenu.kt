@@ -26,7 +26,7 @@ fun RecordingMenu(
     modifier: Modifier = Modifier,
     noteId: String,
     recordings: List<RecordingEntity>,
-    onClickPlay: () -> Unit
+    onClickPlay: (String) -> Unit
 ) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
@@ -35,7 +35,7 @@ fun RecordingMenu(
             .fillMaxWidth()
             .wrapContentHeight()
             .background(Color.Transparent),
-        userScrollEnabled = true,
+        userScrollEnabled = true
     ) {
         if (recordings.isEmpty()) {
             item {
@@ -49,7 +49,7 @@ fun RecordingMenu(
                     onClick = {
                     },
                     isFirstItem = true,
-                    onClickPlay = onClickPlay
+                    onClickPlay = { }
                 )
             }
         }
@@ -66,7 +66,7 @@ fun RecordingMenu(
                     selectedRecordingId = if (isSelected) null else recording.recordingId
                 },
                 isFirstItem = index < 1,
-                onClickPlay = onClickPlay
+                onClickPlay = { onClickPlay(recording.recordingTitle) }
             )
             Divider(color = Color.Transparent, thickness = 2.dp)
         }

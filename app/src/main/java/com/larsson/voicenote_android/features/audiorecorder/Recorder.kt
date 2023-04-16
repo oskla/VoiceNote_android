@@ -37,8 +37,7 @@ class Recorder(private val context: Context) : AudioRecorder {
         return File(context.cacheDir, fileName).also {
             recorder?.start()
             audioFile = it
-            Log.d(TAG, "audioFile: $audioFile")
-            Log.d(TAG, "audioFile absolute path: ${audioFile?.absolutePath}")
+            Log.d(TAG, "fileName: $fileName")
             start(it)
         }
     }
@@ -51,7 +50,6 @@ class Recorder(private val context: Context) : AudioRecorder {
 
             recorder?.setAudioEncodingBitRate(128000)
             recorder?.setAudioSamplingRate(44100)
-            Log.d(TAG, "hay")
             setOutputFile(FileOutputStream(outputFile).fd)
 
             prepare()

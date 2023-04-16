@@ -78,15 +78,15 @@ fun EditNoteScreen(
         return
     }
     BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel, recordingNoteId = noteId)
-    selectedNote?.let {
+    selectedNote?.let { noteEntity ->
         EditNoteContent(
-            selectedNote = it,
+            selectedNote = noteEntity,
             viewModel = viewModel,
             navController = navController,
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
-            onClickPlay = { audioPlayerViewModel.play() }
+            onClickPlay = { audioPlayerViewModel.play(it) }
         )
     }
 }
@@ -100,7 +100,7 @@ fun EditNoteContent(
     isNewNote: Boolean? = false,
     recordings: MutableState<List<RecordingEntity>>,
     openBottomSheet: MutableState<Boolean>,
-    onClickPlay: () -> Unit
+    onClickPlay: (String) -> Unit
 
 ) {
     val TAG = "EDIT NOTE CONTENT"
@@ -203,7 +203,7 @@ fun EditNoteContent(
             RecordingMenu(
                 noteId = selectedNote.noteId,
                 recordings = recordings.value,
-                onClickPlay = onClickPlay
+                onClickPlay = { onClickPlay(it) }
             )
         }
 
