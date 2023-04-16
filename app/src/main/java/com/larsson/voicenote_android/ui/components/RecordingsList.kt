@@ -17,7 +17,11 @@ import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 
 @Composable
-fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
+fun RecordingsList(
+    recordings: MutableState<List<RecordingEntity>>,
+    onClickPlay: () -> Unit
+
+) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
@@ -35,6 +39,7 @@ fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
                     isSelected = isSelected,
                     onClick = { selectedRecordingId = if (isSelected) null else recording.recordingId },
                     isFirstItem = false,
+                    onClickPlay = onClickPlay
                 )
 
                 // RecordingItem(title = recording.title, date = recording.date, duration = recording.duration, onClick = {}, id = recording.id)

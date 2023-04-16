@@ -26,6 +26,7 @@ import com.larsson.voicenote_android.ui.components.ListContent
 import com.larsson.voicenote_android.ui.components.ListVariant
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
@@ -34,6 +35,7 @@ import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 fun HomeScreen(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
+    audioPlayerViewModel: AudioPlayerViewModel,
     navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
@@ -64,6 +66,7 @@ fun HomeScreen(
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
         recordingsState = recordings,
+        audioPlayerViewModel = audioPlayerViewModel
     )
 }
 
@@ -79,6 +82,7 @@ fun HomeScreenContent(
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
+    audioPlayerViewModel: AudioPlayerViewModel
 ) {
     val TAG = "HOME SCREEN"
 
@@ -100,6 +104,7 @@ fun HomeScreenContent(
                 notes = notesState,
                 navController = navController,
                 recordings = recordingsState,
+                onClickPlay = { audioPlayerViewModel.play() }
             )
         }
         BottomBox(

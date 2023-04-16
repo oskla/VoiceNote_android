@@ -101,6 +101,7 @@ fun RecordingMenuItem(
     progress: Float? = null,
     isSelected: Boolean? = null,
     onClick: () -> Unit,
+    onClickPlay: () -> Unit,
     isFirstItem: Boolean,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -122,6 +123,7 @@ fun RecordingMenuItem(
                 progress = progress ?: 0f,
                 color = color,
                 isFirstItem = isFirstItem,
+                onClickPlay = onClickPlay
             )
         } else {
             RecordingMenuItemBase(
@@ -158,6 +160,7 @@ fun RecordingMenuItemPreview() {
                 onClick = {
                 },
                 isFirstItem = false,
+                onClickPlay = {}
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -170,6 +173,7 @@ fun RecordingMenuItemPreview() {
                 isSelected = false,
                 onClick = { },
                 isFirstItem = true,
+                onClickPlay = {}
             )
         }
     }

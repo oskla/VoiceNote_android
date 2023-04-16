@@ -32,6 +32,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 navController = navController,
                 openBottomSheet = openBottomSheet,
                 bottomSheetState = bottomSheetState,
+                audioPlayerViewModel = get()
             )
         }
         composable("${Screen.NewNote.route}/{noteId}") { navBackStackEntry ->
@@ -43,7 +44,9 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     recordingViewModel = get(),
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
-                    noteId = noteId
+                    noteId = noteId,
+                    audioPlayerViewModel = get()
+
                 )
             }
         }
@@ -59,6 +62,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     bottomSheetState = bottomSheetState,
                     noteId = noteId,
                     recordingViewModel = get(),
+                    audioPlayerViewModel = get()
                 )
             }
         }

@@ -41,6 +41,7 @@ import com.larsson.voicenote_android.ui.components.MoreCircleMenu
 import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import kotlinx.coroutines.launch
@@ -56,6 +57,7 @@ fun EditNoteScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
+    audioPlayerViewModel: AudioPlayerViewModel
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
@@ -84,6 +86,7 @@ fun EditNoteScreen(
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
+            onClickPlay = { audioPlayerViewModel.play() }
         )
     }
 }
@@ -97,6 +100,7 @@ fun EditNoteContent(
     isNewNote: Boolean? = false,
     recordings: MutableState<List<RecordingEntity>>,
     openBottomSheet: MutableState<Boolean>,
+    onClickPlay: () -> Unit
 
 ) {
     val TAG = "EDIT NOTE CONTENT"
@@ -112,7 +116,7 @@ fun EditNoteContent(
     val blur = 3.dp
 
     ConstraintLayout(
-        modifier = Modifier,
+        modifier = Modifier
     ) {
         val (noteView, bottomBox, menu, background, moreMenu) = createRefs()
 
@@ -133,7 +137,7 @@ fun EditNoteContent(
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it },
             date = dateFormatter(selectedNote.date),
-            onMoreClick = { showMoreMenu = true },
+            onMoreClick = { showMoreMenu = true }
         )
 
         if (showMoreMenu) {
@@ -153,7 +157,7 @@ fun EditNoteContent(
                         top.linkTo(parent.top)
                         end.linkTo(parent.end)
                     },
-                onClickDismiss = { showMoreMenu = false },
+                onClickDismiss = { showMoreMenu = false }
             )
         }
 
@@ -169,7 +173,7 @@ fun EditNoteContent(
                     bottom.linkTo(bottomBox.top)
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
-                },
+                }
         ) {
             Box(
                 modifier = Modifier
@@ -178,7 +182,7 @@ fun EditNoteContent(
                     .zIndex(1F)
                     .clickable {
                         showRecordingMenu = false
-                    },
+                    }
             ) {}
         }
         AnimatedVisibility(
@@ -194,11 +198,12 @@ fun EditNoteContent(
                     end.linkTo(parent.end)
                     bottom.linkTo(bottomBox.top)
                 }
-                .zIndex(2f),
+                .zIndex(2f)
         ) {
             RecordingMenu(
                 noteId = selectedNote.noteId,
                 recordings = recordings.value,
+                onClickPlay = onClickPlay
             )
         }
 
@@ -216,7 +221,7 @@ fun EditNoteContent(
             onClickRight = {
                 showRecordingMenu = false
                 openBottomSheet.value = true
-            },
+            }
         )
     }
 }

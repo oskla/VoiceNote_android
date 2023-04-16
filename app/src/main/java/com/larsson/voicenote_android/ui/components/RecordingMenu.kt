@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -27,6 +26,7 @@ fun RecordingMenu(
     modifier: Modifier = Modifier,
     noteId: String,
     recordings: List<RecordingEntity>,
+    onClickPlay: () -> Unit
 ) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
@@ -49,6 +49,7 @@ fun RecordingMenu(
                     onClick = {
                     },
                     isFirstItem = true,
+                    onClickPlay = onClickPlay
                 )
             }
         }
@@ -65,6 +66,7 @@ fun RecordingMenu(
                     selectedRecordingId = if (isSelected) null else recording.recordingId
                 },
                 isFirstItem = index < 1,
+                onClickPlay = onClickPlay
             )
             Divider(color = Color.Transparent, thickness = 2.dp)
         }
@@ -81,6 +83,6 @@ private const val componentName = "Recording Menu Item Player"
 @Composable
 fun RecordingMenuPreview() {
     VoiceNote_androidTheme {
-        RecordingMenu(noteId = "2", recordings = listOf())
+        RecordingMenu(noteId = "2", recordings = listOf(), onClickPlay = {})
     }
 }

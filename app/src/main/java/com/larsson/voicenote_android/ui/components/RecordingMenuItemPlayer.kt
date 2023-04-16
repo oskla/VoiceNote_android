@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -52,6 +51,7 @@ fun RecordingMenuItemPlayer(
     progress: Float,
     color: Color = MaterialTheme.colorScheme.background,
     isFirstItem: Boolean,
+    onClickPlay: () -> Unit
 // TODO take in state?
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
@@ -60,25 +60,25 @@ fun RecordingMenuItemPlayer(
         modifier = Modifier.wrapContentHeight(),
         backgroundColor = MaterialTheme.colorScheme.background,
         elevation = 0.dp,
-        shape = if (isFirstItem) roundedCornerShape else RectangleShape,
+        shape = if (isFirstItem) roundedCornerShape else RectangleShape
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Row(
 
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = title,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 14.sp,
                     fontFamily = SpaceGroteskFontFamily,
-                    fontWeight = FontWeight.W700,
+                    fontWeight = FontWeight.W700
                 )
                 Text(
                     text = duration,
@@ -87,7 +87,7 @@ fun RecordingMenuItemPlayer(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2,
+                    maxLines = 2
                 )
             }
 
@@ -96,11 +96,12 @@ fun RecordingMenuItemPlayer(
                 progress = progress,
                 color = MaterialTheme.colorScheme.onBackground,
                 onProgressChanged = {
-                },
+                }
             )
             AudioPlayerRow(
                 date = date,
                 onClickDelete = { TODO() },
+                onClickPlay = onClickPlay
             )
         }
     }
@@ -109,20 +110,20 @@ fun RecordingMenuItemPlayer(
 @Composable
 fun AudioPlayerRow(
     date: String,
-    // onClickPlay: () -> Unit,
-    onClickDelete: () -> Unit,
+    onClickPlay: () -> Unit,
+    onClickDelete: () -> Unit
     // isPlaying: Boolean,
 ) {
     var isPlaying by remember { mutableStateOf<Boolean>(false) }
     val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
                 .background(Color.Transparent),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
@@ -133,12 +134,13 @@ fun AudioPlayerRow(
                     .width(35.dp)
                     .clickable(indication = null, interactionSource = interactionSource) {
                         isPlaying = !isPlaying
-                    },
+                        onClickPlay.invoke()
+                    }
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = date,
@@ -147,7 +149,7 @@ fun AudioPlayerRow(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2,
+                    maxLines = 2
                 )
 
                 Icon(
@@ -157,7 +159,7 @@ fun AudioPlayerRow(
                     modifier = Modifier
                         .clickable { onClickDelete.invoke() }
                         .height(30.dp)
-                        .width(30.dp),
+                        .width(30.dp)
 
                 )
             }
@@ -184,7 +186,7 @@ fun RecordingMenuItemPlayerPreview() {
                 progress = 0.6F,
                 isFirstItem = true,
                 // isPlaying = false,
-                // onClickPlay = { true },
+                onClickPlay = { }
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -195,7 +197,7 @@ fun RecordingMenuItemPlayerPreview() {
                 progress = 0.4F,
                 isFirstItem = false,
                 // isPlaying = true,
-                // onClickPlay = { true },
+                onClickPlay = { }
             )
             Divider()
         }
