@@ -28,9 +28,10 @@ fun NewNoteScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
-    audioPlayerViewModel: AudioPlayerViewModel
+    audioPlayerViewModel: AudioPlayerViewModel,
 ) {
     val recordingState by recordingViewModel.recordings.collectAsState()
+    val playerState by audioPlayerViewModel.playerState.collectAsState()
 
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
@@ -53,7 +54,7 @@ fun NewNoteScreen(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
-        recordingNoteId = selectedNote?.noteId
+        recordingNoteId = selectedNote?.noteId,
     )
 
     selectedNote?.let { noteEntity ->
@@ -65,7 +66,9 @@ fun NewNoteScreen(
             recordings = recordings,
             openBottomSheet = openBottomSheet,
             isNewNote = true,
-            onClickPlay = { audioPlayerViewModel.play(it) }
+            onClickPlay = { audioPlayerViewModel.play(it) },
+            onClickPause = { /* TODO */ },
+            playerState = playerState,
         )
     }
 }
