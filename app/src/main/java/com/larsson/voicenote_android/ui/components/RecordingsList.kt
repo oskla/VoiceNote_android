@@ -15,15 +15,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 
 @Composable
-fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
+fun RecordingsList(
+    recordings: MutableState<List<RecordingEntity>>,
+    onClickPlay: (String) -> Unit,
+    onClickPause: () -> Unit,
+    playerState: AudioPlayerViewModel.PlayerState,
+    audioItems: List<AudioPlayerViewModel.AudioItem>,
+
+) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(recordings.value) { index, recording ->
-            val isSelected =
-                (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
+            val isSelected = (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
+            val mappedAudioItem = audioItems.find { it.recordingId == recording.recordingId } // Finds the audioItem that corresponds with the recording in the list
 
             Box() {
                 RecordingMenuItem(
@@ -35,11 +43,14 @@ fun RecordingsList(recordings: MutableState<List<RecordingEntity>>) {
                     isSelected = isSelected,
                     onClick = { selectedRecordingId = if (isSelected) null else recording.recordingId },
                     isFirstItem = false,
+                    onClickPlay = {
+                        onClickPlay(recording.recordingId)
+                    },
+                    onClickPause = onClickPause,
+                    isPlaying = mappedAudioItem?.isPlaying ?: false,
                 )
-
-                // RecordingItem(title = recording.title, date = recording.date, duration = recording.duration, onClick = {}, id = recording.id)
             }
-            if (index != recordings.value.size-1) {
+            if (index != recordings.value.size - 1) {
                 Divider(color = MaterialTheme.colorScheme.onBackground.copy(0.1f))
             }
         }

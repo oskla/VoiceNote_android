@@ -1,9 +1,8 @@
 package com.larsson.voicenote_android.data
 
-import androidx.compose.runtime.mutableStateListOf
-import java.util.*
+// TODO MOCK DATA - REMOVE LATER
 
-data class Note(
+/*data class Note(
     val id: String = generateId(),
     var title: String,
     var txtContent: String
@@ -27,5 +26,4 @@ var note9 = Note("8", "Title10", "Lorem ipsum dolor sit amet consectetur. Sed od
 var note10 = Note("9", "Title11", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
 var note11 = Note("10", "Title12", "Lorem ipsum dolor sit amet consectetur. Sed odio sed dolor ac tempor facilisi et at blandit. Scelerisque metus duis dui sit sed ac. Placerat placerat tristique ac gravida odio volutpat dolor odio elementum. Aenean sed condimentum blandit auctor. Mauris tortor pellentesque dictumst amet diam sed. Gravida sem faucibus sit odio lacus elit faucibus amet vel. In enim tristique sed a tristique.")
 
-val notes = mutableStateListOf(note1, note2, note3, note4, note5, note6, note7, note8, note9, note10, note11)
-fun getUUID() = UUID.randomUUID().toString()
+val notes = mutableStateListOf(note1, note2, note3, note4, note5, note6, note7, note8, note9, note10, note11)*/

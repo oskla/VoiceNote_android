@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.ui.NotesList
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 
 enum class ListVariant {
     NOTES,
@@ -18,9 +19,27 @@ fun ListContent(
     notes: MutableState<List<NoteEntity>>,
     recordings: MutableState<List<RecordingEntity>>,
     navController: NavController,
+    onClickPlay: (String) -> Unit,
+    onClickPause: () -> Unit,
+    playerState: AudioPlayerViewModel.PlayerState,
+    audioItems: List<AudioPlayerViewModel.AudioItem>,
 ) {
     when (listVariant) {
-        ListVariant.NOTES -> { NotesList(notes = notes, navController = navController, recordings = recordings) }
-        ListVariant.RECORDINGS -> { RecordingsList(recordings = recordings) }
+        ListVariant.NOTES -> {
+            NotesList(
+                notes = notes,
+                navController = navController,
+                recordings = recordings,
+            )
+        }
+        ListVariant.RECORDINGS -> {
+            RecordingsList(
+                recordings = recordings,
+                onClickPlay = { onClickPlay(it) },
+                onClickPause = onClickPause,
+                playerState = playerState,
+                audioItems = audioItems,
+            )
+        }
     }
 }

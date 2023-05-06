@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.features // ktlint-disable package-name
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import com.larsson.voicenote_android.ui.components.ListContent
 import com.larsson.voicenote_android.ui.components.ListVariant
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
@@ -34,14 +36,29 @@ import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 fun HomeScreen(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
+    audioPlayerViewModel: AudioPlayerViewModel,
     navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
 ) {
     val recordingsState by recordingViewModel.recordings.collectAsState()
+    val playerState by audioPlayerViewModel.playerState.collectAsState()
+    val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
+    val audioItems by audioPlayerViewModel.audioItems.collectAsState()
+
     val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
+
+    when (playerState) {
+        AudioPlayerViewModel.PlayerState.Completed -> Log.d("Home", "State: Completed")
+        is AudioPlayerViewModel.PlayerState.Error -> Log.d("Home", "State: Error")
+        AudioPlayerViewModel.PlayerState.Idle -> Log.d("Home", "State: Idle")
+        AudioPlayerViewModel.PlayerState.Paused -> Log.d("Home", "State: Paused")
+        AudioPlayerViewModel.PlayerState.Playing -> Log.d("Home", "State: Playing")
+    }
+
+    Log.d("HOME", formatDuration(currentPosition))
 
     LaunchedEffect(key1 = recordingsState) {
         val notes = notesViewModel.getAllNotesFromRoom()
@@ -64,6 +81,9 @@ fun HomeScreen(
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
         recordingsState = recordings,
+        audioPlayerViewModel = audioPlayerViewModel,
+        playerState = playerState,
+        audioItems = audioItems,
     )
 }
 
@@ -79,6 +99,9 @@ fun HomeScreenContent(
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
+    audioPlayerViewModel: AudioPlayerViewModel,
+    playerState: AudioPlayerViewModel.PlayerState,
+    audioItems: List<AudioPlayerViewModel.AudioItem>,
 ) {
     val TAG = "HOME SCREEN"
 
@@ -100,6 +123,15 @@ fun HomeScreenContent(
                 notes = notesState,
                 navController = navController,
                 recordings = recordingsState,
+                onClickPlay = {
+                    Log.d(TAG, it)
+                    audioPlayerViewModel.play(it)
+                },
+                onClickPause = {
+                    audioPlayerViewModel.pause()
+                },
+                playerState = playerState,
+                audioItems = audioItems,
             )
         }
         BottomBox(
@@ -114,4 +146,10 @@ fun HomeScreenContent(
             },
         )
     }
+}
+
+private fun formatDuration(duration: Int): String {
+    val minutes = duration / 1000 / 60
+    val seconds = duration / 1000 % 60
+    return "$minutes:${String.format("%02d", seconds)}"
 }

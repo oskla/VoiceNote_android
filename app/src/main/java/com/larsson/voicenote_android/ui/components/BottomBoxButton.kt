@@ -1,4 +1,4 @@
-package com.larsson.voicenote_android.ui.components
+package com.larsson.voicenote_android.ui.components // ktlint-disable package-name
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -37,7 +37,6 @@ fun BottomBoxButton(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector,
-    selected: Boolean = false,
     iconOffset: Dp = 0.dp,
     onClick: (() -> Unit),
 ) {
@@ -80,7 +79,7 @@ private const val componentName = "Bottom Box Button"
 @Preview("$componentName (big font)", fontScale = 1.5f, showBackground = true)
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
-private fun PreviewComponent() {
+private fun Preview2Component() {
     VoiceNote_androidTheme {
         Column() {
             BottomBoxButton(

@@ -41,6 +41,7 @@ import com.larsson.voicenote_android.ui.components.MoreCircleMenu
 import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import kotlinx.coroutines.launch
@@ -56,10 +57,12 @@ fun EditNoteScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
+    audioPlayerViewModel: AudioPlayerViewModel,
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
     val recordingState by recordingViewModel.recordings.collectAsState()
+    val playerState by audioPlayerViewModel.playerState.collectAsState()
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
@@ -76,14 +79,17 @@ fun EditNoteScreen(
         return
     }
     BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel, recordingNoteId = noteId)
-    selectedNote?.let {
+    selectedNote?.let { noteEntity ->
         EditNoteContent(
-            selectedNote = it,
+            selectedNote = noteEntity,
             viewModel = viewModel,
             navController = navController,
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
+            onClickPlay = { audioPlayerViewModel.play(it) },
+            onClickPause = { audioPlayerViewModel.pause() },
+            playerState = playerState,
         )
     }
 }
@@ -97,6 +103,9 @@ fun EditNoteContent(
     isNewNote: Boolean? = false,
     recordings: MutableState<List<RecordingEntity>>,
     openBottomSheet: MutableState<Boolean>,
+    onClickPlay: (String) -> Unit,
+    onClickPause: () -> Unit,
+    playerState: AudioPlayerViewModel.PlayerState,
 
 ) {
     val TAG = "EDIT NOTE CONTENT"
@@ -123,7 +132,11 @@ fun EditNoteContent(
             onBackClick = {
                 // If note has not been change, don't update the note
                 if (title != textFieldValueTitle || textContent != textFieldValueContent) {
-                    viewModel.updateNoteRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId ?: "000")
+                    viewModel.updateNoteRoom(
+                        title = textFieldValueTitle,
+                        txtContent = textFieldValueContent,
+                        id = noteId ?: "000",
+                    )
                 }
 
                 navController.popBackStack()
@@ -199,6 +212,9 @@ fun EditNoteContent(
             RecordingMenu(
                 noteId = selectedNote.noteId,
                 recordings = recordings.value,
+                onClickPlay = { onClickPlay(it) },
+                onClickPause = onClickPause,
+                playerState = playerState,
             )
         }
 

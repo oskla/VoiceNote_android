@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.entity.NoteEntity
-import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.NotesRepository
+import com.larsson.voicenote_android.helpers.getUUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

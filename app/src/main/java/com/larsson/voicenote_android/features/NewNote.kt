@@ -15,6 +15,7 @@ import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.ui.EditNoteContent
 import com.larsson.voicenote_android.ui.components.BottomSheet
+import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
@@ -27,8 +28,10 @@ fun NewNoteScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
+    audioPlayerViewModel: AudioPlayerViewModel,
 ) {
     val recordingState by recordingViewModel.recordings.collectAsState()
+    val playerState by audioPlayerViewModel.playerState.collectAsState()
 
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
@@ -47,17 +50,25 @@ fun NewNoteScreen(
         // Show loader
         return
     }
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel, recordingNoteId = selectedNote?.noteId)
+    BottomSheet(
+        openBottomSheet = openBottomSheet,
+        bottomSheetState = bottomSheetState,
+        recordingViewModel = recordingViewModel,
+        recordingNoteId = selectedNote?.noteId,
+    )
 
-    selectedNote?.let {
+    selectedNote?.let { noteEntity ->
         EditNoteContent(
-            selectedNote = it,
+            selectedNote = noteEntity,
             viewModel = notesViewModel,
             navController = navController,
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
             isNewNote = true,
+            onClickPlay = { audioPlayerViewModel.play(it) },
+            onClickPause = { /* TODO */ },
+            playerState = playerState,
         )
     }
 }

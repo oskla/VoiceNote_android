@@ -7,6 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import com.larsson.voicenote_android.di.audioPlayerModule
 import com.larsson.voicenote_android.di.daoModule
 import com.larsson.voicenote_android.di.dataModule
 import com.larsson.voicenote_android.di.recorder
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
         startKoin {
             androidLogger()
             androidContext(applicationContext)
-            koin.loadModules(listOf(dataModule, utils, viewModel, repositoryModule, daoModule, recorder))
+            koin.loadModules(listOf(dataModule, utils, viewModel, repositoryModule, daoModule, recorder, audioPlayerModule))
         }
 
         setContent {

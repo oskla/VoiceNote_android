@@ -33,6 +33,10 @@ import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
+enum class playerStateUI {
+    PLAYING, PAUSED, COMPLETED, IDLE, ERROR
+}
+
 @Composable
 fun RecordingMenuItemBase(
     title: String,
@@ -101,7 +105,10 @@ fun RecordingMenuItem(
     progress: Float? = null,
     isSelected: Boolean? = null,
     onClick: () -> Unit,
+    onClickPlay: () -> Unit,
+    onClickPause: () -> Unit,
     isFirstItem: Boolean,
+    isPlaying: Boolean,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -111,7 +118,6 @@ fun RecordingMenuItem(
             .clickable(interactionSource = interactionSource, indication = null) {
                 onClick.invoke()
             },
-
     ) {
         if (isSelected == true) {
             RecordingMenuItemPlayer(
@@ -122,6 +128,9 @@ fun RecordingMenuItem(
                 progress = progress ?: 0f,
                 color = color,
                 isFirstItem = isFirstItem,
+                onClickPlay = { onClickPlay() },
+                onClickPause = { onClickPause() },
+                isPlaying = isPlaying,
             )
         } else {
             RecordingMenuItemBase(
@@ -158,6 +167,9 @@ fun RecordingMenuItemPreview() {
                 onClick = {
                 },
                 isFirstItem = false,
+                onClickPlay = {},
+                onClickPause = {},
+                isPlaying = true,
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -170,6 +182,9 @@ fun RecordingMenuItemPreview() {
                 isSelected = false,
                 onClick = { },
                 isFirstItem = true,
+                onClickPlay = {},
+                onClickPause = {},
+                isPlaying = false,
             )
         }
     }

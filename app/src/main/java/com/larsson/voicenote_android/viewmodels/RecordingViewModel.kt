@@ -4,18 +4,17 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.data.getUUID
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.dateFormatter
-import java.io.File
-import java.time.LocalDateTime
-import java.util.UUID
+import com.larsson.voicenote_android.helpers.getUUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.time.LocalDateTime
 
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
 
@@ -24,13 +23,15 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
     private val _recordings = MutableStateFlow<List<RecordingEntity>>(emptyList())
     val recordings: StateFlow<List<RecordingEntity>> = _recordings
     private var audioFile: File? = null
+    private var localUUID: String = ""
 
     fun startRecording() {
-        recorder.startRecording(fileName = getUUID()).also {
+        recorder.startRecording(fileName = setLocalUUID()).also {
             // TODO fileName was an issue before. Find a way to increment ++ in name (both in Room and in cacheDir)
             audioFile = it
         }
     }
+
     suspend fun getAllRecordingsRoom(): List<RecordingEntity> {
         var allRecordings: MutableList<RecordingEntity>
         withContext(Dispatchers.IO) {
@@ -49,7 +50,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
     }
 
     suspend fun stopRecording(noteId: String? = "0000") {
-        val id = UUID.randomUUID().toString()
+        val id = getLocalUUID()
         val dateTimeString = LocalDateTime.now().toString()
         recorder.stop()
 
@@ -76,5 +77,14 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         viewModelScope.launch {
             recordingsRepo.deleteRecording(recording)
         }
+    }
+
+    private fun getLocalUUID(): String {
+        return localUUID
+    }
+
+    private fun setLocalUUID(): String {
+        localUUID = getUUID()
+        return localUUID
     }
 }
