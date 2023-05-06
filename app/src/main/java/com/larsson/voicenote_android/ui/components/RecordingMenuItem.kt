@@ -33,6 +33,10 @@ import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
+enum class PlayerStateUI {
+    PLAYING, PAUSED, COMPLETED, IDLE, ERROR
+}
+
 @Composable
 fun RecordingMenuItemBase(
     title: String,
@@ -40,7 +44,7 @@ fun RecordingMenuItemBase(
     id: String,
     duration: String,
     color: Color = MaterialTheme.colorScheme.secondary,
-    isFirstItem: Boolean
+    isFirstItem: Boolean,
 
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
@@ -48,24 +52,24 @@ fun RecordingMenuItemBase(
         modifier = Modifier.wrapContentHeight(),
         backgroundColor = MaterialTheme.colorScheme.background,
         elevation = 0.dp,
-        shape = if (isFirstItem) roundedCornerShape else RectangleShape
+        shape = if (isFirstItem) roundedCornerShape else RectangleShape,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp,
                 fontFamily = SpaceGroteskFontFamily,
-                fontWeight = FontWeight.W700
+                fontWeight = FontWeight.W700,
             )
             Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = date,
@@ -74,7 +78,7 @@ fun RecordingMenuItemBase(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
                 Text(
                     text = duration,
@@ -83,7 +87,7 @@ fun RecordingMenuItemBase(
                     fontWeight = FontWeight.Thin,
                     style = LocalTextStyle.current.copy(lineHeight = 15.sp),
                     fontSize = 14.sp,
-                    maxLines = 2
+                    maxLines = 2,
                 )
             }
         }
@@ -102,7 +106,9 @@ fun RecordingMenuItem(
     isSelected: Boolean? = null,
     onClick: () -> Unit,
     onClickPlay: () -> Unit,
-    isFirstItem: Boolean
+    onClickPause: () -> Unit,
+    isFirstItem: Boolean,
+    isPlaying: Boolean,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -111,8 +117,7 @@ fun RecordingMenuItem(
             .background(Color.Transparent)
             .clickable(interactionSource = interactionSource, indication = null) {
                 onClick.invoke()
-            }
-
+            },
     ) {
         if (isSelected == true) {
             RecordingMenuItemPlayer(
@@ -123,7 +128,9 @@ fun RecordingMenuItem(
                 progress = progress ?: 0f,
                 color = color,
                 isFirstItem = isFirstItem,
-                onClickPlay = { onClickPlay() }
+                onClickPlay = { onClickPlay() },
+                onClickPause = { onClickPause() },
+                isPlaying = isPlaying,
             )
         } else {
             RecordingMenuItemBase(
@@ -132,7 +139,7 @@ fun RecordingMenuItem(
                 id = id,
                 duration = if (duration.isNotBlank()) TimeFormatter().timeFormatter(duration.toLong()) else "",
                 color = color,
-                isFirstItem = isFirstItem
+                isFirstItem = isFirstItem,
             )
         }
     }
@@ -148,7 +155,7 @@ private const val componentName = "Recording Menu Item"
 fun RecordingMenuItemPreview() {
     VoiceNote_androidTheme {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
         ) {
             RecordingMenuItem(
                 title = "hej",
@@ -160,7 +167,9 @@ fun RecordingMenuItemPreview() {
                 onClick = {
                 },
                 isFirstItem = false,
-                onClickPlay = {}
+                onClickPlay = {},
+                onClickPause = {},
+                isPlaying = true,
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -173,7 +182,9 @@ fun RecordingMenuItemPreview() {
                 isSelected = false,
                 onClick = { },
                 isFirstItem = true,
-                onClickPlay = {}
+                onClickPlay = {},
+                onClickPause = {},
+                isPlaying = false,
             )
         }
     }
