@@ -73,7 +73,6 @@ fun BottomBox(
                 text = buttonTextLeft,
                 icon = iconLeft,
                 modifier = Modifier.weight(1f),
-                selected = selectedButtonLeft,
                 onClick = {
                     selectedButtonLeft = !selectedButtonLeft
                     selectedButtonRight = false
@@ -83,7 +82,6 @@ fun BottomBox(
             BottomBoxButton(
                 text = buttonTextRight,
                 icon = iconRight,
-                selected = selectedButtonRight,
                 modifier = Modifier.weight(1f),
                 onClick = {
                     selectedButtonLeft = false
