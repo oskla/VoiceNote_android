@@ -33,7 +33,7 @@ import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
-enum class PlayerStateUI {
+enum class playerStateUI {
     PLAYING, PAUSED, COMPLETED, IDLE, ERROR
 }
 
