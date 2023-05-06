@@ -57,11 +57,12 @@ fun EditNoteScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
-    audioPlayerViewModel: AudioPlayerViewModel
+    audioPlayerViewModel: AudioPlayerViewModel,
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
     val recordingState by recordingViewModel.recordings.collectAsState()
+    val playerState by audioPlayerViewModel.playerState.collectAsState()
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
@@ -86,7 +87,9 @@ fun EditNoteScreen(
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
-            onClickPlay = { audioPlayerViewModel.play(it) }
+            onClickPlay = { audioPlayerViewModel.play(it) },
+            onClickPause = { audioPlayerViewModel.pause() },
+            playerState = playerState,
         )
     }
 }
@@ -100,7 +103,9 @@ fun EditNoteContent(
     isNewNote: Boolean? = false,
     recordings: MutableState<List<RecordingEntity>>,
     openBottomSheet: MutableState<Boolean>,
-    onClickPlay: (String) -> Unit
+    onClickPlay: (String) -> Unit,
+    onClickPause: () -> Unit,
+    playerState: AudioPlayerViewModel.PlayerState,
 
 ) {
     val TAG = "EDIT NOTE CONTENT"
@@ -116,7 +121,7 @@ fun EditNoteContent(
     val blur = 3.dp
 
     ConstraintLayout(
-        modifier = Modifier
+        modifier = Modifier,
     ) {
         val (noteView, bottomBox, menu, background, moreMenu) = createRefs()
 
@@ -127,7 +132,11 @@ fun EditNoteContent(
             onBackClick = {
                 // If note has not been change, don't update the note
                 if (title != textFieldValueTitle || textContent != textFieldValueContent) {
-                    viewModel.updateNoteRoom(title = textFieldValueTitle, txtContent = textFieldValueContent, id = noteId ?: "000")
+                    viewModel.updateNoteRoom(
+                        title = textFieldValueTitle,
+                        txtContent = textFieldValueContent,
+                        id = noteId ?: "000",
+                    )
                 }
 
                 navController.popBackStack()
@@ -137,7 +146,7 @@ fun EditNoteContent(
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it },
             date = dateFormatter(selectedNote.date),
-            onMoreClick = { showMoreMenu = true }
+            onMoreClick = { showMoreMenu = true },
         )
 
         if (showMoreMenu) {
@@ -157,7 +166,7 @@ fun EditNoteContent(
                         top.linkTo(parent.top)
                         end.linkTo(parent.end)
                     },
-                onClickDismiss = { showMoreMenu = false }
+                onClickDismiss = { showMoreMenu = false },
             )
         }
 
@@ -173,7 +182,7 @@ fun EditNoteContent(
                     bottom.linkTo(bottomBox.top)
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
-                }
+                },
         ) {
             Box(
                 modifier = Modifier
@@ -182,7 +191,7 @@ fun EditNoteContent(
                     .zIndex(1F)
                     .clickable {
                         showRecordingMenu = false
-                    }
+                    },
             ) {}
         }
         AnimatedVisibility(
@@ -198,12 +207,14 @@ fun EditNoteContent(
                     end.linkTo(parent.end)
                     bottom.linkTo(bottomBox.top)
                 }
-                .zIndex(2f)
+                .zIndex(2f),
         ) {
             RecordingMenu(
                 noteId = selectedNote.noteId,
                 recordings = recordings.value,
-                onClickPlay = { onClickPlay(it) }
+                onClickPlay = { onClickPlay(it) },
+                onClickPause = onClickPause,
+                playerState = playerState,
             )
         }
 
@@ -221,7 +232,7 @@ fun EditNoteContent(
             onClickRight = {
                 showRecordingMenu = false
                 openBottomSheet.value = true
-            }
+            },
         )
     }
 }
