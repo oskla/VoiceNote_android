@@ -17,9 +17,10 @@ This is a work in progress!
 ***
 <img src="https://user-images.githubusercontent.com/90769758/228554256-1cad2284-b7bf-48e8-9cce-cc20327e76c6.png" alt="picture" width="30%"/> <img src="https://user-images.githubusercontent.com/90769758/228554270-98db7449-24ab-4cf0-abe7-161e2f0a1370.png" alt="picture" width="30%"/> <img src="https://user-images.githubusercontent.com/90769758/228554273-1007da08-54df-4d7d-aa7f-11868fe54592.png" alt="picture" width="30%"/> <img src="https://user-images.githubusercontent.com/90769758/228554282-1a3c8871-052a-4c8a-8450-568a2e343b74.png" alt="picture" width="30%"/> <img src="https://user-images.githubusercontent.com/90769758/228554275-20180e44-94fa-4c97-a2f5-d02b89741512.png" alt="picture" width="30%"/> <img src="https://user-images.githubusercontent.com/90769758/228554277-035d1928-12d9-4834-a231-746573054a88.png" alt="picture" width="30%"/>
 
+Quick overview of the app.
 https://user-images.githubusercontent.com/90769758/228557158-1329050d-f5a1-4f91-8d56-e38ad212f45f.mp4
 
-
+Demonstrating the recordings that belongs to the selected note with a bottom sheet
 https://user-images.githubusercontent.com/90769758/236868972-0513fea9-9d62-47f0-b804-29f16433e219.mp4
 
 
