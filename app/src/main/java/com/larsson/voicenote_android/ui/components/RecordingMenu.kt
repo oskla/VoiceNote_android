@@ -45,16 +45,17 @@ fun RecordingMenu(
                 RecordingMenuItem(
                     title = "You have no recordings yet",
                     date = "",
-                    duration = "",
+                    durationText = "",
                     id = "",
-                    progress = 0.6f, // TODO should come from viewmodel,
+                    progress = 60, // TODO should come from viewmodel,
                     isSelected = false,
-                    onClick = {
+                    onClickContainer = {
                     },
                     isFirstItem = true,
                     onClickPlay = { },
                     onClickPause = onClickPause,
-                    isPlaying = false, // TODO insert from viewmodel
+                    isPlaying = false, // TODO insert from viewmodel,
+                    seekTo = {}, // TODO insert from viewmodel
                 )
             }
         }
@@ -63,17 +64,19 @@ fun RecordingMenu(
             RecordingMenuItem(
                 title = recording.recordingTitle,
                 date = recording.recordingDate,
-                duration = recording.recordingDuration,
+                durationText = recording.recordingDuration,
                 id = recording.recordingId,
-                progress = 0.6f, // TODO should come from viewmodel,
+                progress = 60, // TODO should come from viewmodel,
                 isSelected = isSelected,
-                onClick = {
+                onClickContainer = {
                     selectedRecordingId = if (isSelected) null else recording.recordingId
                 },
                 isFirstItem = index < 1,
                 onClickPlay = { onClickPlay(recording.recordingTitle) },
                 onClickPause = onClickPause,
                 isPlaying = false, // TODO should come from viewmodel
+                seekTo = {}, // TODO insert from viewmodel
+
             )
             Divider(color = Color.Transparent, thickness = 2.dp)
         }
