@@ -21,8 +21,11 @@ fun ListContent(
     navController: NavController,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
+    onClickContainer: () -> Unit,
     playerState: AudioPlayerViewModel.PlayerState,
-    audioItems: List<AudioPlayerViewModel.AudioItem>,
+    currentPosition: Int,
+    seekTo: (Float) -> Unit,
+
 ) {
     when (listVariant) {
         ListVariant.NOTES -> {
@@ -38,7 +41,11 @@ fun ListContent(
                 onClickPlay = { onClickPlay(it) },
                 onClickPause = onClickPause,
                 playerState = playerState,
-                audioItems = audioItems,
+                onClickContainer = onClickContainer,
+                currentPosition = currentPosition,
+                seekTo = { position ->
+                    seekTo(position)
+                },
             )
         }
     }
