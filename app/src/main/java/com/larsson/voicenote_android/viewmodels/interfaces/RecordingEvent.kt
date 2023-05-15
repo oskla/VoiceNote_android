@@ -1,0 +1,1 @@
+package com.larsson.voicenote_android.viewmodels.interfaces
