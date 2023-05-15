@@ -33,6 +33,7 @@ import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
+// TODO is this really needed?
 enum class playerStateUI {
     PLAYING, PAUSED, COMPLETED, IDLE, ERROR
 }
@@ -101,14 +102,15 @@ fun RecordingMenuItem(
     title: String,
     date: String,
     id: String,
-    duration: String,
-    progress: Float? = null,
+    durationText: String,
+    progress: Int? = null,
     isSelected: Boolean? = null,
-    onClick: () -> Unit,
+    onClickContainer: () -> Unit,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     isFirstItem: Boolean,
     isPlaying: Boolean,
+    seekTo: (Float) -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -116,7 +118,7 @@ fun RecordingMenuItem(
         modifier = modifier
             .background(Color.Transparent)
             .clickable(interactionSource = interactionSource, indication = null) {
-                onClick.invoke()
+                onClickContainer.invoke()
             },
     ) {
         if (isSelected == true) {
@@ -124,20 +126,24 @@ fun RecordingMenuItem(
                 title = title,
                 date = dateFormatter(date),
                 id = id,
-                duration = TimeFormatter().timeFormatter(duration.toLong()),
-                progress = progress ?: 0f,
+                durationText = TimeFormatter().timeFormatter(durationText.toLong()),
+                durationFloat = durationText.toFloat(),
+                progress = progress ?: 0,
                 color = color,
                 isFirstItem = isFirstItem,
                 onClickPlay = { onClickPlay() },
                 onClickPause = { onClickPause() },
                 isPlaying = isPlaying,
+                seekTo = { position ->
+                    seekTo(position)
+                },
             )
         } else {
             RecordingMenuItemBase(
                 title = title,
                 date = dateFormatter(date),
                 id = id,
-                duration = if (duration.isNotBlank()) TimeFormatter().timeFormatter(duration.toLong()) else "",
+                duration = if (durationText.isNotBlank()) TimeFormatter().timeFormatter(durationText.toLong()) else "",
                 color = color,
                 isFirstItem = isFirstItem,
             )
@@ -161,15 +167,16 @@ fun RecordingMenuItemPreview() {
                 title = "hej",
                 date = "2023-04-01",
                 id = "5",
-                duration = "02:21",
-                progress = 0.4F,
+                durationText = "02:21",
+                progress = 40,
                 isSelected = true,
-                onClick = {
+                onClickContainer = {
                 },
                 isFirstItem = false,
                 onClickPlay = {},
                 onClickPause = {},
                 isPlaying = true,
+                seekTo = {},
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -177,14 +184,15 @@ fun RecordingMenuItemPreview() {
                 title = "hej",
                 date = "2023-04-01",
                 id = "5",
-                duration = "02:21",
+                durationText = "02:21",
                 progress = null,
                 isSelected = false,
-                onClick = { },
+                onClickContainer = { },
                 isFirstItem = true,
                 onClickPlay = {},
                 onClickPause = {},
                 isPlaying = false,
+                seekTo = {},
             )
         }
     }
