@@ -45,13 +45,15 @@ fun RecordingMenuItemPlayer(
     title: String,
     date: String,
     id: String,
-    duration: String,
-    progress: Float,
+    durationText: String,
+    durationFloat: Float,
+    progress: Int,
     color: Color = MaterialTheme.colorScheme.background,
     isFirstItem: Boolean,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     isPlaying: Boolean,
+    seekTo: (Float) -> Unit,
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
 
@@ -80,7 +82,7 @@ fun RecordingMenuItemPlayer(
                     fontWeight = FontWeight.W700,
                 )
                 Text(
-                    text = duration,
+                    text = durationText,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = SpaceGroteskFontFamily,
                     fontWeight = FontWeight.Thin,
@@ -92,9 +94,11 @@ fun RecordingMenuItemPlayer(
 
             LinearProgressBar(
                 backgroundColor = color,
-                progress = progress,
+                currentPosition = progress,
+                durationFloat = durationFloat,
                 color = MaterialTheme.colorScheme.onBackground,
-                onProgressChanged = {
+                seekTo = { position ->
+                    seekTo(position)
                 },
             )
             AudioPlayerRow(
@@ -183,26 +187,28 @@ fun RecordingMenuItemPlayerPreview() {
                 title = "hej",
                 date = "2023-04-01",
                 id = "5",
-                duration = "02:21",
-                progress = 0.6F,
+                durationText = "02:21",
+                progress = 30,
                 isFirstItem = true,
-                // isPlaying = false,
                 onClickPlay = { },
                 onClickPause = { /* TODO add onclick pause */ },
                 isPlaying = true,
+                durationFloat = 2000F,
+                seekTo = {},
             )
             Divider()
             RecordingMenuItemPlayer(
                 title = "hej",
                 date = "2023-04-01",
                 id = "5",
-                duration = "02:21",
-                progress = 0.4F,
+                durationText = "02:21",
+                progress = 40,
                 isFirstItem = false,
-                // isPlaying = true,
                 onClickPlay = { },
                 onClickPause = { /* TODO add onclick pause */ },
                 isPlaying = false,
+                durationFloat = 2000F,
+                seekTo = {},
             )
             Divider()
         }
