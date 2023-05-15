@@ -17,7 +17,7 @@ var dataModule = module {}
 var viewModel = module {
     viewModel<NotesViewModel> { NotesViewModel(dbRepo = get()) }
     viewModel<RecordingViewModel> { RecordingViewModel(recorder = get(), recordingsRepo = get()) }
-    viewModel<AudioPlayerViewModel>{ AudioPlayerViewModel(mediaManager = get()) }
+    viewModel<AudioPlayerViewModel> { AudioPlayerViewModel(mediaManager = get()) }
 }
 
 val recorder = module {
