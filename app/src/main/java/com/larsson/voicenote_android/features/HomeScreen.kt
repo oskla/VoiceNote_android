@@ -30,6 +30,7 @@ import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
+import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +45,6 @@ fun HomeScreen(
     val recordingsState by recordingViewModel.recordings.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
     val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
-    val audioItems by audioPlayerViewModel.audioItems.collectAsState()
 
     val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
@@ -55,7 +55,7 @@ fun HomeScreen(
         is AudioPlayerViewModel.PlayerState.Error -> Log.d("Home", "State: Error")
         AudioPlayerViewModel.PlayerState.Idle -> Log.d("Home", "State: Idle")
         AudioPlayerViewModel.PlayerState.Paused -> Log.d("Home", "State: Paused")
-        AudioPlayerViewModel.PlayerState.Playing -> Log.d("Home", "State: Playing")
+        is AudioPlayerViewModel.PlayerState.Playing -> Log.d("Home", "State: Playing")
     }
 
     Log.d("HOME", formatDuration(currentPosition))
@@ -83,7 +83,8 @@ fun HomeScreen(
         recordingsState = recordings,
         audioPlayerViewModel = audioPlayerViewModel,
         playerState = playerState,
-        audioItems = audioItems,
+        currentPosition = currentPosition,
+        seekTo = { audioPlayerViewModel.seekTo(it.toInt()) }
     )
 }
 
@@ -101,7 +102,8 @@ fun HomeScreenContent(
     bottomSheetState: SheetState,
     audioPlayerViewModel: AudioPlayerViewModel,
     playerState: AudioPlayerViewModel.PlayerState,
-    audioItems: List<AudioPlayerViewModel.AudioItem>,
+    currentPosition: Int,
+    seekTo: (Float) -> Unit,
 ) {
     val TAG = "HOME SCREEN"
 
@@ -125,13 +127,15 @@ fun HomeScreenContent(
                 recordings = recordingsState,
                 onClickPlay = {
                     Log.d(TAG, it)
-                    audioPlayerViewModel.play(it)
+                    audioPlayerViewModel.handlePlayerEvents(event = AudioPlayerEvent.Play(it))
                 },
                 onClickPause = {
                     audioPlayerViewModel.pause()
                 },
+                onClickContainer = { audioPlayerViewModel.handlePlayerEvents(AudioPlayerEvent.SetToIdle) },
                 playerState = playerState,
-                audioItems = audioItems,
+                currentPosition = currentPosition,
+                seekTo = { seekTo(it) }
             )
         }
         BottomBox(
