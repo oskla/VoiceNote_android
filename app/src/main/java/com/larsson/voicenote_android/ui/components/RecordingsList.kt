@@ -23,15 +23,15 @@ fun RecordingsList(
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     playerState: AudioPlayerViewModel.PlayerState,
-    audioItems: List<AudioPlayerViewModel.AudioItem>,
-
+    onClickContainer: () -> Unit,
+    currentPosition: Int,
+    seekTo: (Float) -> Unit,
 ) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(recordings.value) { index, recording ->
             val isSelected = (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
-            val mappedAudioItem = audioItems.find { it.recordingId == recording.recordingId } // Finds the audioItem that corresponds with the recording in the list
 
             Box() {
                 RecordingMenuItem(
@@ -39,15 +39,20 @@ fun RecordingsList(
                     title = recording.recordingTitle,
                     date = recording.recordingDate,
                     id = recording.recordingId,
-                    duration = recording.recordingDuration,
+                    durationText = recording.recordingDuration,
                     isSelected = isSelected,
-                    onClick = { selectedRecordingId = if (isSelected) null else recording.recordingId },
-                    isFirstItem = false,
-                    onClickPlay = {
-                        onClickPlay(recording.recordingId)
+                    onClickContainer = {
+                        selectedRecordingId = if (isSelected) null else recording.recordingId
+                        onClickContainer.invoke() // calls on event that resets player
                     },
+                    isFirstItem = false,
+                    onClickPlay = { onClickPlay(recording.recordingId) },
                     onClickPause = onClickPause,
-                    isPlaying = mappedAudioItem?.isPlaying ?: false,
+                    isPlaying = playerState is AudioPlayerViewModel.PlayerState.Playing,
+                    progress = currentPosition,
+                    seekTo = { position ->
+                        seekTo(position)
+                    },
                 )
             }
             if (index != recordings.value.size - 1) {
