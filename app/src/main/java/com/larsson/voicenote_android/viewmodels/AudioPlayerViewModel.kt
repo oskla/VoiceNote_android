@@ -3,28 +3,19 @@ package com.larsson.voicenote_android.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.MediaManager
+import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel() {
-
-    data class AudioItem(
-        val recordingId: String,
-        var isPlaying: Boolean = false,
-    )
 
     private val TAG = "AudioPlayerViewModel"
 
     private val _playerState = MutableStateFlow<PlayerState>(PlayerState.Idle)
     val playerState: StateFlow<PlayerState>
         get() = _playerState
-
-    private val _audioItems = MutableStateFlow<List<AudioItem>>(emptyList())
-    val audioItems: StateFlow<List<AudioItem>>
-        get() = _audioItems
 
     private val _currentPosition = MutableStateFlow(0)
     val currentPosition: StateFlow<Int>
@@ -33,7 +24,7 @@ class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel()
     init {
 
         if (mediaManager.isPlaying() == true) {
-            _playerState.value = PlayerState.Playing
+            _playerState.value = PlayerState.Playing()
         }
 
         viewModelScope.launch {
@@ -41,87 +32,99 @@ class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel()
                 if (mediaManager.isPlaying() == true) {
                     _currentPosition.value = mediaManager.getCurrentPosition() ?: 0
                 }
-                delay(1000)
+                delay(100)
             }
         }
     }
 
-    private fun pauseAllAudioItems() {
-        _audioItems.update { audioItems ->
-            audioItems.map { audioItem ->
-                audioItem.copy(isPlaying = false)
+    fun handlePlayerEvents(event: AudioPlayerEvent) {
+        when (event) {
+            AudioPlayerEvent.Pause -> {
+                pause()
+            }
+            is AudioPlayerEvent.Play -> {
+                play(event.recordingId)
+            }
+            AudioPlayerEvent.SetToComplete -> TODO()
+            AudioPlayerEvent.SetToIdle -> {
+                reset()
             }
         }
     }
 
-    private fun updateToIsPlaying(recordingId: String) {
-        _audioItems.update { audioItems ->
-            audioItems.map { audioItem ->
-                audioItem.copy(isPlaying = true)
-            }
-        }
-    }
-    private fun resume(recordingId: String) {
-        val updatePlayingState = audioItems.value.map { audioItem ->
-            if (audioItem.recordingId == recordingId) {
-                mediaManager.resume()
-                audioItem.copy(isPlaying = true)
-            } else {
-                audioItem.copy(isPlaying = false)
-            }
-        }
-
-        _audioItems.value = updatePlayingState
-        _playerState.value = PlayerState.Playing
+    private fun resume() {
+        mediaManager.resume()
+        _playerState.value = PlayerState.Playing()
         return
     }
 
     fun play(recordingId: String) {
-        // TODO having problem with setting the play button back to PLAY
-        if (isThisItemPlaying()) {
-            resume(recordingId)
-            updateToIsPlaying(recordingId)
+        if (playerState.value is PlayerState.Paused) {
+            resume()
+            viewModelScope.launch {
+                _playerState.emit(
+                    PlayerState.Playing(
+                        duration = getDuration(),
+                    ),
+                )
+            }
             return
         }
 
         // Playing new track
-        val newAudioItem = AudioItem(recordingId, isPlaying = true)
-        _audioItems.value = _audioItems.value + newAudioItem
-        mediaManager.start(newAudioItem.recordingId)
-
-        if (isPlaying() == true) {
-            _playerState.value = PlayerState.Playing
-        } else {
-            _playerState.value = PlayerState.Error(Throwable("Error playing"))
+        mediaManager.start(recordingId)
+        viewModelScope.launch {
+            if (isPlaying() == true) {
+                _playerState.emit(
+                    PlayerState.Playing(
+                        duration = getDuration() ?: 0,
+                    ),
+                )
+            } else {
+                _playerState.emit(
+                    PlayerState.Error(Throwable("Error playing")),
+                )
+            }
         }
     }
 
     fun pause() {
         mediaManager.pause()
-
-        // Set all audioItems to isPlaying = false
-        pauseAllAudioItems()
-
         _playerState.value = PlayerState.Paused
     }
 
-    private fun getCurrentRecordingId(): String? {
-        return mediaManager.getCurrentRecordingId()
+    private fun getDuration(): Int? {
+        return mediaManager.getDuration()
     }
+
+    private fun reset() {
+        mediaManager.reset()
+        _currentPosition.value = 0
+        _playerState.value = PlayerState.Idle
+    }
+
+    fun seekTo(position: Int) {
+        mediaManager.seekTo(position)
+
+        viewModelScope.launch {
+            _currentPosition.emit(position)
+        }
+    }
+
     private fun isPlaying(): Boolean? {
-        _playerState.value = PlayerState.Playing
+        viewModelScope.launch {
+            _playerState.emit(
+                PlayerState.Playing(
+                    duration = getDuration() ?: 0,
+                ),
+            )
+        }
         return mediaManager.isPlaying()
-    }
-
-    private fun isThisItemPlaying(): Boolean {
-        val currentRecordId = mediaManager.getCurrentRecordingId()
-
-        return currentRecordId != null
     }
 
     sealed class PlayerState {
         object Idle : PlayerState()
-        object Playing : PlayerState()
+        data class Playing(val duration: Int? = null) : PlayerState() // TODO not sure if needed. Now this information is gathered from room
         object Paused : PlayerState()
         object Completed : PlayerState()
         data class Error(val throwable: Throwable?) : PlayerState()
