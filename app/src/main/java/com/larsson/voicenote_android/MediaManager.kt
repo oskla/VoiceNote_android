@@ -36,18 +36,24 @@ class MediaManager(private val context: Context) {
         mediaPlayer?.start()
     }
 
-    fun getCurrentPath(): String? { // TODO remove this?
-        return currentPath
-    }
-
-    fun getCurrentRecordingId(): String? {
-        return currentRecordingId
+    fun seekTo(position: Int) {
+        mediaPlayer?.seekTo(position)
     }
 
     fun stop() {
         mediaPlayer?.stop()
         mediaPlayer?.release()
         mediaPlayer = null
+    }
+
+    fun reset() {
+        mediaPlayer?.reset()
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
+
+    fun getDuration(): Int? {
+        return mediaPlayer?.duration
     }
 
     fun pause() {
