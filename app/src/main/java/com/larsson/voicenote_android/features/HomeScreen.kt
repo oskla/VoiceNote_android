@@ -84,7 +84,7 @@ fun HomeScreen(
         audioPlayerViewModel = audioPlayerViewModel,
         playerState = playerState,
         currentPosition = currentPosition,
-        seekTo = { audioPlayerViewModel.seekTo(it.toInt()) }
+        seekTo = { audioPlayerViewModel.seekTo(it.toInt()) },
     )
 }
 
@@ -127,15 +127,15 @@ fun HomeScreenContent(
                 recordings = recordingsState,
                 onClickPlay = {
                     Log.d(TAG, it)
-                    audioPlayerViewModel.handlePlayerEvents(event = AudioPlayerEvent.Play(it))
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(it))
                 },
                 onClickPause = {
                     audioPlayerViewModel.pause()
                 },
-                onClickContainer = { audioPlayerViewModel.handlePlayerEvents(AudioPlayerEvent.SetToIdle) },
+                onClickContainer = { audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle) },
                 playerState = playerState,
                 currentPosition = currentPosition,
-                seekTo = { seekTo(it) }
+                seekTo = { seekTo(it) },
             )
         }
         BottomBox(
