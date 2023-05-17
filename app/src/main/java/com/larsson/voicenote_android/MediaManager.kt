@@ -35,7 +35,6 @@ class MediaManager(private val context: Context) {
     }
 
     fun resume() {
-        mediaPlayer?.seekTo(0)
         mediaPlayer?.start()
     }
 
@@ -77,4 +76,12 @@ class MediaManager(private val context: Context) {
     fun isPlaying(): Boolean? {
         return mediaPlayer?.isPlaying
     }
+}
+
+sealed class PlayerState {
+    object Idle : PlayerState()
+    object Playing : PlayerState()
+    object Paused : PlayerState()
+    object Completed : PlayerState()
+    data class Error(val throwable: Throwable?) : PlayerState()
 }
