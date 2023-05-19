@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.navigation.Screen
@@ -51,11 +52,15 @@ fun HomeScreen(
     var isDataFetched by remember { mutableStateOf(false) }
 
     when (playerState) {
-        AudioPlayerViewModel.PlayerState.Completed -> Log.d("Home", "State: Completed")
-        is AudioPlayerViewModel.PlayerState.Error -> Log.d("Home", "State: Error")
-        AudioPlayerViewModel.PlayerState.Idle -> Log.d("Home", "State: Idle")
-        AudioPlayerViewModel.PlayerState.Paused -> Log.d("Home", "State: Paused")
-        is AudioPlayerViewModel.PlayerState.Playing -> Log.d("Home", "State: Playing")
+        PlayerState.Completed -> Log.d("Home", "State: Completed")
+        is PlayerState.Error -> Log.d("Home", "State: Error")
+        PlayerState.Idle -> Log.d("Home", "State: Idle")
+        PlayerState.Paused -> Log.d("Home", "State: Paused")
+        is PlayerState.Playing -> Log.d("Home", "State: Playing")
+        PlayerState.End -> Log.d("Home", "State: End")
+        PlayerState.Initialized -> Log.d("Home", "State: Initialized")
+        PlayerState.Prepared -> Log.d("Home", "State: Prepared")
+        PlayerState.Stopped -> Log.d("Home", "State: Stopped")
     }
 
     Log.d("HOME", formatDuration(currentPosition))
@@ -84,7 +89,11 @@ fun HomeScreen(
         audioPlayerViewModel = audioPlayerViewModel,
         playerState = playerState,
         currentPosition = currentPosition,
-        seekTo = { audioPlayerViewModel.seekTo(it.toInt()) }
+        seekTo = { position ->
+            audioPlayerViewModel.handleUIEvents(
+                AudioPlayerEvent.SeekTo(position.toInt()),
+            )
+        },
     )
 }
 
@@ -101,7 +110,7 @@ fun HomeScreenContent(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     audioPlayerViewModel: AudioPlayerViewModel,
-    playerState: AudioPlayerViewModel.PlayerState,
+    playerState: PlayerState,
     currentPosition: Int,
     seekTo: (Float) -> Unit,
 ) {
@@ -127,15 +136,15 @@ fun HomeScreenContent(
                 recordings = recordingsState,
                 onClickPlay = {
                     Log.d(TAG, it)
-                    audioPlayerViewModel.handlePlayerEvents(event = AudioPlayerEvent.Play(it))
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(it))
                 },
                 onClickPause = {
                     audioPlayerViewModel.pause()
                 },
-                onClickContainer = { audioPlayerViewModel.handlePlayerEvents(AudioPlayerEvent.SetToIdle) },
+                onClickContainer = { audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle) },
                 playerState = playerState,
                 currentPosition = currentPosition,
-                seekTo = { seekTo(it) }
+                seekTo = { seekTo(it) },
             )
         }
         BottomBox(

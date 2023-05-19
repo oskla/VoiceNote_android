@@ -4,6 +4,6 @@ sealed interface AudioPlayerEvent {
     data class Play(val recordingId: String) : AudioPlayerEvent
     object Pause : AudioPlayerEvent
     object SetToIdle : AudioPlayerEvent
-    object SetToComplete : AudioPlayerEvent
+
+    data class SeekTo(val position: Int) : AudioPlayerEvent
 }
-// TODO add seekTo?

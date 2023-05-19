@@ -3,10 +3,10 @@ package com.larsson.voicenote_android.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
+import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.ui.NotesList
-import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 
 enum class ListVariant {
     NOTES,
@@ -22,10 +22,9 @@ fun ListContent(
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     onClickContainer: () -> Unit,
-    playerState: AudioPlayerViewModel.PlayerState,
+    playerState: PlayerState,
     currentPosition: Int,
     seekTo: (Float) -> Unit,
-
 ) {
     when (listVariant) {
         ListVariant.NOTES -> {

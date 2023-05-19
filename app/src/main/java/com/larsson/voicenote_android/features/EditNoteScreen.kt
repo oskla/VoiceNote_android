@@ -32,6 +32,7 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
+import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.helpers.dateFormatter
@@ -105,7 +106,7 @@ fun EditNoteContent(
     openBottomSheet: MutableState<Boolean>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: AudioPlayerViewModel.PlayerState,
+    playerState: PlayerState,
 
 ) {
     val TAG = "EDIT NOTE CONTENT"
