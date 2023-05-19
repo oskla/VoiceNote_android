@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
-import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 
 @Composable
 fun RecordingMenu(
@@ -29,7 +29,7 @@ fun RecordingMenu(
     recordings: List<RecordingEntity>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: AudioPlayerViewModel.PlayerState,
+    playerState: PlayerState,
 ) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
 
@@ -93,6 +93,6 @@ private const val componentName = "Recording Menu Item Player"
 @Composable
 fun RecordingMenuPreview() {
     VoiceNote_androidTheme {
-        RecordingMenu(noteId = "2", recordings = listOf(), onClickPlay = {}, onClickPause = {}, playerState = AudioPlayerViewModel.PlayerState.Paused)
+        RecordingMenu(noteId = "2", recordings = listOf(), onClickPlay = {}, onClickPause = {}, playerState = PlayerState.Paused)
     }
 }

@@ -14,15 +14,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 
 @Composable
 fun RecordingsList(
     recordings: MutableState<List<RecordingEntity>>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: AudioPlayerViewModel.PlayerState,
+    playerState: PlayerState,
     onClickContainer: () -> Unit,
     currentPosition: Int,
     seekTo: (Float) -> Unit,
@@ -48,7 +48,7 @@ fun RecordingsList(
                     isFirstItem = false,
                     onClickPlay = { onClickPlay(recording.recordingId) },
                     onClickPause = onClickPause,
-                    isPlaying = playerState is AudioPlayerViewModel.PlayerState.Playing,
+                    isPlaying = playerState is PlayerState.Playing,
                     progress = currentPosition,
                     seekTo = { position ->
                         seekTo(position)
