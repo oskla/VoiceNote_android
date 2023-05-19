@@ -2,19 +2,26 @@ package com.larsson.voicenote_android
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.util.Log
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.io.File
-import java.io.IOException
 
 class MediaManager(private val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
 
-    // private var onPreparedListener: (() -> Unit)? = null
     private var onCompletionListener: (() -> Unit)? = null
     private var currentPath: String? = null // TODO remove this?
-    private var currentRecordingId: String? = null
 
-    fun start(recordingId: String) {
+    private val _playerState = MutableStateFlow<PlayerState>(PlayerState.Idle)
+    val playerState: StateFlow<PlayerState> = _playerState
+
+    private val _currentPosition = MutableStateFlow(0)
+    val currentPosition: StateFlow<Int> = _currentPosition
+
+    suspend fun start(recordingId: String) {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
         }
@@ -22,65 +29,94 @@ class MediaManager(private val context: Context) {
         try {
             val file = File(context.cacheDir, recordingId).absolutePath.apply { currentPath = this }
             mediaPlayer?.reset()
+
             mediaPlayer?.setDataSource(file)
+            _playerState.emit(PlayerState.Initialized)
+
             mediaPlayer?.prepare()
-        } catch (e: IOException) {
+            _playerState.emit(PlayerState.Prepared)
+        } catch (e: Exception) {
+            _playerState.emit(PlayerState.Error(e))
             e.printStackTrace()
         }
+
         mediaPlayer?.setOnCompletionListener {
-            onCompletion()
+            onCompletionListener?.invoke()
         }
-        mediaPlayer?.seekTo(0)
+
         mediaPlayer?.start()
+        _playerState.emit(PlayerState.Playing)
+        setCurrentPosition()
     }
 
-    fun resume() {
+    suspend fun resume() {
         mediaPlayer?.start()
+        _playerState.emit(PlayerState.Playing)
+        setCurrentPosition()
     }
 
-    fun seekTo(position: Int) {
+    suspend fun seekTo(position: Int) {
         mediaPlayer?.seekTo(position)
+        setCurrentPosition(position)
     }
 
     fun setOnCompletionListener(listener: (() -> Unit)) {
         onCompletionListener = listener
-    }
-    private fun onCompletion() {
-        onCompletionListener?.invoke()
+        Log.d("mediaPlayer", "completeListener is set")
     }
 
-    fun stop() {
+    suspend fun stop() {
         mediaPlayer?.stop()
+        _playerState.emit(PlayerState.Stopped)
+
         mediaPlayer?.release()
+        _playerState.emit(PlayerState.End)
+
         mediaPlayer = null
     }
 
-    fun reset() {
+    suspend fun reset() {
         mediaPlayer?.reset()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        setPlayerState(PlayerState.Idle)
+        setCurrentPosition(0)
+    }
+
+    private suspend fun setCurrentPosition(position: Int? = null) {
+        if (position != null) {
+            _currentPosition.emit(position)
+            return
+        }
+
+        while (mediaPlayer?.isPlaying == true) {
+            if (mediaPlayer?.currentPosition != null) {
+                _currentPosition.emit(mediaPlayer?.currentPosition!!)
+            }
+
+            delay(200)
+        }
     }
 
     fun getDuration(): Int? {
         return mediaPlayer?.duration
     }
 
-    fun pause() {
+    suspend fun pause() {
         mediaPlayer?.pause()
+        setPlayerState(PlayerState.Paused)
     }
 
-    fun getCurrentPosition(): Int? {
-        return mediaPlayer?.currentPosition
-    }
-
-    fun isPlaying(): Boolean? {
-        return mediaPlayer?.isPlaying
+    suspend fun setPlayerState(state: PlayerState) {
+        _playerState.emit(state)
     }
 }
 
 sealed class PlayerState {
     object Idle : PlayerState()
+    object End : PlayerState()
+    object Initialized : PlayerState()
     object Playing : PlayerState()
+    object Prepared : PlayerState()
+    object Stopped : PlayerState()
     object Paused : PlayerState()
     object Completed : PlayerState()
     data class Error(val throwable: Throwable?) : PlayerState()
