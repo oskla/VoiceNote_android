@@ -15,8 +15,10 @@ import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.NoteItem
 
+// TODO doesn't need to be mutable list?
+
 @Composable
-fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavController, recordings: MutableState<List<RecordingEntity>>) {
+fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavController, recordings: List<RecordingEntity>) {
     LazyColumn(modifier = Modifier.padding(horizontal = 12.dp), userScrollEnabled = true) {
         itemsIndexed(notes.value) { _, note ->
 
@@ -26,7 +28,7 @@ fun NotesList(notes: MutableState<List<NoteEntity>>, navController: NavControlle
                     title = note.noteTitle,
                     txtContent = note.noteTxtContent,
                     id = note.noteId.toString(),
-                    containsRecordings = recordings.value.any { it.noteId == note.noteId },
+                    containsRecordings = recordings.any { it.noteId == note.noteId },
                     onClick = {
                         navController.navigate("${Screen.EditNote.route}/${note.noteId}")
                     },
