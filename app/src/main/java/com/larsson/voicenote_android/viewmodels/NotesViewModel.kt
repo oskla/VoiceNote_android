@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
+// TODO make handleUiEvents
+// TODO maybe use StateFlow instead of calling getNotes for example in UI
 class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
     private val TAG = "NotesViewModel"
