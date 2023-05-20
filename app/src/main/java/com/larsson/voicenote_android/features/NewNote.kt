@@ -18,6 +18,7 @@ import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
+import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +33,7 @@ fun NewNoteScreen(
 ) {
     val recordingState by recordingViewModel.recordings.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
+    val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
 
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
@@ -47,9 +49,10 @@ fun NewNoteScreen(
     }
 
     if (!isDataFetched) {
-        // Show loader
+        // TODO Show loader
         return
     }
+
     BottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
@@ -58,7 +61,7 @@ fun NewNoteScreen(
     )
 
     selectedNote?.let { noteEntity ->
-        EditNoteContent(
+        EditNoteContent( // TODO is this naming really the best?
             selectedNote = noteEntity,
             viewModel = notesViewModel,
             navController = navController,
@@ -66,9 +69,22 @@ fun NewNoteScreen(
             recordings = recordings,
             openBottomSheet = openBottomSheet,
             isNewNote = true,
-            onClickPlay = { audioPlayerViewModel.play(it) },
-            onClickPause = { /* TODO */ },
+            onClickPlay = {
+                audioPlayerViewModel.handleUIEvents(
+                    AudioPlayerEvent.Play(it),
+                )
+            },
+            onClickPause = {
+                audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
+            },
             playerState = playerState,
+            seekTo = { position ->
+                audioPlayerViewModel.handleUIEvents(
+                    AudioPlayerEvent.SeekTo(position.toInt()),
+                )
+            },
+            currentPosition = currentPosition,
+            onClickContainer = { audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle) },
         )
     }
 }
