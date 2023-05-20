@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -33,7 +34,6 @@ fun NoteView(
 ) {
     Column(
         modifier = modifier
-            //.fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
         BackHandler(true, onBackClick)
@@ -44,6 +44,7 @@ fun NoteView(
             onBackClick = onBackClick,
             onMoreClick = onMoreClick,
         )
+
         Text(
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onBackground.copy(0.3f),
@@ -51,7 +52,8 @@ fun NoteView(
             text = date,
             modifier = Modifier.fillMaxWidth().align(CenterHorizontally),
         )
-        androidx.compose.material3.TextField(
+
+        TextField(
             textStyle = MaterialTheme.typography.bodyMedium,
             colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.background,
