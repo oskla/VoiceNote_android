@@ -16,6 +16,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.LocalDateTime
 
+// TODO change name functionality
+// TODO delete recording (both file and from Room)
+// TODO make handleUiEvents
+
 class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
 
     val TAG = "RecordingViewModel"
