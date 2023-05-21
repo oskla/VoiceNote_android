@@ -1,5 +1,6 @@
-package com.larsson.voicenote_android.ui
+package com.larsson.voicenote_android.features
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -45,6 +46,7 @@ import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
+import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.launch
 
 // TODO on swipe back, do something else, now it's just empty
@@ -64,9 +66,28 @@ fun EditNoteScreen(
 
     val recordingState by recordingViewModel.recordings.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
+    val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
+
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
     val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
+
+    fun uiEventSetToIdle() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle)
+    fun uiEventPause() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
+    fun uiEventPlay(recordingId: String) = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Play(recordingId))
+    fun uiEventSeekTo(position: Int) = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
+
+    when (playerState) {
+        PlayerState.Completed -> Log.d("Home", "State: Completed")
+        is PlayerState.Error -> Log.d("Home", "State: Error") // TODO show error dialog
+        PlayerState.Idle -> Log.d("Home", "State: Idle")
+        PlayerState.Paused -> Log.d("Home", "State: Paused")
+        is PlayerState.Playing -> Log.d("Home", "State: Playing")
+        PlayerState.End -> Log.d("Home", "State: End")
+        PlayerState.Initialized -> Log.d("Home", "State: Initialized")
+        PlayerState.Prepared -> Log.d("Home", "State: Prepared")
+        PlayerState.Stopped -> Log.d("Home", "State: Stopped")
+    }
 
     LaunchedEffect(key1 = recordingState) {
         val note = viewModel.getNoteFromRoomById(id = noteId)
@@ -76,10 +97,17 @@ fun EditNoteScreen(
     }
 
     if (!isDataFetched) {
-        // Show loader
+        // TODO Show loader
         return
     }
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel, recordingNoteId = noteId)
+
+    BottomSheet(
+        openBottomSheet = openBottomSheet,
+        bottomSheetState = bottomSheetState,
+        recordingViewModel = recordingViewModel,
+        recordingNoteId = noteId,
+    )
+
     selectedNote?.let { noteEntity ->
         EditNoteContent(
             selectedNote = noteEntity,
@@ -88,9 +116,14 @@ fun EditNoteScreen(
             noteId = noteId,
             recordings = recordings,
             openBottomSheet = openBottomSheet,
-            onClickPlay = { audioPlayerViewModel.play(it) },
-            onClickPause = { audioPlayerViewModel.pause() },
+            onClickPlay = { recordingId -> uiEventPlay(recordingId) },
+            onClickPause = { uiEventPause() },
             playerState = playerState,
+            currentPosition = currentPosition,
+            onClickContainer = { uiEventSetToIdle() },
+            seekTo = { position ->
+                uiEventSeekTo(position.toInt())
+            },
         )
     }
 }
@@ -107,6 +140,9 @@ fun EditNoteContent(
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     playerState: PlayerState,
+    currentPosition: Int,
+    seekTo: (Float) -> Unit,
+    onClickContainer: () -> Unit,
 
 ) {
     val TAG = "EDIT NOTE CONTENT"
@@ -131,7 +167,7 @@ fun EditNoteContent(
                 .constrainAs(noteView) {}
                 .blur(if (showMoreMenu) blur else 0.dp),
             onBackClick = {
-                // If note has not been change, don't update the note
+                // If note has not changed, don't update the note
                 if (title != textFieldValueTitle || textContent != textFieldValueContent) {
                     viewModel.updateNoteRoom(
                         title = textFieldValueTitle,
@@ -211,11 +247,13 @@ fun EditNoteContent(
                 .zIndex(2f),
         ) {
             RecordingMenu(
-                noteId = selectedNote.noteId,
                 recordings = recordings.value,
-                onClickPlay = { onClickPlay(it) },
+                onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 playerState = playerState,
+                currentPosition = currentPosition,
+                onClickContainer = onClickContainer,
+                seekTo = seekTo,
             )
         }
 
