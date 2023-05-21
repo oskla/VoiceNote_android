@@ -53,7 +53,7 @@ fun HomeScreen(
 
     when (playerState) {
         PlayerState.Completed -> Log.d("Home", "State: Completed")
-        is PlayerState.Error -> Log.d("Home", "State: Error")
+        is PlayerState.Error -> Log.d("Home", "State: Error") // TODO add error screen / dialog
         PlayerState.Idle -> Log.d("Home", "State: Idle")
         PlayerState.Paused -> Log.d("Home", "State: Paused")
         is PlayerState.Playing -> Log.d("Home", "State: Playing")
@@ -62,8 +62,6 @@ fun HomeScreen(
         PlayerState.Prepared -> Log.d("Home", "State: Prepared")
         PlayerState.Stopped -> Log.d("Home", "State: Stopped")
     }
-
-    Log.d("HOME", formatDuration(currentPosition))
 
     LaunchedEffect(key1 = recordingsState) {
         val notes = notesViewModel.getAllNotesFromRoom()
@@ -74,7 +72,7 @@ fun HomeScreen(
     }
 
     if (!isDataFetched) {
-        // Show loader
+        // TODO Show loader
         return
     }
 
@@ -85,7 +83,7 @@ fun HomeScreen(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
-        recordingsState = recordings,
+        recordingsState = recordings.value,
         audioPlayerViewModel = audioPlayerViewModel,
         playerState = playerState,
         currentPosition = currentPosition,
@@ -104,7 +102,7 @@ fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     notesState: MutableState<List<NoteEntity>>,
-    recordingsState: MutableState<List<RecordingEntity>>,
+    recordingsState: List<RecordingEntity>,
     navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
@@ -134,9 +132,8 @@ fun HomeScreenContent(
                 notes = notesState,
                 navController = navController,
                 recordings = recordingsState,
-                onClickPlay = {
-                    Log.d(TAG, it)
-                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(it))
+                onClickPlay = { recordingId ->
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
                 },
                 onClickPause = {
                     audioPlayerViewModel.pause()
@@ -144,7 +141,7 @@ fun HomeScreenContent(
                 onClickContainer = { audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle) },
                 playerState = playerState,
                 currentPosition = currentPosition,
-                seekTo = { seekTo(it) },
+                seekTo = seekTo,
             )
         }
         BottomBox(
@@ -161,8 +158,3 @@ fun HomeScreenContent(
     }
 }
 
-private fun formatDuration(duration: Int): String {
-    val minutes = duration / 1000 / 60
-    val seconds = duration / 1000 % 60
-    return "$minutes:${String.format("%02d", seconds)}"
-}
