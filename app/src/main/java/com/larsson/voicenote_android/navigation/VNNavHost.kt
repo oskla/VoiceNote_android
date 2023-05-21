@@ -10,9 +10,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.larsson.voicenote_android.features.EditNoteScreen
 import com.larsson.voicenote_android.features.HomeScreen
 import com.larsson.voicenote_android.features.NewNoteScreen
-import com.larsson.voicenote_android.ui.EditNoteScreen
 import org.koin.androidx.compose.get
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +32,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 navController = navController,
                 openBottomSheet = openBottomSheet,
                 bottomSheetState = bottomSheetState,
-                audioPlayerViewModel = get()
+                audioPlayerViewModel = get(),
             )
         }
         composable("${Screen.NewNote.route}/{noteId}") { navBackStackEntry ->
@@ -45,7 +45,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
                     noteId = noteId,
-                    audioPlayerViewModel = get()
+                    audioPlayerViewModel = get(),
 
                 )
             }
@@ -62,7 +62,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     bottomSheetState = bottomSheetState,
                     noteId = noteId,
                     recordingViewModel = get(),
-                    audioPlayerViewModel = get()
+                    audioPlayerViewModel = get(),
                 )
             }
         }
