@@ -13,7 +13,6 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.ui.EditNoteContent
 import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
