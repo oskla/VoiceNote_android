@@ -41,15 +41,14 @@ fun RecordingMenu(
                     date = "",
                     durationText = "",
                     id = "",
-                    progress = 0, // TODO should come from viewmodel,
+                    progress = 0,
                     isSelected = false,
-                    onClickContainer = {
-                    },
+                    onClickContainer = {},
                     isFirstItem = true,
-                    onClickPlay = { },
+                    onClickPlay = {},
                     onClickPause = onClickPause,
-                    isPlaying = false, // TODO insert from viewmodel,
-                    seekTo = {}, // TODO insert from viewmodel
+                    isPlaying = false,
+                    seekTo = {},
                 )
             }
         }

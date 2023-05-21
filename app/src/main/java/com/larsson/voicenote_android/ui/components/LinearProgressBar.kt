@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.ui.components
 
-import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -37,10 +36,7 @@ fun LinearProgressBar(
     )
 
     LaunchedEffect(key1 = currentPosition) {
-        // if (currentPosition.toFloat() != sliderPosition.value) {
-        Log.d("Slider", "currentPosition: $currentPosition")
         sliderPosition.value = currentPosition.toFloat()
-        // }
     }
 
     Box(
@@ -59,4 +55,3 @@ fun LinearProgressBar(
         )
     }
 }
-

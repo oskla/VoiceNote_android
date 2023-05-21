@@ -28,7 +28,13 @@ fun RecordingMenuItemBase(
     duration: String,
     isFirstItem: Boolean,
 ) {
-    val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+    val roundedCornerShape = RoundedCornerShape(
+        topStart = 8.dp,
+        topEnd = 8.dp,
+        bottomStart = 0.dp,
+        bottomEnd = 0.dp,
+    )
+
     Card(
         modifier = Modifier.wrapContentHeight(),
         backgroundColor = MaterialTheme.colorScheme.background,

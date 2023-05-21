@@ -5,10 +5,10 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
-import java.io.File
-import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
 class Recorder(private val context: Context) : AudioRecorder {
 
@@ -89,7 +89,7 @@ class Recorder(private val context: Context) : AudioRecorder {
         recorder?.pause()
     }
 
-    override fun resumePlaying() {
+    override fun resumeRecording() {
         recorder?.resume()
     }
 }

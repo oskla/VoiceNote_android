@@ -38,10 +38,10 @@ enum class ToggleVariant {
 @Composable
 fun TopToggleBar(
     modifier: Modifier? = Modifier,
-    viewModel: NotesViewModel,
+    viewModel: NotesViewModel, // TODO Pass UI-events instead of passing VM
 
 ) {
-    var currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
+    val currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
 
     LaunchedEffect(key1 = true) {
     }
@@ -60,13 +60,21 @@ fun TopToggleBar(
         ) { component ->
             when (component) {
                 ToggleVariant.NOTES -> {
-                    ToggleBar(selectedLeft = true, selectedRight = false, currentVariant = currentVariant)
+                    ToggleBar(
+                        selectedLeft = true,
+                        selectedRight = false,
+                        currentVariant = currentVariant,
+                    )
                     viewModel.notesListVisible = true
                     viewModel.recordingsListVisible = false
                 }
 
                 ToggleVariant.RECORDINGS -> {
-                    ToggleBar(selectedLeft = false, selectedRight = true, currentVariant = currentVariant)
+                    ToggleBar(
+                        selectedLeft = false,
+                        selectedRight = true,
+                        currentVariant = currentVariant,
+                    )
                     viewModel.notesListVisible = false
                     viewModel.recordingsListVisible = true
                 }
@@ -117,11 +125,11 @@ fun ToggleBar(
 
 @Composable
 fun ToggleBox(
+    modifier: Modifier = Modifier,
     text: String,
     height: Dp = 32.dp,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier

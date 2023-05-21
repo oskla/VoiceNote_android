@@ -34,7 +34,7 @@ import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 fun MoreCircleMenu(
     modifier: Modifier = Modifier,
     onClickDelete: () -> Unit,
-    onClickShare: () -> Unit,
+    onClickShare: () -> Unit, // TODO later implementation
     onClickDismiss: () -> Unit,
 ) {
     var animate by remember { mutableStateOf(false) }
@@ -47,10 +47,15 @@ fun MoreCircleMenu(
 
     ) {
         AnimatedVisibility(visible = animate, enter = fadeIn(), exit = fadeOut()) {
-            Box(modifier = Modifier.background(Color.Black.copy(0.3f)).fillMaxSize().clickable {
-                animate = false
-                onClickDismiss.invoke()
-            })
+            Box(
+                modifier = Modifier
+                    .background(Color.Black.copy(0.3f))
+                    .fillMaxSize()
+                    .clickable {
+                        animate = false
+                        onClickDismiss.invoke()
+                    },
+            )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,

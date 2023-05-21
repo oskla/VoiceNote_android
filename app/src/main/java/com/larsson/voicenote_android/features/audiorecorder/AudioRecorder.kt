@@ -6,5 +6,5 @@ interface AudioRecorder {
     fun start(outputFile: File)
     suspend fun stop()
     fun pause()
-    fun resumePlaying()
+    fun resumeRecording()
 }
