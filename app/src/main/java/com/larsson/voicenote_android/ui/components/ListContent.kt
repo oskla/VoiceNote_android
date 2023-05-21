@@ -17,7 +17,7 @@ enum class ListVariant {
 fun ListContent(
     listVariant: ListVariant,
     notes: MutableState<List<NoteEntity>>,
-    recordings: MutableState<List<RecordingEntity>>,
+    recordings: List<RecordingEntity>,
     navController: NavController,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
@@ -37,7 +37,7 @@ fun ListContent(
         ListVariant.RECORDINGS -> {
             RecordingsList(
                 recordings = recordings,
-                onClickPlay = { onClickPlay(it) },
+                onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 playerState = playerState,
                 onClickContainer = onClickContainer,
@@ -45,6 +45,7 @@ fun ListContent(
                 seekTo = { position ->
                     seekTo(position)
                 },
+                isMenu = false,
             )
         }
     }
