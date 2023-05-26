@@ -17,8 +17,8 @@ class RecordingsRepository(private val recordingDao: RecordingDao) {
         Log.d("recording repo", id.toString())
     }
 
-    suspend fun getRecordingsCount(): Int {
-        return recordingDao.getRecordingsCount()
+    suspend fun getRecordingsCountPlusOne(): Int {
+        return recordingDao.getRecordingsCount() + 1
     }
 
     suspend fun getRecordingById(id: String): RecordingEntity {

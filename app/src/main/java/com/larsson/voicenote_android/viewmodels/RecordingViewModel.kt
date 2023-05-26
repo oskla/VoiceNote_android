@@ -73,7 +73,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
     }
 
     private suspend fun setTitleRecordingRoom(): String {
-        val count = recordingsRepo.getRecordingsCount()
+        val count = recordingsRepo.getRecordingsCountPlusOne()
         return "Recording $count"
     }
 
