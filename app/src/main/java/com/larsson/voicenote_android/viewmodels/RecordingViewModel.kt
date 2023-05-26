@@ -72,7 +72,7 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         Log.d(TAG, "NoteId on Recording: $noteId")
     }
 
-    suspend fun setTitleRecordingRoom(): String {
+    private suspend fun setTitleRecordingRoom(): String {
         val count = recordingsRepo.getRecordingsCount()
         return "Recording $count"
     }
