@@ -23,6 +23,9 @@ interface RecordingDao {
     )
     suspend fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity>
 
+    @Query("SELECT COUNT(*) FROM $RECORDINGS_TABLE")
+    suspend fun getRecordingsCount(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
 
