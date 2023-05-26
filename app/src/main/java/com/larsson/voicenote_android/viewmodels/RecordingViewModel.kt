@@ -34,6 +34,9 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
         }
     }
 
+    fun handleUiEvents() {
+    }
+
     suspend fun getAllRecordingsRoom(): List<RecordingEntity> {
         var allRecordings: MutableList<RecordingEntity>
         withContext(Dispatchers.IO) {
