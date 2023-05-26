@@ -26,6 +26,7 @@ class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel()
         cleanup()
     }
 
+    // TODO add here a clear or stop function that is triggered when leaving screen (back button)
     fun handleUIEvents(event: AudioPlayerEvent) {
         when (event) {
             AudioPlayerEvent.Pause -> { pause() }
@@ -42,11 +43,13 @@ class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel()
     }
 
     private fun handleCompletion() {
-        setPlayerState(PlayerState.Completed) // TODO maybe this can be inside class also?
-        mediaManager.getDuration()?.let { seekTo(it) }
+        setPlayerState(PlayerState.Completed)
+        mediaManager.getDuration()?.let { position ->
+            seekTo(position)
+        }
     }
 
-    fun play(recordingId: String) {
+    private fun play(recordingId: String) {
         // Resume track if one is already paused
         if (playerState.value is PlayerState.Paused) {
             viewModelScope.launch {
