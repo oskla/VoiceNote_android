@@ -13,25 +13,25 @@ import com.larsson.voicenote_android.data.entity.RecordingEntity
 interface RecordingDao {
 
     @Query(value = "SELECT * FROM $RECORDINGS_TABLE ORDER BY recording_date DESC")
-    suspend fun getAllRecordings(): MutableList<RecordingEntity>
+    fun getAllRecordings(): MutableList<RecordingEntity>
 
     @Query("SELECT * FROM $RECORDINGS_TABLE WHERE recordingId LIKE :id")
-    suspend fun getRecording(id: String): RecordingEntity
+    fun getRecording(id: String): RecordingEntity
 
     @Query(
         "SELECT * FROM $RECORDINGS_TABLE WHERE RECORDINGS_TABLE.noteId LIKE :id",
     )
-    suspend fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity>
+    fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity>
 
     @Query("SELECT COUNT(*) FROM $RECORDINGS_TABLE")
-    suspend fun getRecordingsCount(): Int
+    fun getRecordingsCount(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
+    fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
 
     @Update
-    suspend fun updateRecording(recordingEntity: RecordingEntity)
+    fun updateRecording(recordingEntity: RecordingEntity)
 
     @Delete
-    suspend fun deleteRecording(recordingEntity: RecordingEntity)
+    fun deleteRecording(recordingEntity: RecordingEntity)
 }

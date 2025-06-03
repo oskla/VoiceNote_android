@@ -12,20 +12,20 @@ import com.larsson.voicenote_android.data.entity.NoteEntity
 @Dao
 interface NoteDao {
     @Query(value = "SELECT * FROM $NOTES_TABLE ORDER BY date DESC")
-    suspend fun getAllNotes(): MutableList<NoteEntity>
+    fun getAllNotes(): MutableList<NoteEntity>
 
     @Query("SELECT * FROM $NOTES_TABLE WHERE noteId LIKE :id")
-    suspend fun getNote(id: String): NoteEntity
+    fun getNote(id: String): NoteEntity
 
     @Query("DELETE FROM $NOTES_TABLE")
-    suspend fun deleteAllNotes()
+    fun deleteAllNotes()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNote(noteEntity: NoteEntity): Long
+    fun insertNote(noteEntity: NoteEntity): Long
 
     @Update
-    suspend fun updateNote(noteEntity: NoteEntity)
+    fun updateNote(noteEntity: NoteEntity)
 
     @Delete
-    suspend fun deleteNote(noteEntity: NoteEntity)
+    fun deleteNote(noteEntity: NoteEntity)
 }
