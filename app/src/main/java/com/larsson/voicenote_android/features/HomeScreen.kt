@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.features // ktlint-disable package-name
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +10,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,12 +43,11 @@ fun HomeScreen(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
 ) {
-    val recordingsState by recordingViewModel.recordings.collectAsState()
+    val recordingsState = recordingViewModel.recordings.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
     val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
 
     val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
-    val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
 
     when (playerState) {
@@ -63,11 +62,9 @@ fun HomeScreen(
         PlayerState.Stopped -> Log.d("Home", "State: Stopped")
     }
 
-    LaunchedEffect(key1 = recordingsState) {
+    LaunchedEffect(key1 = recordingsState.value) {
         val notes = notesViewModel.getAllNotesFromRoom()
-        val fetchedRecordings = recordingViewModel.getAllRecordingsRoom()
         notesState.value = notes
-        recordings.value = fetchedRecordings
         isDataFetched = true
     }
 
@@ -83,7 +80,7 @@ fun HomeScreen(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
-        recordingsState = recordings.value,
+        recordingsState = recordingsState, // TODO pass the actual stuff from viewmodel and not the other list
         audioPlayerViewModel = audioPlayerViewModel,
         playerState = playerState,
         currentPosition = currentPosition,
@@ -95,14 +92,13 @@ fun HomeScreen(
     )
 }
 
-@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     notesState: MutableState<List<NoteEntity>>,
-    recordingsState: List<RecordingEntity>,
+    recordingsState: State<List<RecordingEntity>>,
     navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
@@ -116,7 +112,11 @@ fun HomeScreenContent(
 
     val notesListVisible = notesViewModel.notesListVisible
 
-    BottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, recordingViewModel = recordingViewModel)
+    BottomSheet(
+        openBottomSheet = openBottomSheet,
+        bottomSheetState = bottomSheetState,
+        recordingViewModel = recordingViewModel
+    )
 
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
@@ -131,7 +131,7 @@ fun HomeScreenContent(
                 listVariant = if (notesListVisible) ListVariant.NOTES else ListVariant.RECORDINGS,
                 notes = notesState,
                 navController = navController,
-                recordings = recordingsState,
+                recordings = recordingsState.value,
                 onClickPlay = { recordingId ->
                     audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
                 },
@@ -151,7 +151,7 @@ fun HomeScreenContent(
             },
             onClickLeft = {
                 notesViewModel.addNoteToRoom("Title", "").also { newNote ->
-                    navController.navigate("${Screen.NewNote.route}/${newNote.noteId}")
+                    navController.navigate("${Screen.EditNote.route}/${newNote.noteId}")
                 }
             },
         )

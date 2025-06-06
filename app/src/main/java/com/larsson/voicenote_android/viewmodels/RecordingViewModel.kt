@@ -7,19 +7,20 @@ import com.larsson.voicenote_android.data.entity.RecordingEntity
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.getUUID
-import kotlinx.coroutines.Dispatchers
+import java.io.File
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.time.LocalDateTime
 
 // TODO change name functionality
 // TODO delete recording (both file and from Room)
 // TODO make handleUiEvents
 
-class RecordingViewModel(private val recorder: Recorder, private val recordingsRepo: RecordingsRepository) : ViewModel() {
+class RecordingViewModel(
+    private val recorder: Recorder,
+    private val recordingsRepo: RecordingsRepository
+) : ViewModel() {
 
     val TAG = "RecordingViewModel"
 
@@ -28,56 +29,38 @@ class RecordingViewModel(private val recorder: Recorder, private val recordingsR
     private var audioFile: File? = null
     private var localUUID: String = ""
 
+    init {
+        viewModelScope.launch {
+            recordingsRepo.getRecordings().collect { recordingEntity ->
+                _recordings.value = recordingEntity
+            }
+        }
+    }
+
     fun startRecording() {
         recorder.startRecording(fileName = setLocalUUID()).also {
             audioFile = it
         }
     }
 
-    fun handleUiEvents() {
-    }
-
-    suspend fun getAllRecordingsRoom(): List<RecordingEntity> {
-        var allRecordings: MutableList<RecordingEntity>
-        withContext(Dispatchers.IO) {
-            allRecordings = recordingsRepo.getRecordings()
-        }
-        _recordings.value = allRecordings
-        return allRecordings
-    }
-
-    private suspend fun getRecordingByIdRoom(id: String) {
-        recordingsRepo.getRecordingById(id)
-    }
-
-    suspend fun getRecordingsTiedToNoteById(id: String): List<RecordingEntity> {
+    fun getRecordingsTiedToNoteById(id: String): Flow<List<RecordingEntity>> {
         return recordingsRepo.getRecordingsTiedToNoteById(id = id)
     }
 
-    suspend fun stopRecording(noteId: String? = "0000") {
+    fun stopRecording(noteId: String? = "0000") {
         val id = getLocalUUID()
-        val dateTimeString = LocalDateTime.now().toString()
         recorder.stop()
 
-        recordingsRepo.addRecording(
-            RecordingEntity(
-                recordingTitle = setTitleRecordingRoom(),
-                recordingId = id,
-                recordingLink = audioFile?.path.toString(),
-                recordingDate = dateTimeString,
-                recordingDuration = recorder.getMetaData(),
-                noteId = noteId ?: "0000",
-            ),
-        )
+        viewModelScope.launch {
+            recordingsRepo.stopRecording(
+                id = id,
+                link = audioFile?.path.toString(),
+                duration = recorder.getMetadataDuration(),
+                noteId = noteId ?: "0000"
+            )
+        }
 
-        getRecordingByIdRoom(id)
-        getAllRecordingsRoom()
         Log.d(TAG, "NoteId on Recording: $noteId")
-    }
-
-    private suspend fun setTitleRecordingRoom(): String {
-        val count = recordingsRepo.getRecordingsCountPlusOne()
-        return "Recording $count"
     }
 
     suspend fun deleteRecordingFile() {

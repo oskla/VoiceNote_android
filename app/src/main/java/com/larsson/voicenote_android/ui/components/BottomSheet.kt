@@ -18,14 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
 import com.larsson.voicenote_android.ui.lottie.LottieLRecording
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
-import kotlinx.coroutines.launch
 
 // TODO ask for permission again if you say no
 
@@ -39,7 +37,6 @@ fun BottomSheet(
     recordingNoteId: String? = null
 ) {
     val TAG = "Bottom Sheet"
-    val coroutineScope = rememberCoroutineScope()
     if (openBottomSheet.value) {
         LaunchedEffect(key1 = true) {
             recordingViewModel.startRecording()
@@ -49,10 +46,7 @@ fun BottomSheet(
         ModalBottomSheet(
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = {
-                coroutineScope.launch {
-                    recordingViewModel.stopRecording(noteId = recordingNoteId)
-                    recordingViewModel.getAllRecordingsRoom()
-                }
+                recordingViewModel.stopRecording(noteId = recordingNoteId)
                 openBottomSheet.value = false
             },
             sheetState = bottomSheetState,

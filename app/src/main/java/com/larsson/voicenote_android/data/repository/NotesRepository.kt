@@ -6,17 +6,16 @@ import com.larsson.voicenote_android.data.room.NoteDao
 
 class NotesRepository(private val noteDao: NoteDao) {
 
-    suspend fun getNotes(): MutableList<NoteEntity> {
+    fun getNotes(): MutableList<NoteEntity> {
         return noteDao.getAllNotes()
     }
 
     suspend fun addNote(noteEntity: NoteEntity) {
         Log.d("note repo", "Note added! ${noteEntity.noteTitle}")
-        val id = noteDao.insertNote(noteEntity)
-        Log.d("note repo", id.toString())
+        noteDao.insertNote(noteEntity)
     }
 
-    suspend fun getNoteById(id: String): NoteEntity {
+    fun getNoteById(id: String): NoteEntity {
         return noteDao.getNote(id)
     }
 
@@ -27,7 +26,8 @@ class NotesRepository(private val noteDao: NoteDao) {
     suspend fun deleteNote(noteEntity: NoteEntity) {
         noteDao.deleteNote(noteEntity)
     }
-    suspend fun deleteAllNotes() {
+
+    fun deleteAllNotes() {
         noteDao.deleteAllNotes()
     }
 }

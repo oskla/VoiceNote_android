@@ -17,6 +17,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,9 +68,10 @@ fun EditNoteScreen(
     val recordingState by recordingViewModel.recordings.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
     val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
+    val recordingsTiedToNoteState = recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
+
 
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
-    val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
 
     fun uiEventSetToIdle() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle)
@@ -91,7 +93,6 @@ fun EditNoteScreen(
 
     LaunchedEffect(key1 = recordingState) {
         val note = viewModel.getNoteFromRoomById(id = noteId)
-        recordings.value = recordingViewModel.getRecordingsTiedToNoteById(noteId)
         selectedNote = note
         isDataFetched = true
     }
@@ -114,7 +115,7 @@ fun EditNoteScreen(
             viewModel = viewModel,
             navController = navController,
             noteId = noteId,
-            recordings = recordings,
+            recordings = recordingsTiedToNoteState,
             openBottomSheet = openBottomSheet,
             onClickPlay = { recordingId -> uiEventPlay(recordingId) },
             onClickPause = { uiEventPause() },
@@ -134,8 +135,7 @@ fun EditNoteContent(
     viewModel: NotesViewModel,
     navController: NavController,
     noteId: String?,
-    isNewNote: Boolean? = false,
-    recordings: MutableState<List<RecordingEntity>>,
+    recordings: State<List<RecordingEntity>>,
     openBottomSheet: MutableState<Boolean>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,

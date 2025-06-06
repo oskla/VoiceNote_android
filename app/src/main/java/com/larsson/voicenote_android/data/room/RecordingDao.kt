@@ -8,26 +8,27 @@ import androidx.room.Query
 import androidx.room.Update
 import com.larsson.voicenote_android.data.entity.RECORDINGS_TABLE
 import com.larsson.voicenote_android.data.entity.RecordingEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecordingDao {
 
     @Query(value = "SELECT * FROM $RECORDINGS_TABLE ORDER BY recording_date DESC")
-    fun getAllRecordings(): MutableList<RecordingEntity>
+    fun getAllRecordings(): Flow<List<RecordingEntity>>
 
     @Query("SELECT * FROM $RECORDINGS_TABLE WHERE recordingId LIKE :id")
-    fun getRecording(id: String): RecordingEntity
+    fun getRecording(id: String): Flow<RecordingEntity>
 
     @Query(
         "SELECT * FROM $RECORDINGS_TABLE WHERE RECORDINGS_TABLE.noteId LIKE :id",
     )
-    fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity>
+    fun getRecordingsTiedToNoteById(id: String): Flow<List<RecordingEntity>>
 
     @Query("SELECT COUNT(*) FROM $RECORDINGS_TABLE")
-    fun getRecordingsCount(): Int
+    fun getRecordingsCount(): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
+    suspend fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
 
     @Update
     fun updateRecording(recordingEntity: RecordingEntity)
