@@ -27,6 +27,10 @@ interface RecordingDao {
     @Query("SELECT COUNT(*) FROM $RECORDINGS_TABLE")
     fun getRecordingsCount(): Flow<Int>
 
+    // Used for naming e.g "Recording 7", basically just counting items without userTitle
+    @Query("SELECT MAX(recording_number) FROM $RECORDINGS_TABLE WHERE recording_title IS NULL ORDER BY recording_number ASC")
+    fun getNumberOfRecordings(): Flow<Int?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
 

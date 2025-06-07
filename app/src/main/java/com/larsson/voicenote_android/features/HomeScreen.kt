@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.NoteEntity
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.BottomSheet
@@ -80,7 +80,7 @@ fun HomeScreen(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
-        recordingsState = recordingsState, // TODO pass the actual stuff from viewmodel and not the other list
+        recordingsState = recordingsState,
         audioPlayerViewModel = audioPlayerViewModel,
         playerState = playerState,
         currentPosition = currentPosition,
@@ -98,7 +98,7 @@ fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     notesState: MutableState<List<NoteEntity>>,
-    recordingsState: State<List<RecordingEntity>>,
+    recordingsState: State<List<Recording>>,
     navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,

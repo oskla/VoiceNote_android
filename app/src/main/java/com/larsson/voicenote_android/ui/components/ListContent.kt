@@ -5,8 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.NoteEntity
-import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.ui.NotesList
+import com.larsson.voicenote_android.data.repository.Recording
 
 enum class ListVariant {
     NOTES,
@@ -17,7 +16,7 @@ enum class ListVariant {
 fun ListContent(
     listVariant: ListVariant,
     notes: MutableState<List<NoteEntity>>,
-    recordings: List<RecordingEntity>,
+    recordings: List<Recording>,
     navController: NavController,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,

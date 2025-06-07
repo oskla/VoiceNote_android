@@ -12,13 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
 @Composable
 fun RecordingMenu(
     modifier: Modifier = Modifier,
-    recordings: List<RecordingEntity>,
+    recordings: List<Recording>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     playerState: PlayerState,
@@ -26,7 +26,7 @@ fun RecordingMenu(
     currentPosition: Int,
     seekTo: (Float) -> Unit,
 
-) {
+    ) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()

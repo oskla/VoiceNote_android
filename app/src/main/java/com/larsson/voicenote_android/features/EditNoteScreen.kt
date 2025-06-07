@@ -36,7 +36,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.entity.NoteEntity
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.BottomSheet
@@ -68,7 +68,8 @@ fun EditNoteScreen(
     val recordingState by recordingViewModel.recordings.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
     val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
-    val recordingsTiedToNoteState = recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
+    val recordingsTiedToNoteState =
+        recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
 
 
     var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
@@ -76,8 +77,11 @@ fun EditNoteScreen(
 
     fun uiEventSetToIdle() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle)
     fun uiEventPause() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
-    fun uiEventPlay(recordingId: String) = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Play(recordingId))
-    fun uiEventSeekTo(position: Int) = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
+    fun uiEventPlay(recordingId: String) =
+        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Play(recordingId))
+
+    fun uiEventSeekTo(position: Int) =
+        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
 
     when (playerState) {
         PlayerState.Completed -> Log.d("Home", "State: Completed")
@@ -135,7 +139,7 @@ fun EditNoteContent(
     viewModel: NotesViewModel,
     navController: NavController,
     noteId: String?,
-    recordings: State<List<RecordingEntity>>,
+    recordings: State<List<Recording>>,
     openBottomSheet: MutableState<Boolean>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
@@ -144,7 +148,7 @@ fun EditNoteContent(
     seekTo: (Float) -> Unit,
     onClickContainer: () -> Unit,
 
-) {
+    ) {
     val TAG = "EDIT NOTE CONTENT"
     val title by remember { mutableStateOf(selectedNote.noteTitle) }
     val textContent by remember { mutableStateOf(selectedNote.noteTxtContent) }
@@ -236,7 +240,14 @@ fun EditNoteContent(
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomEnd = 0.dp, bottomStart = 0.dp))
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 8.dp,
+                        topEnd = 8.dp,
+                        bottomEnd = 0.dp,
+                        bottomStart = 0.dp
+                    )
+                )
                 .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * 0.5f)
                 .constrainAs(menu) {
                     bottom.linkTo(bottomBox.top)

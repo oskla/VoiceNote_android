@@ -15,12 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.data.repository.Recording
 
 @Composable
 fun RecordingsList(
     isMenu: Boolean,
-    recordings: List<RecordingEntity>,
+    recordings: List<Recording>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     playerState: PlayerState,
@@ -33,22 +33,22 @@ fun RecordingsList(
 
     LazyColumn(modifier = Modifier.padding(horizontal = horizontalPadding), userScrollEnabled = true) {
         itemsIndexed(recordings) { index, recording ->
-            val isSelected = (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
+            val isSelected = (recording.id == selectedRecordingId) // Checks what recording is actually pressed.
 
             Box() {
                 RecordingMenuItem(
                     color = MaterialTheme.colorScheme.background,
-                    title = recording.recordingTitle,
-                    date = recording.recordingDate,
-                    id = recording.recordingId,
-                    durationText = recording.recordingDuration,
+                    title = recording.userTitle ?: "Recording ${recording.recordingNumber}",
+                    date = recording.date,
+                    id = recording.id,
+                    durationText = recording.duration,
                     isSelected = isSelected,
                     onClickContainer = {
-                        selectedRecordingId = if (isSelected) null else recording.recordingId
+                        selectedRecordingId = if (isSelected) null else recording.id
                         onClickContainer.invoke() // calls on event that resets player
                     },
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
-                    onClickPlay = { onClickPlay(recording.recordingId) },
+                    onClickPlay = { onClickPlay(recording.id) },
                     onClickPause = onClickPause,
                     isPlaying = playerState is PlayerState.Playing,
                     progress = currentPosition,

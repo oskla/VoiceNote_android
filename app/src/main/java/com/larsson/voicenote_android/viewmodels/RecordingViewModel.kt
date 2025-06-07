@@ -3,7 +3,7 @@ package com.larsson.voicenote_android.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.features.audiorecorder.Recorder
 import com.larsson.voicenote_android.helpers.getUUID
@@ -24,15 +24,15 @@ class RecordingViewModel(
 
     val TAG = "RecordingViewModel"
 
-    private val _recordings = MutableStateFlow<List<RecordingEntity>>(emptyList())
-    val recordings: StateFlow<List<RecordingEntity>> = _recordings
+    private val _recordings = MutableStateFlow<List<Recording>>(emptyList())
+    val recordings: StateFlow<List<Recording>> = _recordings
     private var audioFile: File? = null
     private var localUUID: String = ""
 
     init {
         viewModelScope.launch {
-            recordingsRepo.getRecordings().collect { recordingEntity ->
-                _recordings.value = recordingEntity
+            recordingsRepo.getRecordings().collect { recording ->
+                _recordings.value = recording
             }
         }
     }
@@ -43,7 +43,7 @@ class RecordingViewModel(
         }
     }
 
-    fun getRecordingsTiedToNoteById(id: String): Flow<List<RecordingEntity>> {
+    fun getRecordingsTiedToNoteById(id: String): Flow<List<Recording>> {
         return recordingsRepo.getRecordingsTiedToNoteById(id = id)
     }
 
@@ -66,11 +66,11 @@ class RecordingViewModel(
     suspend fun deleteRecordingFile() {
     }
 
-    fun updateFileNameRecording(recording: RecordingEntity) {
-        viewModelScope.launch {
-            recordingsRepo.deleteRecording(recording)
-        }
-    }
+//    fun updateFileNameRecording(recording: RecordingEntity) {
+//        viewModelScope.launch {
+//            recordingsRepo.deleteRecording(recording)
+//        }
+//    }
 
     private fun getLocalUUID(): String {
         return localUUID

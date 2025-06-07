@@ -3,14 +3,17 @@ package com.larsson.voicenote_android.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.larsson.voicenote_android.data.repository.Recording
 
 const val RECORDINGS_TABLE = "RECORDINGS_TABLE"
 
 @Entity(tableName = RECORDINGS_TABLE)
 data class RecordingEntity(
     @PrimaryKey(autoGenerate = false) @ColumnInfo val recordingId: String,
+    @ColumnInfo(name = "recording_number")
+    val recordingNumber: Int,
     @ColumnInfo(name = "recording_title")
-    val recordingTitle: String,
+    val recordingTitle: String?,
     @ColumnInfo(name = "recording_link")
     val recordingLink: String,
     @ColumnInfo(name = "recording_date")
@@ -21,3 +24,28 @@ data class RecordingEntity(
     val noteId: String
 )
 
+fun List<RecordingEntity>.toRecordings(): List<Recording> {
+    return map { recordingEntity ->
+        Recording(
+            userTitle = recordingEntity.recordingTitle,
+            link = recordingEntity.recordingLink,
+            date = recordingEntity.recordingDate,
+            duration = recordingEntity.recordingDuration,
+            id = recordingEntity.recordingId,
+            noteId = recordingEntity.noteId,
+            recordingNumber = recordingEntity.recordingNumber,
+        )
+    }
+}
+
+fun Recording.toRecordingEntity(): RecordingEntity {
+    return RecordingEntity(
+        recordingId = id,
+        recordingNumber = recordingNumber,
+        recordingTitle = userTitle,
+        recordingLink = link,
+        recordingDate = date,
+        recordingDuration = duration,
+        noteId = noteId
+    )
+}
