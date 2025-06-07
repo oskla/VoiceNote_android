@@ -44,10 +44,10 @@ fun HomeScreen(
     bottomSheetState: SheetState,
 ) {
     val recordingsState = recordingViewModel.recordings.collectAsState()
+    val notesState = notesViewModel.notesStateFlow.collectAsState()
     val playerState by audioPlayerViewModel.playerState.collectAsState()
     val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
 
-    val notesState = remember { mutableStateOf(emptyList<NoteEntity>()) }
     var isDataFetched by remember { mutableStateOf(false) }
 
     when (playerState) {
@@ -63,8 +63,6 @@ fun HomeScreen(
     }
 
     LaunchedEffect(key1 = recordingsState.value) {
-        val notes = notesViewModel.getAllNotesFromRoom()
-        notesState.value = notes
         isDataFetched = true
     }
 
@@ -97,7 +95,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
-    notesState: MutableState<List<NoteEntity>>,
+    notesState: State<List<NoteEntity>>,
     recordingsState: State<List<Recording>>,
     navController: NavController,
     modifier: Modifier = Modifier,

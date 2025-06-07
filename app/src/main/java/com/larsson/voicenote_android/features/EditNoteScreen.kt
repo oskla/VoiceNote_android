@@ -50,8 +50,6 @@ import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.launch
 
-// TODO on swipe back, do something else, now it's just empty
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(
@@ -70,10 +68,7 @@ fun EditNoteScreen(
     val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
     val recordingsTiedToNoteState =
         recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
-
-
-    var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
-    var isDataFetched by remember { mutableStateOf(false) }
+    val selectedNote = viewModel.currentNoteStateFlow.collectAsState()
 
     fun uiEventSetToIdle() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle)
     fun uiEventPause() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
@@ -95,15 +90,8 @@ fun EditNoteScreen(
         PlayerState.Stopped -> Log.d("Home", "State: Stopped")
     }
 
-    LaunchedEffect(key1 = recordingState) {
-        val note = viewModel.getNoteFromRoomById(id = noteId)
-        selectedNote = note
-        isDataFetched = true
-    }
-
-    if (!isDataFetched) {
-        // TODO Show loader
-        return
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getNoteFromRoomById(noteId)
     }
 
     BottomSheet(
@@ -113,9 +101,9 @@ fun EditNoteScreen(
         recordingNoteId = noteId,
     )
 
-    selectedNote?.let { noteEntity ->
+    selectedNote.value?.let { noteEntity ->
         EditNoteContent(
-            selectedNote = noteEntity,
+            note = noteEntity,
             viewModel = viewModel,
             navController = navController,
             noteId = noteId,
@@ -135,7 +123,7 @@ fun EditNoteScreen(
 
 @Composable
 fun EditNoteContent(
-    selectedNote: NoteEntity,
+    note: NoteEntity,
     viewModel: NotesViewModel,
     navController: NavController,
     noteId: String?,
@@ -150,8 +138,8 @@ fun EditNoteContent(
 
     ) {
     val TAG = "EDIT NOTE CONTENT"
-    val title by remember { mutableStateOf(selectedNote.noteTitle) }
-    val textContent by remember { mutableStateOf(selectedNote.noteTxtContent) }
+    val title by remember { mutableStateOf(note.noteTitle) }
+    val textContent by remember { mutableStateOf(note.noteTxtContent) }
 
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
@@ -161,6 +149,7 @@ fun EditNoteContent(
 
     val blur = 3.dp
 
+    // TODO remove constraintLayout
     ConstraintLayout(
         modifier = Modifier,
     ) {
@@ -186,7 +175,7 @@ fun EditNoteContent(
             textFieldValueTitle = textFieldValueTitle,
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it },
-            date = dateFormatter(selectedNote.date),
+            date = dateFormatter(note.date),
             onMoreClick = { showMoreMenu = true },
         )
 

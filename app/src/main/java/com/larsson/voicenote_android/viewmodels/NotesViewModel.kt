@@ -10,9 +10,9 @@ import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.repository.NotesRepository
 import com.larsson.voicenote_android.helpers.getUUID
 import java.time.LocalDateTime
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 // TODO make handleUiEvents
 // TODO maybe use StateFlow instead of calling getNotes for example in UI
@@ -21,25 +21,29 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
     private val TAG = "NotesViewModel"
     var notesListVisible by mutableStateOf(true)
     var recordingsListVisible by mutableStateOf(false)
+    private val _notesStateFlow = MutableStateFlow<List<NoteEntity>>(emptyList())
+    val notesStateFlow = _notesStateFlow.asStateFlow()
+    private val _currentNoteStateFlow = MutableStateFlow<NoteEntity?>(null)
+    val currentNoteStateFlow = _currentNoteStateFlow.asStateFlow()
 
-    suspend fun getAllNotesFromRoom(): List<NoteEntity> {
-        var allNotes: MutableList<NoteEntity>
-        withContext(Dispatchers.IO) {
-            allNotes = dbRepo.getNotes()
-        }
-        return allNotes
+    init {
+        getAllNotesFromRoom()
     }
 
-    suspend fun getNoteFromRoomById(id: String): NoteEntity {
-        var selectedNote: NoteEntity
-        withContext(Dispatchers.IO) {
-            selectedNote = dbRepo.getNoteById(id)
-            Log.d(
-                "note room vm",
-                "${selectedNote.noteTitle} and ${selectedNote.noteTxtContent},${selectedNote.noteId},"
-            )
+    private fun getAllNotesFromRoom() {
+        viewModelScope.launch {
+            dbRepo.getNotes().collect {
+                _notesStateFlow.value = it
+            }
         }
-        return selectedNote
+    }
+
+    fun getNoteFromRoomById(id: String) {
+        viewModelScope.launch {
+            dbRepo.getNoteById(id).collect {
+                _currentNoteStateFlow.value = it
+            }
+        }
     }
 
     fun addNoteToRoom(title: String, txtContent: String): NoteEntity {
@@ -71,15 +75,10 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         }
     }
 
-    suspend fun deleteNoteByIdRoom(id: String) {
-        getNoteFromRoomById(id).also {
-            deleteNoteRoom(it)
+    fun deleteNoteByIdRoom(id: String) {
+        viewModelScope.launch {
+            dbRepo.deleteNoteById(id)
         }
     }
 
-    private fun deleteNoteRoom(note: NoteEntity) {
-        viewModelScope.launch {
-            dbRepo.deleteNote(note)
-        }
-    }
 }
