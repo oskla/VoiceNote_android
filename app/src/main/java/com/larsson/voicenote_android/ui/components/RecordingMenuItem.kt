@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +31,7 @@ fun RecordingMenuItem(
     date: String,
     id: String,
     durationText: String,
-    progress: Int? = null,
+    progress: State<Int?> = mutableStateOf(null),
     isSelected: Boolean? = null,
     onClickContainer: () -> Unit,
     onClickPlay: () -> Unit,
@@ -54,7 +56,7 @@ fun RecordingMenuItem(
                 id = id,
                 durationText = TimeFormatter().timeFormatter(durationText.toLong()),
                 durationFloat = durationText.toFloat(),
-                progress = progress ?: 0,
+                progress = progress.value ?: 0,
                 color = color,
                 isFirstItem = isFirstItem,
                 onClickPlay = { onClickPlay() },
@@ -92,7 +94,7 @@ fun RecordingMenuItemPreview() {
                 date = "2023-04-01",
                 id = "5",
                 durationText = "02:21",
-                progress = 40,
+                progress = remember { mutableStateOf(40) },
                 isSelected = true,
                 onClickContainer = {
                 },
@@ -109,7 +111,7 @@ fun RecordingMenuItemPreview() {
                 date = "2023-04-01",
                 id = "5",
                 durationText = "02:21",
-                progress = null,
+                progress = remember { mutableStateOf(null) },
                 isSelected = false,
                 onClickContainer = { },
                 isFirstItem = true,

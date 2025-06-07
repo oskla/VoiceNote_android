@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,9 +24,9 @@ fun RecordingsList(
     recordings: List<Recording>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: PlayerState,
+    playerState: State<PlayerState>,
     onClickContainer: () -> Unit,
-    currentPosition: Int,
+    currentPosition: State<Int>,
     seekTo: (Float) -> Unit,
 ) {
     var selectedRecordingId by remember { mutableStateOf<String?>(null) }
@@ -50,7 +51,7 @@ fun RecordingsList(
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
                     onClickPlay = { onClickPlay(recording.id) },
                     onClickPause = onClickPause,
-                    isPlaying = playerState is PlayerState.Playing,
+                    isPlaying = playerState.value is PlayerState.Playing,
                     progress = currentPosition,
                     seekTo = { position ->
                         seekTo(position)

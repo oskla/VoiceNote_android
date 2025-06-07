@@ -35,7 +35,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.components.BottomBox
@@ -63,9 +63,9 @@ fun EditNoteScreen(
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
-    val recordingState by recordingViewModel.recordings.collectAsState()
-    val playerState by audioPlayerViewModel.playerState.collectAsState()
-    val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
+//    val recordingState by recordingViewModel.recordings.collectAsState()
+    val playerState = audioPlayerViewModel.playerState.collectAsState()
+    val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
     val recordingsTiedToNoteState =
         recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
     val selectedNote = viewModel.currentNoteStateFlow.collectAsState()
@@ -78,19 +78,8 @@ fun EditNoteScreen(
     fun uiEventSeekTo(position: Int) =
         audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
 
-    when (playerState) {
-        PlayerState.Completed -> Log.d("Home", "State: Completed")
-        is PlayerState.Error -> Log.d("Home", "State: Error") // TODO show error dialog
-        PlayerState.Idle -> Log.d("Home", "State: Idle")
-        PlayerState.Paused -> Log.d("Home", "State: Paused")
-        is PlayerState.Playing -> Log.d("Home", "State: Playing")
-        PlayerState.End -> Log.d("Home", "State: End")
-        PlayerState.Initialized -> Log.d("Home", "State: Initialized")
-        PlayerState.Prepared -> Log.d("Home", "State: Prepared")
-        PlayerState.Stopped -> Log.d("Home", "State: Stopped")
-    }
-
     LaunchedEffect(key1 = Unit) {
+        Log.d("osk", "launchedEffect triggered getNoteFromRoomById")
         viewModel.getNoteFromRoomById(noteId)
     }
 
@@ -101,9 +90,9 @@ fun EditNoteScreen(
         recordingNoteId = noteId,
     )
 
-    selectedNote.value?.let { noteEntity ->
+    selectedNote.value?.let { note ->
         EditNoteContent(
-            note = noteEntity,
+            note = note,
             viewModel = viewModel,
             navController = navController,
             noteId = noteId,
@@ -123,7 +112,7 @@ fun EditNoteScreen(
 
 @Composable
 fun EditNoteContent(
-    note: NoteEntity,
+    note: Note,
     viewModel: NotesViewModel,
     navController: NavController,
     noteId: String?,
@@ -131,16 +120,18 @@ fun EditNoteContent(
     openBottomSheet: MutableState<Boolean>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: PlayerState,
-    currentPosition: Int,
+    playerState: State<PlayerState>,
+    currentPosition: State<Int>,
     seekTo: (Float) -> Unit,
     onClickContainer: () -> Unit,
 
     ) {
     val TAG = "EDIT NOTE CONTENT"
-    val title by remember { mutableStateOf(note.noteTitle) }
-    val textContent by remember { mutableStateOf(note.noteTxtContent) }
+    val title by remember { mutableStateOf(note.title) }
+    val textContent by remember { mutableStateOf(note.textContent) }
 
+    // TODO can i move the textfield-stuff into NoteView So that selectedNote can be accessed
+    //  here instead of in screen?
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
     var showRecordingMenu by remember { mutableStateOf(false) }

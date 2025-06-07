@@ -15,7 +15,7 @@ interface NoteDao {
     fun getAllNotes(): Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM $NOTES_TABLE WHERE noteId LIKE :id")
-    fun getNote(id: String): Flow<NoteEntity>
+    fun getNote(id: String): Flow<NoteEntity?>
 
     @Query("DELETE FROM $NOTES_TABLE")
     fun deleteAllNotes()

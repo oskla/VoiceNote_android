@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
@@ -21,9 +25,9 @@ fun RecordingMenu(
     recordings: List<Recording>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: PlayerState,
+    playerState: State<PlayerState>,
     onClickContainer: () -> Unit,
-    currentPosition: Int,
+    currentPosition: State<Int>,
     seekTo: (Float) -> Unit,
 
     ) {
@@ -36,12 +40,14 @@ fun RecordingMenu(
     ) {
         if (recordings.isEmpty()) {
             item {
-                RecordingMenuItem( // TODO Clean this up, maybe cleanest to either make a separate component for this, or make a different state: "isEmpty".
+                RecordingMenuItem(
+                    // TODO Clean this up, maybe cleanest to either make a separate
+                    //  component for this, or make a different state: "isEmpty".
                     title = "You have no recordings yet",
                     date = "",
                     durationText = "",
                     id = "",
-                    progress = 0,
+                    progress = remember { mutableIntStateOf(0) },
                     isSelected = false,
                     onClickContainer = {},
                     isFirstItem = true,
@@ -81,10 +87,10 @@ fun RecordingMenuPreview() {
             recordings = listOf(),
             onClickPlay = {},
             onClickPause = {},
-            playerState = PlayerState.Paused,
+            playerState = remember { mutableStateOf(PlayerState.Paused) },
             onClickContainer = {},
             seekTo = {},
-            currentPosition = 0,
+            currentPosition = remember { mutableIntStateOf(0) },
         )
     }
 }

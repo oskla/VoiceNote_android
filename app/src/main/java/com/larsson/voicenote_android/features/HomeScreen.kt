@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.features // ktlint-disable package-name
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,18 +7,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
@@ -45,31 +39,8 @@ fun HomeScreen(
 ) {
     val recordingsState = recordingViewModel.recordings.collectAsState()
     val notesState = notesViewModel.notesStateFlow.collectAsState()
-    val playerState by audioPlayerViewModel.playerState.collectAsState()
-    val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
-
-    var isDataFetched by remember { mutableStateOf(false) }
-
-    when (playerState) {
-        PlayerState.Completed -> Log.d("Home", "State: Completed")
-        is PlayerState.Error -> Log.d("Home", "State: Error") // TODO add error screen / dialog
-        PlayerState.Idle -> Log.d("Home", "State: Idle")
-        PlayerState.Paused -> Log.d("Home", "State: Paused")
-        is PlayerState.Playing -> Log.d("Home", "State: Playing")
-        PlayerState.End -> Log.d("Home", "State: End")
-        PlayerState.Initialized -> Log.d("Home", "State: Initialized")
-        PlayerState.Prepared -> Log.d("Home", "State: Prepared")
-        PlayerState.Stopped -> Log.d("Home", "State: Stopped")
-    }
-
-    LaunchedEffect(key1 = recordingsState.value) {
-        isDataFetched = true
-    }
-
-    if (!isDataFetched) {
-        // TODO Show loader
-        return
-    }
+    val playerState = audioPlayerViewModel.playerState.collectAsState()
+    val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
 
     HomeScreenContent(
         notesState = notesState,
@@ -95,15 +66,15 @@ fun HomeScreen(
 fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
-    notesState: State<List<NoteEntity>>,
+    notesState: State<List<Note>>,
     recordingsState: State<List<Recording>>,
     navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     audioPlayerViewModel: AudioPlayerViewModel,
-    playerState: PlayerState,
-    currentPosition: Int,
+    playerState: State<PlayerState>,
+    currentPosition: State<Int>,
     seekTo: (Float) -> Unit,
 ) {
     val TAG = "HOME SCREEN"
@@ -148,8 +119,8 @@ fun HomeScreenContent(
                 openBottomSheet.value = true
             },
             onClickLeft = {
-                notesViewModel.addNoteToRoom("Title", "").also { newNote ->
-                    navController.navigate("${Screen.EditNote.route}/${newNote.noteId}")
+                notesViewModel.addNoteToRoom("", "").also { newNote ->
+                    navController.navigate("${Screen.EditNote.route}/${newNote.id}")
                 }
             },
         )

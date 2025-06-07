@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 
 enum class ListVariant {
@@ -15,14 +15,14 @@ enum class ListVariant {
 @Composable
 fun ListContent(
     listVariant: ListVariant,
-    notes: State<List<NoteEntity>>,
+    notes: State<List<Note>>,
     recordings: List<Recording>,
     navController: NavController,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     onClickContainer: () -> Unit,
-    playerState: PlayerState,
-    currentPosition: Int,
+    playerState: State<PlayerState>,
+    currentPosition: State<Int>,
     seekTo: (Float) -> Unit,
 ) {
     when (listVariant) {

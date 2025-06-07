@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.larsson.voicenote_android.data.entity.NoteEntity
+import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.NotesRepository
 import com.larsson.voicenote_android.helpers.getUUID
 import java.time.LocalDateTime
@@ -21,9 +21,9 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
     private val TAG = "NotesViewModel"
     var notesListVisible by mutableStateOf(true)
     var recordingsListVisible by mutableStateOf(false)
-    private val _notesStateFlow = MutableStateFlow<List<NoteEntity>>(emptyList())
+    private val _notesStateFlow = MutableStateFlow<List<Note>>(emptyList())
     val notesStateFlow = _notesStateFlow.asStateFlow()
-    private val _currentNoteStateFlow = MutableStateFlow<NoteEntity?>(null)
+    private val _currentNoteStateFlow = MutableStateFlow<Note?>(null)
     val currentNoteStateFlow = _currentNoteStateFlow.asStateFlow()
 
     init {
@@ -46,12 +46,12 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
         }
     }
 
-    fun addNoteToRoom(title: String, txtContent: String): NoteEntity {
+    fun addNoteToRoom(title: String, txtContent: String): Note {
         val id = getUUID()
-        val newNote = NoteEntity(
-            noteTitle = title,
-            noteTxtContent = txtContent,
-            noteId = id,
+        val newNote = Note(
+            title = title,
+            textContent = txtContent,
+            id = id,
             date = LocalDateTime.now().toString()
         )
         viewModelScope.launch {
@@ -65,10 +65,10 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
     fun updateNoteRoom(title: String, txtContent: String, id: String) {
         viewModelScope.launch {
             dbRepo.updateNote(
-                NoteEntity(
-                    noteTitle = title,
-                    noteTxtContent = txtContent,
-                    noteId = id,
+                Note(
+                    title = title,
+                    textContent = txtContent,
+                    id = id,
                     date = LocalDateTime.now().toString()
                 )
             )
@@ -77,6 +77,7 @@ class NotesViewModel(val dbRepo: NotesRepository) : ViewModel() {
 
     fun deleteNoteByIdRoom(id: String) {
         viewModelScope.launch {
+            Log.d("osk", "deleting note id: $id")
             dbRepo.deleteNoteById(id)
         }
     }
