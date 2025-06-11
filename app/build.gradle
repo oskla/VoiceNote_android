@@ -36,9 +36,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.5.12' // 👈 Match with Compose Compiler version
     }
-    kotlinOptions {
-        jvmTarget = '17'
-    }
+
     buildFeatures {
         compose true
     }

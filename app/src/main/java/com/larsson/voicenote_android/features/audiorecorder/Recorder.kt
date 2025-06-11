@@ -67,15 +67,16 @@ class Recorder(private val context: Context) : AudioRecorder {
 
         Log.d(TAG, "Metadata: $metadataDuration")
     }
+
     private fun fetchMetaDataDuration() {
-            val metadataRetriever = MediaMetadataRetriever()
-            try {
-                metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
-                metadataDuration = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error setting dataSource when retrieving metadata. Error: ${e.message}")
-            }
+        val metadataRetriever = MediaMetadataRetriever()
+        try {
+            metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
+            metadataDuration = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error setting dataSource when retrieving metadata. Error: ${e.message}")
         }
+    }
 
 
     fun deleteRecording(fileName: String) {
