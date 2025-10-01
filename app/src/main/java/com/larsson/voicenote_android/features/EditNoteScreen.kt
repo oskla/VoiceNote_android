@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.features
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,6 +10,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
@@ -38,9 +39,9 @@ import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.components.BottomBox
-import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.ui.components.MoreCircleMenu
 import com.larsson.voicenote_android.ui.components.NoteView
+import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
@@ -80,11 +81,10 @@ fun EditNoteScreen(
         audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(shouldExpand, recordingId))
 
     LaunchedEffect(key1 = Unit) {
-        Log.d("osk", "launchedEffect triggered getNoteFromRoomById")
         viewModel.getNoteFromRoomById(noteId)
     }
 
-    BottomSheet(
+    RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
@@ -110,6 +110,7 @@ fun EditNoteScreen(
                 uiEventOnToggleExpand(shouldExpand = shouldExpand, recordingId = id)
             },
             expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
+            onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) }
         )
     }
 }
@@ -129,8 +130,8 @@ fun EditNoteContent(
     currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
     expandedContainerState: State<ExpandedContainerState>,
-
-    ) {
+    onSeekingFinished: () -> Unit,
+) {
     val TAG = "EDIT NOTE CONTENT"
     val title by remember { mutableStateOf(note.title) }
     val textContent by remember { mutableStateOf(note.textContent) }
@@ -147,7 +148,9 @@ fun EditNoteContent(
 
     // TODO remove constraintLayout
     ConstraintLayout(
-        modifier = Modifier,
+        modifier = Modifier
+            .navigationBarsPadding()
+            .systemBarsPadding(),
     ) {
         val (noteView, bottomBox, menu, background, moreMenu) = createRefs()
 
@@ -251,6 +254,7 @@ fun EditNoteContent(
                 onToggleExpandContainer = onToggleExpandContainer,
                 seekTo = seekTo,
                 expandedContainerState = expandedContainerState,
+                onSeekingFinished = onSeekingFinished
             )
         }
 

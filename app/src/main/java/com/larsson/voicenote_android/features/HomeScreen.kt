@@ -3,6 +3,8 @@ package com.larsson.voicenote_android.features // ktlint-disable package-name
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
@@ -16,9 +18,9 @@ import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
-import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.ui.components.ListContent
 import com.larsson.voicenote_android.ui.components.ListVariant
+import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
@@ -80,14 +82,17 @@ fun HomeScreenContent(
 
     val notesListVisible = notesViewModel.notesListVisible
 
-    BottomSheet(
+    RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel
     )
 
     Column(
-        modifier = modifier.background(MaterialTheme.colorScheme.background),
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .navigationBarsPadding()
+            .systemBarsPadding(),
     ) {
         TopToggleBar(viewModel = notesViewModel)
 
@@ -112,7 +117,8 @@ fun HomeScreenContent(
                 isPlaying = isPlaying,
                 currentPosition = currentPosition,
                 seekTo = seekTo,
-                expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState()
+                expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
+                onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) }
             )
         }
         BottomBox(

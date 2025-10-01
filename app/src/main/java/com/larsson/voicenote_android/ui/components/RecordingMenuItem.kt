@@ -40,6 +40,7 @@ fun RecordingMenuItem(
     isPlaying: State<Boolean>,
     isExpanded: Boolean,
     seekTo: (Float) -> Unit,
+    onSeekingFinished: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -63,9 +64,8 @@ fun RecordingMenuItem(
                 onClickPlay = { onClickPlay() },
                 onClickPause = { onClickPause() },
                 isPlaying = isPlaying,
-                seekTo = { position ->
-                    seekTo(position)
-                },
+                seekTo = seekTo,
+                onSeekingFinished = onSeekingFinished
             )
         } else {
             RecordingMenuItemBase(
@@ -104,6 +104,7 @@ fun RecordingMenuItemPreview() {
                 isPlaying = remember { mutableStateOf(true) },
                 seekTo = {},
                 isExpanded = true,
+                onSeekingFinished = {}
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -119,7 +120,8 @@ fun RecordingMenuItemPreview() {
                 onClickPause = {},
                 isPlaying = remember { mutableStateOf(false) },
                 seekTo = {},
-                isExpanded = false
+                isExpanded = false,
+                onSeekingFinished = {}
                 )
         }
     }

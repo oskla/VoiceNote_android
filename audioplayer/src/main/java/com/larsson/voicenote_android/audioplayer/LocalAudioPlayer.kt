@@ -112,6 +112,9 @@ class LocalAudioPlayer(
 
     override fun seekTo(position: Long) {
         controller?.seekTo(position)
+        // I need to set this here explicitly because the player will only get
+        // updates while playing otherwise
+        _currentPosition.value = position
     }
 
     override fun stop() {

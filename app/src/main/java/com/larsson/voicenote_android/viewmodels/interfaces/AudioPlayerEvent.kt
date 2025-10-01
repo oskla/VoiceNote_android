@@ -5,5 +5,6 @@ sealed interface AudioPlayerEvent {
     object Pause : AudioPlayerEvent
     object SetToIdle : AudioPlayerEvent
     data class SeekTo(val position: Int) : AudioPlayerEvent
+    data object OnSeekFinished : AudioPlayerEvent
     data class ToggleExpanded(val shouldExpand: Boolean, val recordingId: String) : AudioPlayerEvent
 }

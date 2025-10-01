@@ -25,6 +25,7 @@ fun RecordingsList(
     onToggleExpandContainer: (shouldExpand: Boolean, recordingId: String) -> Unit,
     currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
+    onSeekingFinished: () -> Unit,
 ) {
     val horizontalPadding = if (isMenu) 0.dp else 12.dp
 
@@ -47,9 +48,8 @@ fun RecordingsList(
                     isPlaying = isPlaying,
                     isExpanded = isExpanded,
                     progress = currentPosition,
-                    seekTo = { position ->
-                        seekTo(position)
-                    },
+                    seekTo = seekTo,
+                    onSeekingFinished = onSeekingFinished
                 )
             }
             if (index != recordings.size - 1) {

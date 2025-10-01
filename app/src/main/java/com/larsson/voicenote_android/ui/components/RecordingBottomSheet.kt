@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -22,21 +24,21 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
-import com.larsson.voicenote_android.ui.lottie.LottieLRecording
+import com.larsson.voicenote_android.ui.lottie.LottieRecording
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 
 // TODO ask for permission again if you say no
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheet(
+fun RecordingBottomSheet(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     modifier: Modifier = Modifier,
     recordingViewModel: RecordingViewModel,
     recordingNoteId: String? = null
 ) {
-    val TAG = "Bottom Sheet"
+    val TAG = "Recording bottom Sheet"
     if (openBottomSheet.value) {
         LaunchedEffect(key1 = true) {
             recordingViewModel.startRecording()
@@ -44,6 +46,9 @@ fun BottomSheet(
         }
 
         ModalBottomSheet(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .systemBarsPadding(),
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = {
                 recordingViewModel.stopRecording(noteId = recordingNoteId)
@@ -62,7 +67,7 @@ fun BottomSheet(
                     horizontalAlignment = CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    LottieLRecording(
+                    LottieRecording(
                         file = if (isSystemInDarkTheme()) "sound-wave-dark-mode.json" else "sound-wave.json",
                         modifier = modifier
                             .fillMaxWidth()

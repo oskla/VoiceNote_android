@@ -10,7 +10,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
-fun LottieLRecording(
+fun LottieRecording(
     file: String,
     modifier: Modifier = Modifier,
     iterations: Int = 10,

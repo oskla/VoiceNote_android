@@ -25,6 +25,7 @@ fun ListContent(
     currentPosition: State<Long>,
     expandedContainerState: State<ExpandedContainerState>,
     seekTo: (Float) -> Unit,
+    onSeekingFinished: () -> Unit,
 ) {
     when (listVariant) {
         ListVariant.NOTES -> {
@@ -47,7 +48,8 @@ fun ListContent(
                     seekTo(position)
                 },
                 isMenu = false,
-                expandedContainerState = expandedContainerState
+                expandedContainerState = expandedContainerState,
+                onSeekingFinished = onSeekingFinished
             )
         }
     }

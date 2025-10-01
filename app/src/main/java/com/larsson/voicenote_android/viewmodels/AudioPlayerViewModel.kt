@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 data class ExpandedContainerState(
     val isExpanded: Boolean,
@@ -21,10 +20,10 @@ class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
 
     private val TAG = "AudioPlayerViewModel"
 
-    //    val playerState: StateFlow<PlayerState> = audioPlayer.playerState
     val isPlaying = audioPlayer.currentPlaybackState
         .map { it == PlaybackState.Playing }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+
     val currentPosition: StateFlow<Long> = audioPlayer.currentPosition
 
     private val _isExpanded = MutableStateFlow<ExpandedContainerState>(ExpandedContainerState(isExpanded = false, recordingId = ""))
@@ -41,16 +40,19 @@ class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
             AudioPlayerEvent.Pause -> pause()
             is AudioPlayerEvent.Play -> play()
             AudioPlayerEvent.SetToIdle -> {}
-            is AudioPlayerEvent.SeekTo -> seekTo(event.position)
-            is AudioPlayerEvent.ToggleExpanded -> {
-                _isExpanded.value = ExpandedContainerState(isExpanded = event.shouldExpand, recordingId = event.recordingId)
+            is AudioPlayerEvent.SeekTo -> seekTo(position = event.position)
+            AudioPlayerEvent.OnSeekFinished -> onSeekFinished()
+            is AudioPlayerEvent.ToggleExpanded -> toggleExpanded(event)
+        }
+    }
 
-                if (event.shouldExpand) {
-                    prepare(event.recordingId)
-                } else {
-                    pause() // TODO not sure if pause is the right thing to do here. I seem to save the state so why not? I dont think stopping is correct here.
-                }
-            }
+    private fun toggleExpanded(event: AudioPlayerEvent.ToggleExpanded) {
+        _isExpanded.value = ExpandedContainerState(isExpanded = event.shouldExpand, recordingId = event.recordingId)
+
+        if (event.shouldExpand) {
+            prepare(event.recordingId)
+        } else {
+            pause() // TODO not sure if pause is the right thing to do here. I seem to save the state so why not? I dont think stopping is correct here.
         }
     }
 
@@ -67,14 +69,13 @@ class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
     }
 
     private fun seekTo(position: Int) { // FIXME change to Long
-        viewModelScope.launch {
-            audioPlayer.seekTo(position.toLong())
-        }
+        audioPlayer.seekTo(position.toLong())
     }
 
+    private fun onSeekFinished() {}
+
     private fun cleanup() {
-        viewModelScope.launch {
-            audioPlayer.stop()
-        }
+        audioPlayer.stop()
+
     }
 }

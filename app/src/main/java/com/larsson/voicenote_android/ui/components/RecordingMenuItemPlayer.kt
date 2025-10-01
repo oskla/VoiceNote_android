@@ -54,6 +54,7 @@ fun RecordingMenuItemPlayer(
     progress: State<Long>,
     color: Color = MaterialTheme.colorScheme.background,
     isFirstItem: Boolean,
+    onSeekingFinished: () -> Unit,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     isPlaying: State<Boolean>,
@@ -104,6 +105,7 @@ fun RecordingMenuItemPlayer(
                 seekTo = { position ->
                     seekTo(position)
                 },
+                onSeekingFinished = onSeekingFinished
             )
             AudioPlayerRow(
                 date = date,
@@ -202,6 +204,7 @@ fun RecordingMenuItemPlayerPreview() {
                 isPlaying = remember { mutableStateOf(true) },
                 durationFloat = 2000F,
                 seekTo = {},
+                onSeekingFinished = {}
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -216,6 +219,7 @@ fun RecordingMenuItemPlayerPreview() {
                 isPlaying = remember { mutableStateOf(false) },
                 durationFloat = 2000F,
                 seekTo = {},
+                onSeekingFinished = {}
             )
             Divider()
         }

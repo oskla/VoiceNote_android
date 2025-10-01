@@ -30,6 +30,7 @@ fun RecordingMenu(
     currentPosition: State<Long>,
     expandedContainerState: State<ExpandedContainerState>,
     seekTo: (Float) -> Unit,
+    onSeekingFinished: () -> Unit,
 
     ) {
     LazyColumn(
@@ -71,6 +72,7 @@ fun RecordingMenu(
             isMenu = true,
             expandedContainerState = expandedContainerState,
             onToggleExpandContainer = onToggleExpandContainer,
+            onSeekingFinished = onSeekingFinished
         )
     }
 }
@@ -95,6 +97,7 @@ fun RecordingMenuPreview() {
             currentPosition = remember { mutableLongStateOf(0L) },
             modifier = Modifier,
             expandedContainerState = remember { mutableStateOf(ExpandedContainerState(true, "")) },
+            onSeekingFinished = {}
         )
     }
 }
