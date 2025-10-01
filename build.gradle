@@ -2,6 +2,7 @@ buildscript {
     ext {
         compose_version = ' 1.6.5'
         compose_ui_version = ' 1.6.5'
+        // TODO can probably just remove these since these are in the libs file
     }
 
 
