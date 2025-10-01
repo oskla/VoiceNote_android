@@ -9,44 +9,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
 fun LinearProgressBar(
     modifier: Modifier = Modifier,
-    currentPosition: Int,
+    currentPosition: State<Long>,
     color: Color,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
     seekTo: (Float) -> Unit,
     durationFloat: Float,
 ) {
-    val sliderPosition = remember { mutableStateOf(currentPosition.toFloat()) }
-    val sliderTransitionAnimation by animateFloatAsState(
-        targetValue = sliderPosition.value,
-        animationSpec = tween(
-            durationMillis = 300,
-            delayMillis = 0,
-            easing = LinearEasing,
-        ),
+    // TODO - fix the seeking. This need to happen locally as well as in the player.
+    //  Now it only happesn in the player
+    val animatedProgress by animateFloatAsState(
+        animationSpec = tween(300, easing = LinearEasing),
+        targetValue = currentPosition.value.toFloat(),
+        label = "ProgressBarAnimation"
     )
-
-    LaunchedEffect(key1 = currentPosition) {
-        sliderPosition.value = currentPosition.toFloat()
-    }
-
     Box(
         modifier = modifier.background(backgroundColor),
     ) {
         Slider(
             modifier = Modifier,
-            value = sliderTransitionAnimation,
+            value = animatedProgress,
             onValueChange = { newValue ->
-                sliderPosition.value = newValue
                 seekTo.invoke(newValue)
             },
             colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),

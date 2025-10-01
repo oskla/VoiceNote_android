@@ -3,9 +3,9 @@ package com.larsson.voicenote_android.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.navigation.NavController
-import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 
 enum class ListVariant {
     NOTES,
@@ -20,9 +20,10 @@ fun ListContent(
     navController: NavController,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    onClickContainer: () -> Unit,
-    playerState: State<PlayerState>,
-    currentPosition: State<Int>,
+    onToggleExpandContainer: (shouldExpand: Boolean, String) -> Unit,
+    isPlaying: State<Boolean>,
+    currentPosition: State<Long>,
+    expandedContainerState: State<ExpandedContainerState>,
     seekTo: (Float) -> Unit,
 ) {
     when (listVariant) {
@@ -39,13 +40,14 @@ fun ListContent(
                 recordings = recordings,
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
-                playerState = playerState,
-                onClickContainer = onClickContainer,
+                isPlaying = isPlaying,
+                onToggleExpandContainer = onToggleExpandContainer,
                 currentPosition = currentPosition,
                 seekTo = { position ->
                     seekTo(position)
                 },
                 isMenu = false,
+                expandedContainerState = expandedContainerState
             )
         }
     }

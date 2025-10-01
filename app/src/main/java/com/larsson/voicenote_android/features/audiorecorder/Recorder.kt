@@ -6,7 +6,6 @@ import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
 import java.io.File
-import java.io.FileOutputStream
 
 class Recorder(private val context: Context) : AudioRecorder {
 
@@ -32,40 +31,44 @@ class Recorder(private val context: Context) : AudioRecorder {
     }
 
     fun startRecording(fileName: String): File {
-        return File(context.cacheDir, fileName).also {
-            recorder?.start()
-            audioFile = it
-            Log.d(TAG, "fileName: $fileName")
-            start(it)
-        }
+        val file = File(context.cacheDir, fileName)
+        Log.d(TAG, "fileName: $fileName")
+        start(file)
+        return file
     }
 
     override fun start(outputFile: File) {
-        createRecorder().apply {
+        val newRecorder = createRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS) // TODO probably change this to something of higher quality
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC) // TODO check this too in terms of quality
-
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             recorder?.setAudioEncodingBitRate(128000)
             recorder?.setAudioSamplingRate(44100)
-            setOutputFile(FileOutputStream(outputFile).fd)
+            setOutputFile(outputFile.absolutePath)
 
             prepare()
             start()
 
             recorder = this
         }
+        recorder = newRecorder
+        audioFile = outputFile
     }
 
     override fun stop() {
-        recorder?.stop()
-        recorder?.reset()
-        recorder = null
+        try {
+            recorder?.apply {
+                stop()
+                release()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error stopping recorder: ${e.message}")
+        } finally {
+            recorder = null
+        }
 
-        Log.d(TAG, "pathhh: ${audioFile?.path}")
+        Log.d(TAG, "path: ${audioFile?.path}")
         fetchMetaDataDuration()
-
-        Log.d(TAG, "Metadata: $metadataDuration")
     }
 
     private fun fetchMetaDataDuration() {

@@ -2,24 +2,33 @@ package com.larsson.voicenote_android.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.larsson.voicenote_android.MediaManager
-import com.larsson.voicenote_android.PlayerState
+import com.larsson.voicenote_android.audioplayer.AudioPlayer
+import com.larsson.voicenote_android.audioplayer.PlaybackState
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel() {
+data class ExpandedContainerState(
+    val isExpanded: Boolean,
+    val recordingId: String,
+)
+
+class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
 
     private val TAG = "AudioPlayerViewModel"
 
-    val playerState: StateFlow<PlayerState> = mediaManager.playerState
-    val currentPosition: StateFlow<Int> = mediaManager.currentPosition
+    //    val playerState: StateFlow<PlayerState> = audioPlayer.playerState
+    val isPlaying = audioPlayer.currentPlaybackState
+        .map { it == PlaybackState.Playing }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+    val currentPosition: StateFlow<Long> = audioPlayer.currentPosition
 
-    init {
-        viewModelScope.launch {
-            mediaManager.setOnCompletionListener(::handleCompletion)
-        }
-    }
+    private val _isExpanded = MutableStateFlow<ExpandedContainerState>(ExpandedContainerState(isExpanded = false, recordingId = ""))
+    val isExpanded: StateFlow<ExpandedContainerState> = _isExpanded
 
     override fun onCleared() {
         super.onCleared()
@@ -29,62 +38,43 @@ class AudioPlayerViewModel(private val mediaManager: MediaManager) : ViewModel()
     // TODO add here a clear or stop function that is triggered when leaving screen (back button)
     fun handleUIEvents(event: AudioPlayerEvent) {
         when (event) {
-            AudioPlayerEvent.Pause -> { pause() }
-            is AudioPlayerEvent.Play -> { play(event.recordingId) }
-            AudioPlayerEvent.SetToIdle -> { reset() }
+            AudioPlayerEvent.Pause -> pause()
+            is AudioPlayerEvent.Play -> play()
+            AudioPlayerEvent.SetToIdle -> {}
             is AudioPlayerEvent.SeekTo -> seekTo(event.position)
-        }
-    }
+            is AudioPlayerEvent.ToggleExpanded -> {
+                _isExpanded.value = ExpandedContainerState(isExpanded = event.shouldExpand, recordingId = event.recordingId)
 
-    private fun setPlayerState(state: PlayerState) {
-        viewModelScope.launch {
-            mediaManager.setPlayerState(state)
-        }
-    }
-
-    private fun handleCompletion() {
-        setPlayerState(PlayerState.Completed)
-        mediaManager.getDuration()?.let { position ->
-            seekTo(position)
-        }
-    }
-
-    private fun play(recordingId: String) {
-        // Resume track if one is already paused
-        if (playerState.value is PlayerState.Paused) {
-            viewModelScope.launch {
-                mediaManager.resume()
+                if (event.shouldExpand) {
+                    prepare(event.recordingId)
+                } else {
+                    pause() // TODO not sure if pause is the right thing to do here. I seem to save the state so why not? I dont think stopping is correct here.
+                }
             }
-            return
         }
+    }
 
-        // Playing new track
-        viewModelScope.launch {
-            mediaManager.start(recordingId)
-        }
+    fun prepare(recordingId: String) {
+        audioPlayer.prepare(recordingId)
+    }
+
+    private fun play() {
+        audioPlayer.play()
     }
 
     fun pause() {
-        viewModelScope.launch {
-            mediaManager.pause()
-        }
+        audioPlayer.pause()
     }
 
-    private fun reset() {
+    private fun seekTo(position: Int) { // FIXME change to Long
         viewModelScope.launch {
-            mediaManager.reset()
-        }
-    }
-
-    private fun seekTo(position: Int) {
-        viewModelScope.launch {
-            mediaManager.seekTo(position)
+            audioPlayer.seekTo(position.toLong())
         }
     }
 
     private fun cleanup() {
         viewModelScope.launch {
-            mediaManager.stop()
+            audioPlayer.stop()
         }
     }
 }

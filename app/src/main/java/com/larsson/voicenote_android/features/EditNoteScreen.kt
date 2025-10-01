@@ -34,7 +34,6 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
@@ -45,6 +44,7 @@ import com.larsson.voicenote_android.ui.components.NoteView
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
+import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
@@ -63,20 +63,21 @@ fun EditNoteScreen(
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
-//    val recordingState by recordingViewModel.recordings.collectAsState()
-    val playerState = audioPlayerViewModel.playerState.collectAsState()
+    val isPlaying = audioPlayerViewModel.isPlaying.collectAsState()
     val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
     val recordingsTiedToNoteState =
         recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
     val selectedNote = viewModel.currentNoteStateFlow.collectAsState()
 
-    fun uiEventSetToIdle() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle)
     fun uiEventPause() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
     fun uiEventPlay(recordingId: String) =
         audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Play(recordingId))
 
     fun uiEventSeekTo(position: Int) =
         audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
+
+    fun uiEventOnToggleExpand(shouldExpand: Boolean, recordingId: String) =
+        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(shouldExpand, recordingId))
 
     LaunchedEffect(key1 = Unit) {
         Log.d("osk", "launchedEffect triggered getNoteFromRoomById")
@@ -100,12 +101,15 @@ fun EditNoteScreen(
             openBottomSheet = openBottomSheet,
             onClickPlay = { recordingId -> uiEventPlay(recordingId) },
             onClickPause = { uiEventPause() },
-            playerState = playerState,
+            isPlaying = isPlaying,
             currentPosition = currentPosition,
-            onClickContainer = { uiEventSetToIdle() },
             seekTo = { position ->
                 uiEventSeekTo(position.toInt())
             },
+            onToggleExpandContainer = { shouldExpand, id ->
+                uiEventOnToggleExpand(shouldExpand = shouldExpand, recordingId = id)
+            },
+            expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
         )
     }
 }
@@ -120,10 +124,11 @@ fun EditNoteContent(
     openBottomSheet: MutableState<Boolean>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: State<PlayerState>,
-    currentPosition: State<Int>,
+    onToggleExpandContainer: (shouldExpand: Boolean, recordingId: String) -> Unit,
+    isPlaying: State<Boolean>,
+    currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
-    onClickContainer: () -> Unit,
+    expandedContainerState: State<ExpandedContainerState>,
 
     ) {
     val TAG = "EDIT NOTE CONTENT"
@@ -241,10 +246,11 @@ fun EditNoteContent(
                 recordings = recordings.value,
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
-                playerState = playerState,
+                isPlaying = isPlaying,
                 currentPosition = currentPosition,
-                onClickContainer = onClickContainer,
+                onToggleExpandContainer = onToggleExpandContainer,
                 seekTo = seekTo,
+                expandedContainerState = expandedContainerState,
             )
         }
 

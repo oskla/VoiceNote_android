@@ -16,17 +16,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,20 +51,20 @@ fun RecordingMenuItemPlayer(
     id: String,
     durationText: String,
     durationFloat: Float,
-    progress: Int,
+    progress: State<Long>,
     color: Color = MaterialTheme.colorScheme.background,
     isFirstItem: Boolean,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
-    isPlaying: Boolean,
+    isPlaying: State<Boolean>,
     seekTo: (Float) -> Unit,
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
 
     Card(
         modifier = Modifier.wrapContentHeight(),
-        backgroundColor = MaterialTheme.colorScheme.background,
-        elevation = 0.dp,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+        elevation = CardDefaults.cardElevation(),
         shape = if (isFirstItem) roundedCornerShape else RectangleShape,
     ) {
         Column(
@@ -118,20 +122,23 @@ fun AudioPlayerRow(
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     onClickDelete: () -> Unit,
-    isPlaying: Boolean,
+    isPlaying: State<Boolean>,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    Log.d("osk", "Osk, isPlaying? ${isPlaying.value}")
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.Transparent),
             contentAlignment = Alignment.Center,
         ) {
+            val icon = if (isPlaying.value) Icons.Filled.Pause else Icons.Filled.PlayArrow
             Icon(
-                imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                imageVector = icon,
                 contentDescription = "play",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -139,7 +146,7 @@ fun AudioPlayerRow(
                     .width(35.dp)
                     .clickable(indication = null, interactionSource = interactionSource) {
                         Log.d("RecordingMenuItem", "isPlaying: $isPlaying")
-                        if (isPlaying) onClickPause() else onClickPlay()
+                        if (isPlaying.value) onClickPause() else onClickPlay()
                     },
             )
             Row(
@@ -166,7 +173,7 @@ fun AudioPlayerRow(
                         .height(30.dp)
                         .width(30.dp),
 
-                )
+                    )
             }
         }
     }
@@ -188,11 +195,11 @@ fun RecordingMenuItemPlayerPreview() {
                 date = "2023-04-01",
                 id = "5",
                 durationText = "02:21",
-                progress = 30,
+                progress = remember { mutableLongStateOf(30) },
                 isFirstItem = true,
                 onClickPlay = { },
                 onClickPause = { /* TODO add onclick pause */ },
-                isPlaying = true,
+                isPlaying = remember { mutableStateOf(true) },
                 durationFloat = 2000F,
                 seekTo = {},
             )
@@ -202,11 +209,11 @@ fun RecordingMenuItemPlayerPreview() {
                 date = "2023-04-01",
                 id = "5",
                 durationText = "02:21",
-                progress = 40,
+                progress = remember { mutableLongStateOf(40) },
                 isFirstItem = false,
                 onClickPlay = { },
                 onClickPause = { /* TODO add onclick pause */ },
-                isPlaying = false,
+                isPlaying = remember { mutableStateOf(false) },
                 durationFloat = 2000F,
                 seekTo = {},
             )

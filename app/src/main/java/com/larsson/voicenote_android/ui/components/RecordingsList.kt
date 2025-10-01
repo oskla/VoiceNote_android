@@ -8,15 +8,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 
 @Composable
 fun RecordingsList(
@@ -24,34 +20,32 @@ fun RecordingsList(
     recordings: List<Recording>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: State<PlayerState>,
-    onClickContainer: () -> Unit,
-    currentPosition: State<Int>,
+    isPlaying: State<Boolean>,
+    expandedContainerState: State<ExpandedContainerState>,
+    onToggleExpandContainer: (shouldExpand: Boolean, recordingId: String) -> Unit,
+    currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
 ) {
-    var selectedRecordingId by remember { mutableStateOf<String?>(null) }
     val horizontalPadding = if (isMenu) 0.dp else 12.dp
 
     LazyColumn(modifier = Modifier.padding(horizontal = horizontalPadding), userScrollEnabled = true) {
         itemsIndexed(recordings) { index, recording ->
-            val isSelected = (recording.id == selectedRecordingId) // Checks what recording is actually pressed.
-
-            Box() {
+            val isExpanded = expandedContainerState.value.recordingId == recording.id && expandedContainerState.value.isExpanded
+            Box {
                 RecordingMenuItem(
                     color = MaterialTheme.colorScheme.background,
                     title = recording.userTitle ?: "Recording ${recording.recordingNumber}",
                     date = recording.date,
                     id = recording.id,
                     durationText = recording.duration,
-                    isSelected = isSelected,
-                    onClickContainer = {
-                        selectedRecordingId = if (isSelected) null else recording.id
-                        onClickContainer.invoke() // calls on event that resets player
+                    onToggleExpandContainer = { shouldExpand ->
+                        onToggleExpandContainer(shouldExpand, recording.id)
                     },
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
                     onClickPlay = { onClickPlay(recording.id) },
                     onClickPause = onClickPause,
-                    isPlaying = playerState.value is PlayerState.Playing,
+                    isPlaying = isPlaying,
+                    isExpanded = isExpanded,
                     progress = currentPosition,
                     seekTo = { position ->
                         seekTo(position)

@@ -8,16 +8,16 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 
 @Composable
 fun RecordingMenu(
@@ -25,9 +25,10 @@ fun RecordingMenu(
     recordings: List<Recording>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    playerState: State<PlayerState>,
-    onClickContainer: () -> Unit,
-    currentPosition: State<Int>,
+    isPlaying: State<Boolean>,
+    onToggleExpandContainer: (shouldExpand: Boolean, String) -> Unit,
+    currentPosition: State<Long>,
+    expandedContainerState: State<ExpandedContainerState>,
     seekTo: (Float) -> Unit,
 
     ) {
@@ -40,22 +41,22 @@ fun RecordingMenu(
     ) {
         if (recordings.isEmpty()) {
             item {
-                RecordingMenuItem(
-                    // TODO Clean this up, maybe cleanest to either make a separate
-                    //  component for this, or make a different state: "isEmpty".
-                    title = "You have no recordings yet",
-                    date = "",
-                    durationText = "",
-                    id = "",
-                    progress = remember { mutableIntStateOf(0) },
-                    isSelected = false,
-                    onClickContainer = {},
-                    isFirstItem = true,
-                    onClickPlay = {},
-                    onClickPause = onClickPause,
-                    isPlaying = false,
-                    seekTo = {},
-                )
+//                RecordingMenuItem(
+//                    // TODO Clean this up, maybe cleanest to either make a separate
+//                    //  component for this, or make a different state: "isEmpty".
+//                    title = "You have no recordings yet",
+//                    date = "",
+//                    durationText = "",
+//                    id = "",
+//                    progress = remember { mutableLongStateOf(0L) },
+//                    isSelected = false,
+//                    onToggleExpandContainer = {},
+//                    isFirstItem = true,
+//                    onClickPlay = {},
+//                    onClickPause = onClickPause,
+//                    isPlaying = isPlaying,
+//                    seekTo = {},
+//                )
             }
         }
     }
@@ -64,11 +65,12 @@ fun RecordingMenu(
             recordings = recordings,
             onClickPlay = onClickPlay,
             onClickPause = onClickPause,
-            playerState = playerState,
-            onClickContainer = onClickContainer,
+            isPlaying = isPlaying,
             currentPosition = currentPosition,
             seekTo = seekTo,
             isMenu = true,
+            expandedContainerState = expandedContainerState,
+            onToggleExpandContainer = onToggleExpandContainer,
         )
     }
 }
@@ -87,10 +89,12 @@ fun RecordingMenuPreview() {
             recordings = listOf(),
             onClickPlay = {},
             onClickPause = {},
-            playerState = remember { mutableStateOf(PlayerState.Paused) },
-            onClickContainer = {},
+            isPlaying = remember { mutableStateOf(true) },
+            onToggleExpandContainer = { _, _ -> },
             seekTo = {},
-            currentPosition = remember { mutableIntStateOf(0) },
+            currentPosition = remember { mutableLongStateOf(0L) },
+            modifier = Modifier,
+            expandedContainerState = remember { mutableStateOf(ExpandedContainerState(true, "")) },
         )
     }
 }

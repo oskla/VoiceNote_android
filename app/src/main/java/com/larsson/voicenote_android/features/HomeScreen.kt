@@ -12,7 +12,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.larsson.voicenote_android.PlayerState
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.navigation.Screen
@@ -39,7 +38,7 @@ fun HomeScreen(
 ) {
     val recordingsState = recordingViewModel.recordings.collectAsState()
     val notesState = notesViewModel.notesStateFlow.collectAsState()
-    val playerState = audioPlayerViewModel.playerState.collectAsState()
+    val isPlaying = audioPlayerViewModel.isPlaying.collectAsState()
     val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
 
     HomeScreenContent(
@@ -51,7 +50,7 @@ fun HomeScreen(
         recordingViewModel = recordingViewModel,
         recordingsState = recordingsState,
         audioPlayerViewModel = audioPlayerViewModel,
-        playerState = playerState,
+        isPlaying = isPlaying,
         currentPosition = currentPosition,
         seekTo = { position ->
             audioPlayerViewModel.handleUIEvents(
@@ -73,8 +72,8 @@ fun HomeScreenContent(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     audioPlayerViewModel: AudioPlayerViewModel,
-    playerState: State<PlayerState>,
-    currentPosition: State<Int>,
+    isPlaying: State<Boolean>,
+    currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
 ) {
     val TAG = "HOME SCREEN"
@@ -90,7 +89,7 @@ fun HomeScreenContent(
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
     ) {
-        TopToggleBar(modifier = Modifier, viewModel = notesViewModel)
+        TopToggleBar(viewModel = notesViewModel)
 
         Box(
             modifier = Modifier
@@ -107,10 +106,13 @@ fun HomeScreenContent(
                 onClickPause = {
                     audioPlayerViewModel.pause()
                 },
-                onClickContainer = { audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle) },
-                playerState = playerState,
+                onToggleExpandContainer = { shouldExpand, id ->
+                    audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(shouldExpand = shouldExpand, recordingId = id))
+                },
+                isPlaying = isPlaying,
                 currentPosition = currentPosition,
                 seekTo = seekTo,
+                expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState()
             )
         }
         BottomBox(

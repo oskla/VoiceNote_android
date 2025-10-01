@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.MaterialTheme.shapes
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -37,14 +37,9 @@ enum class ToggleVariant {
 
 @Composable
 fun TopToggleBar(
-    modifier: Modifier? = Modifier,
     viewModel: NotesViewModel, // TODO Pass UI-events instead of passing VM
-
 ) {
     val currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
-
-    LaunchedEffect(key1 = true) {
-    }
 
     Column(
         modifier = Modifier

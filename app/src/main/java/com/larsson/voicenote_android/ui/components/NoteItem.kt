@@ -10,14 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardVoice
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -29,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteItem(
     title: String,
@@ -39,9 +40,9 @@ fun NoteItem(
     containsRecordings: Boolean
 ) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.background,
+        colors = CardDefaults.cardColors(contentColor = MaterialTheme.colorScheme.background),
         modifier = Modifier.wrapContentSize(),
-        elevation = 0.dp,
+        elevation = CardDefaults.cardElevation(),
         shape = RectangleShape,
         onClick = onClick,
     ) {
