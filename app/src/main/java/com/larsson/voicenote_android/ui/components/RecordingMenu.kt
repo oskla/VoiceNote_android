@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
 import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
+import java.time.LocalDateTime
 
 @Composable
 fun RecordingMenu(
@@ -31,8 +32,7 @@ fun RecordingMenu(
     expandedContainerState: State<ExpandedContainerState>,
     seekTo: (Float) -> Unit,
     onSeekingFinished: () -> Unit,
-
-    ) {
+) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -72,7 +72,7 @@ fun RecordingMenu(
             isMenu = true,
             expandedContainerState = expandedContainerState,
             onToggleExpandContainer = onToggleExpandContainer,
-            onSeekingFinished = onSeekingFinished
+            onSeekingFinished = onSeekingFinished,
         )
     }
 }
@@ -85,10 +85,10 @@ private const val componentName = "Recording Menu Item Player"
 @Preview("$componentName (big font)", fontScale = 1.5f, showBackground = true)
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
-fun RecordingMenuPreview() {
+private fun RecordingMenuPreview() {
     VoiceNote_androidTheme {
         RecordingMenu(
-            recordings = listOf(),
+            recordings = listOf(Recording(userTitle = "hej", "saf", LocalDateTime.now().toString(), "4300", "usf", "f32f", 4)),
             onClickPlay = {},
             onClickPause = {},
             isPlaying = remember { mutableStateOf(true) },
@@ -97,7 +97,7 @@ fun RecordingMenuPreview() {
             currentPosition = remember { mutableLongStateOf(0L) },
             modifier = Modifier,
             expandedContainerState = remember { mutableStateOf(ExpandedContainerState(true, "")) },
-            onSeekingFinished = {}
+            onSeekingFinished = {},
         )
     }
 }

@@ -6,6 +6,7 @@ import androidx.media3.session.MediaSessionService
 
 class PlaybackService : MediaSessionService() {
     private var mediaSession: MediaSession? = null
+
     override fun onCreate() {
         super.onCreate()
         val player = ExoPlayer.Builder(this).build()
@@ -22,5 +23,4 @@ class PlaybackService : MediaSessionService() {
         }
         super.onDestroy()
     }
-
 }

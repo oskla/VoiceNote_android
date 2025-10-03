@@ -49,7 +49,7 @@ fun ListContent(
                 },
                 isMenu = false,
                 expandedContainerState = expandedContainerState,
-                onSeekingFinished = onSeekingFinished
+                onSeekingFinished = onSeekingFinished,
             )
         }
     }

@@ -61,11 +61,11 @@ fun RecordingMenuItem(
                 progress = progress,
                 color = color,
                 isFirstItem = isFirstItem,
-                onClickPlay = { onClickPlay() },
-                onClickPause = { onClickPause() },
+                onClickPlay = onClickPlay,
+                onClickPause = onClickPause,
                 isPlaying = isPlaying,
                 seekTo = seekTo,
-                onSeekingFinished = onSeekingFinished
+                onSeekingFinished = onSeekingFinished,
             )
         } else {
             RecordingMenuItemBase(
@@ -104,7 +104,7 @@ fun RecordingMenuItemPreview() {
                 isPlaying = remember { mutableStateOf(true) },
                 seekTo = {},
                 isExpanded = true,
-                onSeekingFinished = {}
+                onSeekingFinished = {},
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -121,8 +121,8 @@ fun RecordingMenuItemPreview() {
                 isPlaying = remember { mutableStateOf(false) },
                 seekTo = {},
                 isExpanded = false,
-                onSeekingFinished = {}
-                )
+                onSeekingFinished = {},
+            )
         }
     }
 }

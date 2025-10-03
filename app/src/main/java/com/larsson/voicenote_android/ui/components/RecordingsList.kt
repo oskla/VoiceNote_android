@@ -49,7 +49,7 @@ fun RecordingsList(
                     isExpanded = isExpanded,
                     progress = currentPosition,
                     seekTo = seekTo,
-                    onSeekingFinished = onSeekingFinished
+                    onSeekingFinished = onSeekingFinished,
                 )
             }
             if (index != recordings.size - 1) {

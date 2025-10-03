@@ -42,7 +42,7 @@ fun TopAppBarCustom(
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
-            titleContentColor = MaterialTheme.colorScheme.onBackground
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
         ),
         modifier = Modifier.height(60.dp),
         title = {
@@ -56,7 +56,10 @@ fun TopAppBarCustom(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.onBackground, backgroundColor = MaterialTheme.colorScheme.onBackground.copy(0.3f)),
+                    selectionColors = TextSelectionColors(
+                        handleColor = MaterialTheme.colorScheme.onBackground,
+                        backgroundColor = MaterialTheme.colorScheme.onBackground.copy(0.3f),
+                    ),
                 ),
                 textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 20.sp, fontWeight = FontWeight.Bold),
                 singleLine = true,
@@ -91,7 +94,7 @@ fun TopAppBarCustom(
 @Composable
 fun TopAppBarPreview() {
     VoiceNote_androidTheme {
-        Column() {
+        Column {
             TopAppBarCustom(onTextChangeTitle = { it }, value = "hej", onBackClick = {}, onMoreClick = {})
         }
     }

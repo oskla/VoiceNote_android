@@ -16,8 +16,9 @@ data class ExpandedContainerState(
     val recordingId: String,
 )
 
-class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
-
+class AudioPlayerViewModel(
+    private val audioPlayer: AudioPlayer,
+) : ViewModel() {
     private val TAG = "AudioPlayerViewModel"
 
     val isPlaying = audioPlayer.currentPlaybackState
@@ -29,16 +30,11 @@ class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
     private val _isExpanded = MutableStateFlow<ExpandedContainerState>(ExpandedContainerState(isExpanded = false, recordingId = ""))
     val isExpanded: StateFlow<ExpandedContainerState> = _isExpanded
 
-    override fun onCleared() {
-        super.onCleared()
-        cleanup()
-    }
-
     // TODO add here a clear or stop function that is triggered when leaving screen (back button)
     fun handleUIEvents(event: AudioPlayerEvent) {
         when (event) {
             AudioPlayerEvent.Pause -> pause()
-            is AudioPlayerEvent.Play -> play()
+            is AudioPlayerEvent.Play -> play(recordingId = event.recordingId)
             AudioPlayerEvent.SetToIdle -> {}
             is AudioPlayerEvent.SeekTo -> seekTo(position = event.position)
             AudioPlayerEvent.OnSeekFinished -> onSeekFinished()
@@ -49,22 +45,18 @@ class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
     private fun toggleExpanded(event: AudioPlayerEvent.ToggleExpanded) {
         _isExpanded.value = ExpandedContainerState(isExpanded = event.shouldExpand, recordingId = event.recordingId)
 
-        if (event.shouldExpand) {
-            prepare(event.recordingId)
-        } else {
-            pause() // TODO not sure if pause is the right thing to do here. I seem to save the state so why not? I dont think stopping is correct here.
+        if (!event.shouldExpand) {
+            pause()
         }
     }
 
-    fun prepare(recordingId: String) {
-        audioPlayer.prepare(recordingId)
-    }
 
-    private fun play() {
+    private fun play(recordingId: String) {
+        audioPlayer.prepare(recordingId) // TODO maybe check if this is not already playing
         audioPlayer.play()
     }
 
-    fun pause() {
+    private fun pause() {
         audioPlayer.pause()
     }
 
@@ -72,10 +64,9 @@ class AudioPlayerViewModel(private val audioPlayer: AudioPlayer) : ViewModel() {
         audioPlayer.seekTo(position.toLong())
     }
 
-    private fun onSeekFinished() {}
-
-    private fun cleanup() {
+    private fun stop() {
         audioPlayer.stop()
-
     }
+
+    private fun onSeekFinished() {}
 }

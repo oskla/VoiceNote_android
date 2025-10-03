@@ -10,6 +10,7 @@ interface AudioPlayer {
     fun play()
     fun pause()
     fun stop()
+    fun release()
     fun seekTo(position: Long)
     fun prepare(recordingId: String)
 }

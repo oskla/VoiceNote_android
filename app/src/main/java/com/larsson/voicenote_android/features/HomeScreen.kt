@@ -1,4 +1,4 @@
-package com.larsson.voicenote_android.features // ktlint-disable package-name
+package com.larsson.voicenote_android.features
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -85,7 +85,7 @@ fun HomeScreenContent(
     RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
-        recordingViewModel = recordingViewModel
+        recordingViewModel = recordingViewModel,
     )
 
     Column(
@@ -109,7 +109,7 @@ fun HomeScreenContent(
                     audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
                 },
                 onClickPause = {
-                    audioPlayerViewModel.pause()
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
                 },
                 onToggleExpandContainer = { shouldExpand, id ->
                     audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(shouldExpand = shouldExpand, recordingId = id))
@@ -118,7 +118,7 @@ fun HomeScreenContent(
                 currentPosition = currentPosition,
                 seekTo = seekTo,
                 expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
-                onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) }
+                onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
             )
         }
         BottomBox(
@@ -134,4 +134,3 @@ fun HomeScreenContent(
         )
     }
 }
-

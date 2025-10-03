@@ -3,7 +3,9 @@ package com.larsson.voicenote_android.audioplayer
 import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -18,8 +20,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+private val TAG = "AudioPlayer"
+
 class LocalAudioPlayer(
-    private val context: Context
+    private val context: Context,
 ) : AudioPlayer {
     private val _currentPosition = MutableStateFlow(0L)
     override val currentPosition: StateFlow<Long> = _currentPosition
@@ -42,11 +46,14 @@ class LocalAudioPlayer(
                 controller = controllerFuture.get()
                 controller?.addListener(controllerListener)
             },
-            MoreExecutors.directExecutor()
+            MoreExecutors.directExecutor(),
         )
     }
 
-    private fun mapPlayerState(playbackState: Int?, isPlaying: Boolean) {
+    private fun mapPlayerState(
+        playbackState: Int?,
+        isPlaying: Boolean,
+    ) {
         _currentPlaybackState.value = when {
             isPlaying -> PlaybackState.Playing
             playbackState == Player.STATE_BUFFERING -> PlaybackState.Buffering
@@ -67,8 +74,13 @@ class LocalAudioPlayer(
             super.onPlaybackStateChanged(playbackState)
             mapPlayerState(
                 playbackState = playbackState,
-                isPlaying = currentPlaybackState.value == PlaybackState.Playing
+                isPlaying = currentPlaybackState.value == PlaybackState.Playing,
             )
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            super.onPlayerError(error)
+            Log.d("AudioPlayer", "onPlayerError: ${error.localizedMessage}")
         }
     }
 
@@ -90,14 +102,17 @@ class LocalAudioPlayer(
         positionJob = null
     }
 
-
     private fun setMediaItem(recordingId: String) {
-        val file = File(context.cacheDir, recordingId)
-        val uri = Uri.fromFile(file)
-        controller?.setMediaItem(MediaItem.fromUri(uri))
+        try {
+            val file = File(context.cacheDir, recordingId)
+            val uri = Uri.fromFile(file)
+            controller?.setMediaItem(MediaItem.fromUri(uri))
+        } catch (e: Exception) {
+            Log.d("AudioPlayer", "setMediaItem: ${e.localizedMessage}")
+        }
     }
 
-    override fun prepare(recordingId: String) { // TODO call this when toggling on a recording (not when pressing play)
+    override fun prepare(recordingId: String) {
         setMediaItem(recordingId)
         controller?.prepare()
     }
@@ -117,12 +132,16 @@ class LocalAudioPlayer(
         _currentPosition.value = position
     }
 
-    override fun stop() {
-        controller?.stop()
-        controller?.release()
-        controller = null
+    override fun release() {
+//        controller?.stop()
+//        controller?.removeListener(controllerListener)
+//        controller?.release()
+//        controller = null
     }
 
+    override fun stop() {
+        controller?.stop()
+    }
 }
 
 enum class PlaybackState {
@@ -131,5 +150,5 @@ enum class PlaybackState {
     Playing,
     Buffering,
     Ended,
-    Error
+    Error,
 }

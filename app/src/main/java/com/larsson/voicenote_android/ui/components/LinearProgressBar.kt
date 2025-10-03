@@ -34,7 +34,7 @@ fun LinearProgressBar(
     val animatedProgress by animateFloatAsState(
         animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing),
         targetValue = currentPosition.value.toFloat(),
-        label = "ProgressBarAnimation"
+        label = "ProgressBarAnimation",
     )
     Box(
         modifier = modifier.background(backgroundColor),
@@ -48,7 +48,7 @@ fun LinearProgressBar(
             colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),
             valueRange = 0f..durationFloat,
             onValueChangeFinished = onSeekingFinished,
-            interactionSource = interactionSource
+            interactionSource = interactionSource,
         )
     }
 }

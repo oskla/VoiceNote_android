@@ -105,7 +105,7 @@ fun RecordingMenuItemPlayer(
                 seekTo = { position ->
                     seekTo(position)
                 },
-                onSeekingFinished = onSeekingFinished
+                onSeekingFinished = onSeekingFinished,
             )
             AudioPlayerRow(
                 date = date,
@@ -174,8 +174,7 @@ fun AudioPlayerRow(
                         .clickable { onClickDelete.invoke() }
                         .height(30.dp)
                         .width(30.dp),
-
-                    )
+                )
             }
         }
     }
@@ -204,7 +203,7 @@ fun RecordingMenuItemPlayerPreview() {
                 isPlaying = remember { mutableStateOf(true) },
                 durationFloat = 2000F,
                 seekTo = {},
-                onSeekingFinished = {}
+                onSeekingFinished = {},
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -219,7 +218,7 @@ fun RecordingMenuItemPlayerPreview() {
                 isPlaying = remember { mutableStateOf(false) },
                 durationFloat = 2000F,
                 seekTo = {},
-                onSeekingFinished = {}
+                onSeekingFinished = {},
             )
             Divider()
         }

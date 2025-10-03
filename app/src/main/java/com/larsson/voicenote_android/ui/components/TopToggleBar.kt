@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +33,8 @@ enum class ToggleVariant {
     NOTES,
     RECORDINGS,
 }
+
+// TODO, do this with navigation instead. Becuase i want the notes viewmodel to be scoped to notes and audioPlayerViewmodel to be scoped to recordings
 
 @Composable
 fun TopToggleBar(

@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditNoteScreen(
+internal fun EditNoteScreen(
     viewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     navController: NavController,
@@ -110,13 +110,13 @@ fun EditNoteScreen(
                 uiEventOnToggleExpand(shouldExpand = shouldExpand, recordingId = id)
             },
             expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
-            onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) }
+            onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
         )
     }
 }
 
 @Composable
-fun EditNoteContent(
+private fun EditNoteContent(
     note: Note,
     viewModel: NotesViewModel,
     navController: NavController,
@@ -254,7 +254,7 @@ fun EditNoteContent(
                 onToggleExpandContainer = onToggleExpandContainer,
                 seekTo = seekTo,
                 expandedContainerState = expandedContainerState,
-                onSeekingFinished = onSeekingFinished
+                onSeekingFinished = onSeekingFinished,
             )
         }
 
