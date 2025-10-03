@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -50,15 +51,19 @@ fun NoteView(
             color = MaterialTheme.colorScheme.onBackground.copy(0.3f),
             textAlign = TextAlign.Center,
             text = date,
-            modifier = Modifier.fillMaxWidth().align(CenterHorizontally),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally),
         )
 
         TextField(
             textStyle = MaterialTheme.typography.bodyMedium,
-            colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                disabledContainerColor = MaterialTheme.colorScheme.background,
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                cursorColor = Color.Black,
+                cursorColor = MaterialTheme.colorScheme.onBackground,
                 disabledTextColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,

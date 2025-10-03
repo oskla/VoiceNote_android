@@ -48,18 +48,17 @@ fun TopAppBarCustom(
         title = {
             TextField(
                 modifier = Modifier.offset(x = (-6).dp), // This appbar provides a positive x offset, this is to mitigate that
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.background,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    disabledContainerColor = MaterialTheme.colorScheme.background,
                     focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                    cursorColor = Color.Black,
+                    cursorColor = MaterialTheme.colorScheme.onBackground,
                     disabledTextColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    selectionColors = TextSelectionColors(
-                        handleColor = MaterialTheme.colorScheme.onBackground,
-                        backgroundColor = MaterialTheme.colorScheme.onBackground.copy(0.3f),
-                    ),
+                    selectionColors = TextSelectionColors(handleColor = MaterialTheme.colorScheme.onBackground, backgroundColor = MaterialTheme.colorScheme.onBackground.copy(0.3f)),
                 ),
                 textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 20.sp, fontWeight = FontWeight.Bold),
                 singleLine = true,
