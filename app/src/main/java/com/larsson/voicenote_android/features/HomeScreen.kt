@@ -1,7 +1,6 @@
 package com.larsson.voicenote_android.features
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -12,15 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.navigation.HomeNavigation
 import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
-import com.larsson.voicenote_android.ui.components.ListContent
-import com.larsson.voicenote_android.ui.components.ListVariant
+import com.larsson.voicenote_android.ui.components.NotesList
 import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
+import com.larsson.voicenote_android.ui.components.RecordingsList
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
@@ -34,9 +37,9 @@ fun HomeScreen(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     audioPlayerViewModel: AudioPlayerViewModel,
-    navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
+    onNavigateToNote: (String) -> Unit,
 ) {
     val recordingsState = recordingViewModel.recordings.collectAsState()
     val notesState = notesViewModel.notesStateFlow.collectAsState()
@@ -45,7 +48,6 @@ fun HomeScreen(
 
     HomeScreenContent(
         notesState = notesState,
-        navController = navController,
         notesViewModel = notesViewModel,
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
@@ -59,6 +61,7 @@ fun HomeScreen(
                 AudioPlayerEvent.SeekTo(position.toInt()),
             )
         },
+        onNavigateToNote = onNavigateToNote,
     )
 }
 
@@ -69,7 +72,6 @@ fun HomeScreenContent(
     recordingViewModel: RecordingViewModel,
     notesState: State<List<Note>>,
     recordingsState: State<List<Recording>>,
-    navController: NavController,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
@@ -77,10 +79,11 @@ fun HomeScreenContent(
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
+    onNavigateToNote: (String) -> Unit,
 ) {
     val TAG = "HOME SCREEN"
 
-    val notesListVisible = notesViewModel.notesListVisible
+//    val notesListVisible = notesViewModel.notesListVisible
 
     RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
@@ -94,33 +97,53 @@ fun HomeScreenContent(
             .navigationBarsPadding()
             .systemBarsPadding(),
     ) {
-        TopToggleBar(viewModel = notesViewModel)
 
-        Box(
-            modifier = Modifier
-                .weight(1f),
-        ) {
-            ListContent(
-                listVariant = if (notesListVisible) ListVariant.NOTES else ListVariant.RECORDINGS,
-                notes = notesState,
-                navController = navController,
-                recordings = recordingsState.value,
-                onClickPlay = { recordingId ->
-                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
-                },
-                onClickPause = {
-                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
-                },
-                onToggleExpandContainer = { id ->
-                    audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(recordingId = id))
-                },
-                isPlaying = isPlaying,
-                currentPosition = currentPosition,
-                seekTo = seekTo,
-                expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
-                onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
-            )
-        }
+        val backStack = remember { mutableStateListOf<Screen>(HomeNavigation.NotesList) }
+        TopToggleBar(
+            onNavigateToNotesList = {
+                backStack.add(HomeNavigation.NotesList)
+                backStack.remove(HomeNavigation.RecordingsList)
+            },
+            onNavigateToRecordingsList = {
+                backStack.add(HomeNavigation.RecordingsList)
+                backStack.remove(HomeNavigation.NotesList)
+            }
+        )
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            modifier = Modifier.weight(1f),
+            entryProvider = entryProvider {
+                entry<HomeNavigation.NotesList> {
+                    NotesList(
+                        notes = notesState,
+                        recordings = recordingsState.value,
+                        onNavigateToNote = onNavigateToNote
+                    )
+                }
+                entry<HomeNavigation.RecordingsList> {
+                    RecordingsList(
+                        recordings = recordingsState.value,
+                        onClickPlay = { recordingId ->
+                            audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
+                        },
+                        onClickPause = {
+                            audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
+                        },
+                        onToggleExpandContainer = { id ->
+                            audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(recordingId = id))
+                        },
+                        isPlaying = isPlaying,
+                        currentPosition = currentPosition,
+                        seekTo = seekTo,
+                        isMenu = false,
+                        expandedContainerId = audioPlayerViewModel.expandedRecordingId.collectAsState(),
+                        onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
+                    )
+                }
+            }
+        )
+
         BottomBox(
             variant = Variant.NEW_NOTE_RECORD,
             onClickRight = {
@@ -128,7 +151,7 @@ fun HomeScreenContent(
             },
             onClickLeft = {
                 notesViewModel.addNoteToRoom("", "").also { newNote ->
-                    navController.navigate("${Screen.EditNote.route}/${newNote.id}")
+                    onNavigateToNote(newNote.id)
                 }
             },
         )

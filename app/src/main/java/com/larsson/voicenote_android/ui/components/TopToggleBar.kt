@@ -27,18 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 enum class ToggleVariant {
     NOTES,
     RECORDINGS,
 }
 
-// TODO, do this with navigation instead. Becuase i want the notes viewmodel to be scoped to notes and audioPlayerViewmodel to be scoped to recordings
-
 @Composable
 fun TopToggleBar(
-    viewModel: NotesViewModel, // TODO Pass UI-events instead of passing VM
+    onNavigateToRecordingsList: () -> Unit,
+    onNavigateToNotesList: () -> Unit,
 ) {
     val currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
 
@@ -61,8 +59,7 @@ fun TopToggleBar(
                         selectedRight = false,
                         currentVariant = currentVariant,
                     )
-                    viewModel.notesListVisible = true
-                    viewModel.recordingsListVisible = false
+                    onNavigateToNotesList()
                 }
 
                 ToggleVariant.RECORDINGS -> {
@@ -71,8 +68,8 @@ fun TopToggleBar(
                         selectedRight = true,
                         currentVariant = currentVariant,
                     )
-                    viewModel.notesListVisible = false
-                    viewModel.recordingsListVisible = true
+                    onNavigateToRecordingsList()
+
                 }
             }
         }
@@ -97,7 +94,7 @@ fun ToggleBar(
                 shape = shapes.medium,
             ),
 
-    ) {
+        ) {
         ToggleBox(
             text = "Notes",
             selected = selectedLeft,
@@ -115,7 +112,7 @@ fun ToggleBar(
             selected = selectedRight,
             modifier = Modifier.weight(1f),
 
-        )
+            )
     }
 }
 
@@ -141,7 +138,7 @@ fun ToggleBox(
             },
         contentAlignment = Alignment.Center,
 
-    ) {
+        ) {
         Text(text, color = if (selected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onBackground)
     }
 }

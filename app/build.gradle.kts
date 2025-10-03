@@ -3,10 +3,11 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("kotlin-kapt")
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 android {
     namespace = "com.larsson.voicenote_android"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.larsson.voicenote_android"
@@ -34,9 +35,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-//composeOptions {
-//    kotlinCompilerExtensionVersion '1.5.12' // 👈 Match with Compose Compiler version
-//}
 
     buildFeatures {
         compose = true
@@ -68,7 +66,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.compose.ui.text.google.fonts)
 
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.ui.android)
+    implementation(libs.androidx.navigation3.runtime.android)
 
     implementation(libs.androidx.datastore.preferences)
 
@@ -82,7 +81,6 @@ dependencies {
     // DI - koin
     implementation(libs.koin.core)
     implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
     implementation(libs.koin.androidx.compose)
 
     implementation(libs.androidx.material3)
@@ -94,7 +92,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
 
     // Room
-    //    def room_version = "2.7.1"
     implementation(libs.bundles.room)
 //    implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)

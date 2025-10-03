@@ -3,10 +3,10 @@ package com.larsson.voicenote_android.navigation
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-sealed class Screen() : NavKey {
+sealed class HomeNavigation() : NavKey {
     @Serializable
-    object Home : Screen()
+    object NotesList : Screen()
 
     @Serializable
-    data class EditNote(val noteId: String) : Screen()
+    object RecordingsList : Screen()
 }

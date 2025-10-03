@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
@@ -55,11 +54,11 @@ import kotlinx.coroutines.launch
 internal fun EditNoteScreen(
     viewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
-    navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
     audioPlayerViewModel: AudioPlayerViewModel,
+    onBackClick: () -> Unit,
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
@@ -94,7 +93,6 @@ internal fun EditNoteScreen(
         EditNoteContent(
             note = note,
             viewModel = viewModel,
-            navController = navController,
             noteId = noteId,
             recordings = recordingsTiedToNoteState,
             openBottomSheet = openBottomSheet,
@@ -110,6 +108,7 @@ internal fun EditNoteScreen(
             },
             expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
             onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
+            onBackClick = onBackClick
         )
     }
 }
@@ -118,7 +117,6 @@ internal fun EditNoteScreen(
 private fun EditNoteContent(
     note: Note,
     viewModel: NotesViewModel,
-    navController: NavController,
     noteId: String?,
     recordings: State<List<Recording>>,
     openBottomSheet: MutableState<Boolean>,
@@ -130,6 +128,7 @@ private fun EditNoteContent(
     seekTo: (Float) -> Unit,
     expandedContainerState: State<String>,
     onSeekingFinished: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val TAG = "EDIT NOTE CONTENT"
     val title by remember { mutableStateOf(note.title) }
@@ -167,7 +166,7 @@ private fun EditNoteContent(
                     )
                 }
 
-                navController.popBackStack()
+                onBackClick()
             },
             textFieldValueContent = textFieldValueContent,
             textFieldValueTitle = textFieldValueTitle,
@@ -183,7 +182,7 @@ private fun EditNoteContent(
                     coroutineScope.launch {
                         if (noteId != null) {
                             viewModel.deleteNoteByIdRoom(noteId)
-                            navController.popBackStack()
+                            onBackClick()
                         }
                     }
                 },
