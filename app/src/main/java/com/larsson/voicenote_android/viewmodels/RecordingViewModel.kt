@@ -11,6 +11,7 @@ import java.io.File
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 // TODO change name functionality
@@ -44,7 +45,7 @@ class RecordingViewModel(
     }
 
     fun getRecordingsTiedToNoteById(id: String): Flow<List<Recording>> {
-        return recordingsRepo.getRecordingsTiedToNoteById(id = id)
+        return recordingsRepo.getRecordingsTiedToNoteById(id = id).map { it.reversed() }
     }
 
     fun stopRecording(noteId: String? = "0000") {

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.helpers.TimeFormatter
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import java.time.LocalDateTime
 
 @Composable
 fun RecordingMenuItem(
@@ -43,7 +44,6 @@ fun RecordingMenuItem(
     onSeekingFinished: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-
     Column(
         modifier = modifier
             .background(Color.Transparent)
@@ -92,9 +92,9 @@ fun RecordingMenuItemPreview() {
         ) {
             RecordingMenuItem(
                 title = "hej",
-                date = "2023-04-01",
+                date = LocalDateTime.now().toString(),
                 id = "5",
-                durationText = "02:21",
+                durationText = "240",
                 progress = remember { mutableLongStateOf(40) },
                 onToggleExpandContainer = {
                 },
@@ -110,10 +110,10 @@ fun RecordingMenuItemPreview() {
             Spacer(modifier = Modifier.height(8.dp))
             RecordingMenuItem(
                 title = "hej",
-                date = "2023-04-01",
+                date = LocalDateTime.now().toString(),
                 id = "5",
-                durationText = "02:21",
-                progress = remember { mutableLongStateOf(0) },
+                durationText = "1221",
+                progress = remember { mutableLongStateOf(0L) },
                 onToggleExpandContainer = { },
                 isFirstItem = true,
                 onClickPlay = {},

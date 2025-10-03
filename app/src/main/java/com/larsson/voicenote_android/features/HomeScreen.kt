@@ -83,8 +83,6 @@ fun HomeScreenContent(
 ) {
     val TAG = "HOME SCREEN"
 
-//    val notesListVisible = notesViewModel.notesListVisible
-
     RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
