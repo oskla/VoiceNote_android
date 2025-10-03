@@ -8,13 +8,9 @@ import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-
-data class ExpandedContainerState(
-    val isExpanded: Boolean,
-    val recordingId: String,
-)
 
 class AudioPlayerViewModel(
     private val audioPlayer: AudioPlayer,
@@ -26,9 +22,11 @@ class AudioPlayerViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     val currentPosition: StateFlow<Long> = audioPlayer.currentPosition
+        .map { it.currentPosition }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0L)
 
-    private val _isExpanded = MutableStateFlow<ExpandedContainerState>(ExpandedContainerState(isExpanded = false, recordingId = ""))
-    val isExpanded: StateFlow<ExpandedContainerState> = _isExpanded
+    private val _expandedRecordingId = MutableStateFlow("")
+    val expandedRecordingId = _expandedRecordingId.asStateFlow()
 
     // TODO add here a clear or stop function that is triggered when leaving screen (back button)
     fun handleUIEvents(event: AudioPlayerEvent) {
@@ -42,17 +40,22 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun toggleExpanded(event: AudioPlayerEvent.ToggleExpanded) {
-        _isExpanded.value = ExpandedContainerState(isExpanded = event.shouldExpand, recordingId = event.recordingId)
 
-        if (!event.shouldExpand) {
-            pause()
+    private fun toggleExpanded(event: AudioPlayerEvent.ToggleExpanded) {
+        if (recordingIdAlreadyExpanded(event)) {
+            resetPlayback()
+        } else {
+            if (recordingIdCollapsed()) {
+                resetPlayback()
+            }
+            _expandedRecordingId.value = event.recordingId
         }
     }
 
-
     private fun play(recordingId: String) {
-        audioPlayer.prepare(recordingId) // TODO maybe check if this is not already playing
+        if (audioPlayer.currentMediaItem.value?.mediaId != recordingId) {
+            audioPlayer.prepare(recordingId)
+        }
         audioPlayer.play()
     }
 
@@ -69,4 +72,12 @@ class AudioPlayerViewModel(
     }
 
     private fun onSeekFinished() {}
+
+    private fun recordingIdAlreadyExpanded(event: AudioPlayerEvent.ToggleExpanded) = event.recordingId == _expandedRecordingId.value
+    private fun recordingIdCollapsed() = expandedRecordingId.value.isNotBlank()
+    private fun resetPlayback() {
+        _expandedRecordingId.value = ""
+        pause()
+        seekTo(0)
+    }
 }

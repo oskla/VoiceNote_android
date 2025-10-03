@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.larsson.voicenote_android.data.repository.Recording
-import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 
 @Composable
 fun RecordingsList(
@@ -21,8 +20,8 @@ fun RecordingsList(
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     isPlaying: State<Boolean>,
-    expandedContainerState: State<ExpandedContainerState>,
-    onToggleExpandContainer: (shouldExpand: Boolean, recordingId: String) -> Unit,
+    expandedContainerId: State<String>,
+    onToggleExpandContainer: (recordingId: String) -> Unit,
     currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
     onSeekingFinished: () -> Unit,
@@ -31,7 +30,7 @@ fun RecordingsList(
 
     LazyColumn(modifier = Modifier.padding(horizontal = horizontalPadding), userScrollEnabled = true) {
         itemsIndexed(recordings) { index, recording ->
-            val isExpanded = expandedContainerState.value.recordingId == recording.id && expandedContainerState.value.isExpanded
+            val isExpanded = expandedContainerId.value == recording.id
             Box {
                 RecordingMenuItem(
                     color = MaterialTheme.colorScheme.background,
@@ -39,9 +38,7 @@ fun RecordingsList(
                     date = recording.date,
                     id = recording.id,
                     durationText = recording.duration,
-                    onToggleExpandContainer = { shouldExpand ->
-                        onToggleExpandContainer(shouldExpand, recording.id)
-                    },
+                    onToggleExpandContainer = { onToggleExpandContainer(recording.id) },
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
                     onClickPlay = { onClickPlay(recording.id) },
                     onClickPause = onClickPause,

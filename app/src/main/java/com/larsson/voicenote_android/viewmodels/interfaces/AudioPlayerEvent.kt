@@ -7,7 +7,6 @@ sealed interface AudioPlayerEvent {
     data class SeekTo(val position: Int) : AudioPlayerEvent
     data object OnSeekFinished : AudioPlayerEvent
     data class ToggleExpanded(
-        val shouldExpand: Boolean,
         val recordingId: String,
     ) : AudioPlayerEvent
 }

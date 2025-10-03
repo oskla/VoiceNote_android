@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
-import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 import java.time.LocalDateTime
 
 @Composable
@@ -27,12 +26,12 @@ fun RecordingMenu(
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
     isPlaying: State<Boolean>,
-    onToggleExpandContainer: (shouldExpand: Boolean, String) -> Unit,
+    onToggleExpandContainer: (id: String) -> Unit,
     currentPosition: State<Long>,
-    expandedContainerState: State<ExpandedContainerState>,
+    expandedContainerState: State<String>,
     seekTo: (Float) -> Unit,
     onSeekingFinished: () -> Unit,
-) {
+    ) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -70,7 +69,7 @@ fun RecordingMenu(
             currentPosition = currentPosition,
             seekTo = seekTo,
             isMenu = true,
-            expandedContainerState = expandedContainerState,
+            expandedContainerId = expandedContainerState,
             onToggleExpandContainer = onToggleExpandContainer,
             onSeekingFinished = onSeekingFinished,
         )
@@ -92,11 +91,11 @@ private fun RecordingMenuPreview() {
             onClickPlay = {},
             onClickPause = {},
             isPlaying = remember { mutableStateOf(true) },
-            onToggleExpandContainer = { _, _ -> },
+            onToggleExpandContainer = {},
             seekTo = {},
             currentPosition = remember { mutableLongStateOf(0L) },
             modifier = Modifier,
-            expandedContainerState = remember { mutableStateOf(ExpandedContainerState(true, "")) },
+            expandedContainerState = remember { mutableStateOf("") },
             onSeekingFinished = {},
         )
     }

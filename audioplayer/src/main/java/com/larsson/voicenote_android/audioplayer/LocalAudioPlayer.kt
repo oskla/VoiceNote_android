@@ -25,11 +25,11 @@ private val TAG = "AudioPlayer"
 class LocalAudioPlayer(
     private val context: Context,
 ) : AudioPlayer {
-    private val _currentPosition = MutableStateFlow(0L)
-    override val currentPosition: StateFlow<Long> = _currentPosition
+    private val _currentPosition = MutableStateFlow(Position(0L, ""))
+    override val currentPosition: StateFlow<Position> = _currentPosition
 
-    private val _currentMediaItem = MutableStateFlow<String?>(null)
-    override val currentMediaItem: StateFlow<String?> = _currentMediaItem
+    private val _currentMediaItem = MutableStateFlow<MediaItem?>(null)
+    override val currentMediaItem: StateFlow<MediaItem?> = _currentMediaItem
 
     private val _currentPlaybackState = MutableStateFlow(PlaybackState.Idle)
     override val currentPlaybackState: StateFlow<PlaybackState> = _currentPlaybackState
@@ -82,6 +82,11 @@ class LocalAudioPlayer(
             super.onPlayerError(error)
             Log.d("AudioPlayer", "onPlayerError: ${error.localizedMessage}")
         }
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            super.onMediaItemTransition(mediaItem, reason)
+            _currentMediaItem.value = mediaItem
+        }
     }
 
     private fun startUpdatingPosition() {
@@ -90,7 +95,7 @@ class LocalAudioPlayer(
             while (isActive) {
                 val position = controller?.currentPosition
                 if (position != null) {
-                    _currentPosition.value = position
+                    _currentPosition.value = Position(position, currentMediaItem.value?.mediaId ?: "")
                     delay(200)
                 }
             }
@@ -105,8 +110,13 @@ class LocalAudioPlayer(
     private fun setMediaItem(recordingId: String) {
         try {
             val file = File(context.cacheDir, recordingId)
-            val uri = Uri.fromFile(file)
-            controller?.setMediaItem(MediaItem.fromUri(uri))
+
+            val item = MediaItem.Builder()
+                .setUri(Uri.fromFile(file))
+                .setMediaId(recordingId)
+                .build()
+
+            controller?.setMediaItem(item)
         } catch (e: Exception) {
             Log.d("AudioPlayer", "setMediaItem: ${e.localizedMessage}")
         }
@@ -129,7 +139,7 @@ class LocalAudioPlayer(
         controller?.seekTo(position)
         // I need to set this here explicitly because the player will only get
         // updates while playing otherwise
-        _currentPosition.value = position
+        _currentPosition.value = Position(position, currentMediaItem.value?.mediaId ?: "")
     }
 
     override fun release() {

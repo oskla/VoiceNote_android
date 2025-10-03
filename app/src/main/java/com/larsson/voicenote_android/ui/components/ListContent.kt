@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.navigation.NavController
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
-import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 
 enum class ListVariant {
     NOTES,
@@ -20,10 +19,10 @@ fun ListContent(
     navController: NavController,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    onToggleExpandContainer: (shouldExpand: Boolean, String) -> Unit,
+    onToggleExpandContainer: (id: String) -> Unit,
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
-    expandedContainerState: State<ExpandedContainerState>,
+    expandedContainerState: State<String>,
     seekTo: (Float) -> Unit,
     onSeekingFinished: () -> Unit,
 ) {
@@ -48,7 +47,7 @@ fun ListContent(
                     seekTo(position)
                 },
                 isMenu = false,
-                expandedContainerState = expandedContainerState,
+                expandedContainerId = expandedContainerState,
                 onSeekingFinished = onSeekingFinished,
             )
         }

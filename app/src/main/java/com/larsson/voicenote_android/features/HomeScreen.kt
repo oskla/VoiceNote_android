@@ -111,13 +111,13 @@ fun HomeScreenContent(
                 onClickPause = {
                     audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
                 },
-                onToggleExpandContainer = { shouldExpand, id ->
-                    audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(shouldExpand = shouldExpand, recordingId = id))
+                onToggleExpandContainer = { id ->
+                    audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(recordingId = id))
                 },
                 isPlaying = isPlaying,
                 currentPosition = currentPosition,
                 seekTo = seekTo,
-                expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
+                expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
                 onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
             )
         }

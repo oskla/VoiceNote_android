@@ -45,7 +45,6 @@ import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
-import com.larsson.voicenote_android.viewmodels.ExpandedContainerState
 import com.larsson.voicenote_android.viewmodels.NotesViewModel
 import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
@@ -77,8 +76,8 @@ internal fun EditNoteScreen(
     fun uiEventSeekTo(position: Int) =
         audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
 
-    fun uiEventOnToggleExpand(shouldExpand: Boolean, recordingId: String) =
-        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(shouldExpand, recordingId))
+    fun uiEventOnToggleExpand(recordingId: String) =
+        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(recordingId))
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getNoteFromRoomById(noteId)
@@ -106,10 +105,10 @@ internal fun EditNoteScreen(
             seekTo = { position ->
                 uiEventSeekTo(position.toInt())
             },
-            onToggleExpandContainer = { shouldExpand, id ->
-                uiEventOnToggleExpand(shouldExpand = shouldExpand, recordingId = id)
+            onToggleExpandContainer = { id ->
+                uiEventOnToggleExpand(recordingId = id)
             },
-            expandedContainerState = audioPlayerViewModel.isExpanded.collectAsState(),
+            expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
             onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
         )
     }
@@ -125,11 +124,11 @@ private fun EditNoteContent(
     openBottomSheet: MutableState<Boolean>,
     onClickPlay: (String) -> Unit,
     onClickPause: () -> Unit,
-    onToggleExpandContainer: (shouldExpand: Boolean, recordingId: String) -> Unit,
+    onToggleExpandContainer: (recordingId: String) -> Unit,
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
     seekTo: (Float) -> Unit,
-    expandedContainerState: State<ExpandedContainerState>,
+    expandedContainerState: State<String>,
     onSeekingFinished: () -> Unit,
 ) {
     val TAG = "EDIT NOTE CONTENT"

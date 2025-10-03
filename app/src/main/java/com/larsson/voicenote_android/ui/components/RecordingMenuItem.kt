@@ -33,7 +33,7 @@ fun RecordingMenuItem(
     id: String,
     durationText: String,
     progress: State<Long>,
-    onToggleExpandContainer: (shouldExpand: Boolean) -> Unit,
+    onToggleExpandContainer: () -> Unit,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     isFirstItem: Boolean,
@@ -48,7 +48,7 @@ fun RecordingMenuItem(
         modifier = modifier
             .background(Color.Transparent)
             .clickable(interactionSource = interactionSource, indication = null) {
-                onToggleExpandContainer(!isExpanded)
+                onToggleExpandContainer()
             },
     ) {
         if (isExpanded) {
