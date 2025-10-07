@@ -18,7 +18,12 @@ var dataModule = module {}
 var viewModel = module {
     viewModel<NotesViewModel> { NotesViewModel(dbRepo = get()) }
     viewModel<RecordingViewModel> { RecordingViewModel(recorder = get(), recordingsRepo = get()) }
-    viewModel<AudioPlayerViewModel> { AudioPlayerViewModel(audioPlayer = get()) }
+    viewModel<AudioPlayerViewModel> {
+        AudioPlayerViewModel(
+            audioPlayer = get(),
+            recordingRepository = get()
+        )
+    }
 }
 
 val recorder = module {
@@ -30,7 +35,7 @@ val audioPlayerModule = module {
 }
 
 var repositoryModule = module {
-    single<NotesRepository> { (NotesRepository(noteDao = get())) }
+    single<NotesRepository> { NotesRepository(noteDao = get()) }
     single<RecordingsRepository> { RecordingsRepository(recordingDao = get()) }
 }
 

@@ -11,20 +11,17 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Recording
 
 @Composable
-fun RecordingsList(
+internal fun RecordingsList(
     isMenu: Boolean,
     recordings: List<Recording>,
-    onClickPlay: (String) -> Unit,
-    onClickPause: () -> Unit,
     isPlaying: State<Boolean>,
     expandedContainerId: State<String>,
-    onToggleExpandContainer: (recordingId: String) -> Unit,
     currentPosition: State<Long>,
-    seekTo: (Float) -> Unit,
-    onSeekingFinished: () -> Unit,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val horizontalPadding = if (isMenu) 0.dp else 12.dp
 
@@ -38,15 +35,15 @@ fun RecordingsList(
                     date = recording.date,
                     id = recording.id,
                     durationText = recording.duration,
-                    onToggleExpandContainer = { onToggleExpandContainer(recording.id) },
+                    onToggleExpandContainer = { uiAudioPlayerClickListener.onToggleExpandContainer(recording.id) },
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
-                    onClickPlay = { onClickPlay(recording.id) },
-                    onClickPause = onClickPause,
+                    onClickPlay = { uiAudioPlayerClickListener.onClickPlay(recording.id) },
+                    onClickDelete = { uiAudioPlayerClickListener.onClickDelete(recording.id) },
+                    onClickPause = { uiAudioPlayerClickListener.onClickPause() },
                     isPlaying = isPlaying,
                     isExpanded = isExpanded,
                     progress = currentPosition,
-                    seekTo = seekTo,
-                    onSeekingFinished = onSeekingFinished,
+                    uiAudioPlayerClickListener = uiAudioPlayerClickListener,
                 )
             }
             if (index != recordings.size - 1) {

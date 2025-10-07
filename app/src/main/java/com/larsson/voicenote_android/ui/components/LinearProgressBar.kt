@@ -25,18 +25,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.clicklisteners.previewAudioPlayerClickListener
 import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LinearProgressBar(
+internal fun LinearProgressBar(
     modifier: Modifier = Modifier,
     currentPosition: State<Long>,
     color: Color,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
-    seekTo: (Float) -> Unit,
-    onSeekingFinished: () -> Unit,
     durationFloat: Float,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDraggingLocal by interactionSource.collectIsDraggedAsState()
@@ -53,10 +54,10 @@ fun LinearProgressBar(
         Slider(
             value = animatedProgress,
             onValueChange = { newValue ->
-                seekTo.invoke(newValue)
+                uiAudioPlayerClickListener.onSeekTo(newValue)
             },
             modifier = Modifier,
-            onValueChangeFinished = onSeekingFinished,
+            onValueChangeFinished = { uiAudioPlayerClickListener.onSeekingFinished() },
             colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),
             interactionSource = interactionSource,
             thumb = {
@@ -94,9 +95,8 @@ private fun PreviewLinearProgressBar() {
         LinearProgressBar(
             currentPosition = remember { mutableStateOf(123) },
             color = Color.Black,
-            seekTo = {},
-            onSeekingFinished = {},
-            durationFloat = 12312312F
+            durationFloat = 12312312F,
+            uiAudioPlayerClickListener = previewAudioPlayerClickListener
         )
     }
 }

@@ -20,13 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.clicklisteners.previewAudioPlayerClickListener
 import com.larsson.voicenote_android.helpers.TimeFormatter
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 import java.time.LocalDateTime
 
 @Composable
-fun RecordingMenuItem(
+internal fun RecordingMenuItem(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.background,
     title: String,
@@ -40,8 +42,8 @@ fun RecordingMenuItem(
     isFirstItem: Boolean,
     isPlaying: State<Boolean>,
     isExpanded: Boolean,
-    seekTo: (Float) -> Unit,
-    onSeekingFinished: () -> Unit,
+    onClickDelete: () -> Unit,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Column(
@@ -64,8 +66,8 @@ fun RecordingMenuItem(
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 isPlaying = isPlaying,
-                seekTo = seekTo,
-                onSeekingFinished = onSeekingFinished,
+                uiAudioPlayerClickListener = uiAudioPlayerClickListener,
+                onClickDelete = onClickDelete
             )
         } else {
             RecordingMenuItemBase(
@@ -102,9 +104,9 @@ fun RecordingMenuItemPreview() {
                 onClickPlay = {},
                 onClickPause = {},
                 isPlaying = remember { mutableStateOf(true) },
-                seekTo = {},
                 isExpanded = true,
-                onSeekingFinished = {},
+                onClickDelete = {},
+                uiAudioPlayerClickListener = previewAudioPlayerClickListener
             )
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -119,9 +121,9 @@ fun RecordingMenuItemPreview() {
                 onClickPlay = {},
                 onClickPause = {},
                 isPlaying = remember { mutableStateOf(false) },
-                seekTo = {},
                 isExpanded = false,
-                onSeekingFinished = {},
+                onClickDelete = {},
+                uiAudioPlayerClickListener = previewAudioPlayerClickListener
             )
         }
     }

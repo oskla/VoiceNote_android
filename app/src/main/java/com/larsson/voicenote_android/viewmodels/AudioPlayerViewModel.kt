@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.audioplayer.AudioPlayer
 import com.larsson.voicenote_android.audioplayer.PlaybackState
+import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -11,9 +12,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private val audioPlayer: AudioPlayer,
+    private val recordingRepository: RecordingsRepository,
 ) : ViewModel() {
     private val TAG = "AudioPlayerViewModel"
 
@@ -28,7 +31,6 @@ class AudioPlayerViewModel(
     private val _expandedRecordingId = MutableStateFlow("")
     val expandedRecordingId = _expandedRecordingId.asStateFlow()
 
-    // TODO add here a clear or stop function that is triggered when leaving screen (back button)
     fun handleUIEvents(event: AudioPlayerEvent) {
         when (event) {
             AudioPlayerEvent.Pause -> pause()
@@ -37,6 +39,7 @@ class AudioPlayerViewModel(
             is AudioPlayerEvent.SeekTo -> seekTo(position = event.position)
             AudioPlayerEvent.OnSeekFinished -> onSeekFinished()
             is AudioPlayerEvent.ToggleExpanded -> toggleExpanded(event)
+            is AudioPlayerEvent.Delete -> deleteRecording(event.recordingId)
         }
     }
 
@@ -63,12 +66,18 @@ class AudioPlayerViewModel(
         audioPlayer.pause()
     }
 
-    private fun seekTo(position: Int) { // FIXME change to Long
+    private fun seekTo(position: Float) {
         audioPlayer.seekTo(position.toLong())
     }
 
     private fun stop() {
         audioPlayer.stop()
+    }
+
+    private fun deleteRecording(id: String) {
+        viewModelScope.launch {
+            recordingRepository.deleteRecording(id)
+        }
     }
 
     private fun onSeekFinished() {}
@@ -78,6 +87,6 @@ class AudioPlayerViewModel(
     private fun resetPlayback() {
         _expandedRecordingId.value = ""
         pause()
-        seekTo(0)
+        seekTo(0F)
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.navigation.HomeNavigation
@@ -54,18 +55,39 @@ fun HomeScreen(
         audioPlayerViewModel = audioPlayerViewModel,
         isPlaying = isPlaying,
         currentPosition = currentPosition,
-        seekTo = { position ->
-            audioPlayerViewModel.handleUIEvents(
-                AudioPlayerEvent.SeekTo(position.toInt()),
-            )
-        },
         onNavigateToNote = onNavigateToNote,
+        uiAudioPlayerClickListener = object : UiAudioPlayerClickListener {
+            override fun onClickPlay(recordingId: String) {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
+            }
+
+            override fun onClickPause() {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
+            }
+
+            override fun onSeekTo(position: Float) {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.SeekTo(position))
+
+            }
+
+            override fun onSeekingFinished() {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished)
+            }
+
+            override fun onToggleExpandContainer(recordingId: String) {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.ToggleExpanded(recordingId))
+            }
+
+            override fun onClickDelete(recordingId: String) {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Delete(recordingId))
+            }
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(
+internal fun HomeScreenContent(
     notesViewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
     notesState: State<List<Note>>,
@@ -76,8 +98,8 @@ fun HomeScreenContent(
     audioPlayerViewModel: AudioPlayerViewModel,
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
-    seekTo: (Float) -> Unit,
     onNavigateToNote: (String) -> Unit,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "HOME SCREEN"
 
@@ -120,21 +142,11 @@ fun HomeScreenContent(
                 entry<HomeNavigation.RecordingsList> {
                     RecordingsList(
                         recordings = recordingsState.value,
-                        onClickPlay = { recordingId ->
-                            audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
-                        },
-                        onClickPause = {
-                            audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
-                        },
-                        onToggleExpandContainer = { id ->
-                            audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(recordingId = id))
-                        },
                         isPlaying = isPlaying,
                         currentPosition = currentPosition,
-                        seekTo = seekTo,
                         isMenu = false,
                         expandedContainerId = audioPlayerViewModel.expandedRecordingId.collectAsState(),
-                        onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
+                        uiAudioPlayerClickListener = uiAudioPlayerClickListener,
                     )
                 }
             }

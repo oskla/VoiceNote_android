@@ -41,11 +41,12 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
-fun RecordingMenuItemPlayer(
+internal fun RecordingMenuItemPlayer(
     title: String,
     date: String,
     id: String,
@@ -54,11 +55,11 @@ fun RecordingMenuItemPlayer(
     progress: State<Long>,
     color: Color = MaterialTheme.colorScheme.background,
     isFirstItem: Boolean,
-    onSeekingFinished: () -> Unit,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
+    onClickDelete: () -> Unit,
     isPlaying: State<Boolean>,
-    seekTo: (Float) -> Unit,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
 
@@ -102,14 +103,11 @@ fun RecordingMenuItemPlayer(
                 currentPosition = progress,
                 durationFloat = durationFloat,
                 color = MaterialTheme.colorScheme.onBackground,
-                seekTo = { position ->
-                    seekTo(position)
-                },
-                onSeekingFinished = onSeekingFinished,
+                uiAudioPlayerClickListener = uiAudioPlayerClickListener
             )
             AudioPlayerRow(
                 date = date,
-                onClickDelete = { TODO() },
+                onClickDelete = onClickDelete,
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 isPlaying = isPlaying,
@@ -127,7 +125,6 @@ fun AudioPlayerRow(
     isPlaying: State<Boolean>,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    Log.d("osk", "Osk, isPlaying? ${isPlaying.value}")
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -190,6 +187,16 @@ private const val componentName = "Recording Menu Item Player"
 @Composable
 fun RecordingMenuItemPlayerPreview() {
     VoiceNoteTheme {
+        val clickListener = object : UiAudioPlayerClickListener {
+            override fun onClickPlay(recordingId: String) {}
+            override fun onClickPause() {}
+            override fun onSeekTo(position: Float) {}
+            override fun onSeekingFinished() {}
+            override fun onToggleExpandContainer(recordingId: String) {}
+            override fun onClickDelete(recordingId: String) {}
+
+        }
+
         Column {
             RecordingMenuItemPlayer(
                 title = "hej",
@@ -202,8 +209,8 @@ fun RecordingMenuItemPlayerPreview() {
                 onClickPause = { /* TODO add onclick pause */ },
                 isPlaying = remember { mutableStateOf(true) },
                 durationFloat = 2000F,
-                seekTo = {},
-                onSeekingFinished = {},
+                onClickDelete = {},
+                uiAudioPlayerClickListener = clickListener,
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -217,8 +224,8 @@ fun RecordingMenuItemPlayerPreview() {
                 onClickPause = { /* TODO add onclick pause */ },
                 isPlaying = remember { mutableStateOf(false) },
                 durationFloat = 2000F,
-                seekTo = {},
-                onSeekingFinished = {},
+                onClickDelete = {},
+                uiAudioPlayerClickListener = clickListener,
             )
             Divider()
         }

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
@@ -68,16 +69,6 @@ internal fun EditNoteScreen(
         recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
     val selectedNote = viewModel.currentNoteStateFlow.collectAsState()
 
-    fun uiEventPause() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
-    fun uiEventPlay(recordingId: String) =
-        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Play(recordingId))
-
-    fun uiEventSeekTo(position: Int) =
-        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
-
-    fun uiEventOnToggleExpand(recordingId: String) =
-        audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.ToggleExpanded(recordingId))
-
     LaunchedEffect(key1 = Unit) {
         viewModel.getNoteFromRoomById(noteId)
     }
@@ -96,19 +87,37 @@ internal fun EditNoteScreen(
             noteId = noteId,
             recordings = recordingsTiedToNoteState,
             openBottomSheet = openBottomSheet,
-            onClickPlay = { recordingId -> uiEventPlay(recordingId) },
-            onClickPause = { uiEventPause() },
             isPlaying = isPlaying,
             currentPosition = currentPosition,
-            seekTo = { position ->
-                uiEventSeekTo(position.toInt())
-            },
-            onToggleExpandContainer = { id ->
-                uiEventOnToggleExpand(recordingId = id)
-            },
             expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
-            onSeekingFinished = { audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished) },
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            uiAudioPlayerClickListener = object : UiAudioPlayerClickListener {
+                override fun onClickPlay(recordingId: String) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
+                }
+
+                override fun onClickPause() {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
+                }
+
+                override fun onSeekTo(position: Float) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.SeekTo(position))
+                }
+
+                override fun onSeekingFinished() {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished)
+                }
+
+                override fun onToggleExpandContainer(recordingId: String) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.ToggleExpanded(recordingId))
+                }
+
+                override fun onClickDelete(recordingId: String) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Delete(recordingId))
+                }
+
+            }
+
         )
     }
 }
@@ -120,15 +129,11 @@ private fun EditNoteContent(
     noteId: String?,
     recordings: State<List<Recording>>,
     openBottomSheet: MutableState<Boolean>,
-    onClickPlay: (String) -> Unit,
-    onClickPause: () -> Unit,
-    onToggleExpandContainer: (recordingId: String) -> Unit,
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
-    seekTo: (Float) -> Unit,
     expandedContainerState: State<String>,
-    onSeekingFinished: () -> Unit,
     onBackClick: () -> Unit,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "EDIT NOTE CONTENT"
     val title by remember { mutableStateOf(note.title) }
@@ -245,14 +250,10 @@ private fun EditNoteContent(
         ) {
             RecordingMenu(
                 recordings = recordings.value,
-                onClickPlay = onClickPlay,
-                onClickPause = onClickPause,
                 isPlaying = isPlaying,
                 currentPosition = currentPosition,
-                onToggleExpandContainer = onToggleExpandContainer,
-                seekTo = seekTo,
                 expandedContainerState = expandedContainerState,
-                onSeekingFinished = onSeekingFinished,
+                uiAudioPlayerClickListener = uiAudioPlayerClickListener
             )
         }
 

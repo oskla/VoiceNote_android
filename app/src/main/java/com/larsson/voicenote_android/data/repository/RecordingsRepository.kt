@@ -52,9 +52,9 @@ class RecordingsRepository(private val recordingDao: RecordingDao) {
 //        recordingDao.updateRecording(recordingEntity)
 //    }
 
-//    fun deleteRecording(recordingEntity: Recording) {
-//        recordingDao.deleteRecording(recordingEntity)
-//    }
+    suspend fun deleteRecording(recordingId: String) {
+        recordingDao.deleteRecording(recordingId)
+    }
 
     fun getRecordingsTiedToNoteById(id: String): Flow<List<Recording>> {
         return recordingDao.getRecordingsTiedToNoteById(id = id).map { it.toRecordings() }

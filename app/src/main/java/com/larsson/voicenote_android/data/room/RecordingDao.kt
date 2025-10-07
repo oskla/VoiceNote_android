@@ -37,6 +37,6 @@ interface RecordingDao {
     @Update
     fun updateRecording(recordingEntity: RecordingEntity)
 
-    @Delete
-    fun deleteRecording(recordingEntity: RecordingEntity)
+    @Query("DELETE FROM $RECORDINGS_TABLE WHERE recordingId =:recordingId")
+    suspend fun deleteRecording(recordingId: String)
 }

@@ -15,23 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.clicklisteners.previewAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 import java.time.LocalDateTime
 
 @Composable
-fun RecordingMenu(
+internal fun RecordingMenu(
     modifier: Modifier = Modifier,
     recordings: List<Recording>,
-    onClickPlay: (String) -> Unit,
-    onClickPause: () -> Unit,
     isPlaying: State<Boolean>,
-    onToggleExpandContainer: (id: String) -> Unit,
     currentPosition: State<Long>,
     expandedContainerState: State<String>,
-    seekTo: (Float) -> Unit,
-    onSeekingFinished: () -> Unit,
-    ) {
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
+) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -63,15 +61,11 @@ fun RecordingMenu(
     if (recordings.isNotEmpty()) {
         RecordingsList(
             recordings = recordings,
-            onClickPlay = onClickPlay,
-            onClickPause = onClickPause,
             isPlaying = isPlaying,
             currentPosition = currentPosition,
-            seekTo = seekTo,
             isMenu = true,
             expandedContainerId = expandedContainerState,
-            onToggleExpandContainer = onToggleExpandContainer,
-            onSeekingFinished = onSeekingFinished,
+            uiAudioPlayerClickListener = uiAudioPlayerClickListener
         )
     }
 }
@@ -88,15 +82,11 @@ private fun RecordingMenuPreview() {
     VoiceNoteTheme {
         RecordingMenu(
             recordings = listOf(Recording(userTitle = "hej", "saf", LocalDateTime.now().toString(), "4300", "usf", "f32f", 4)),
-            onClickPlay = {},
-            onClickPause = {},
             isPlaying = remember { mutableStateOf(true) },
-            onToggleExpandContainer = {},
-            seekTo = {},
             currentPosition = remember { mutableLongStateOf(0L) },
             modifier = Modifier,
             expandedContainerState = remember { mutableStateOf("") },
-            onSeekingFinished = {},
+            uiAudioPlayerClickListener = previewAudioPlayerClickListener
         )
     }
 }
