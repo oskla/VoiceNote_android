@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +79,7 @@ private const val componentName = "Note Item"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 private fun PreviewComponent() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             NoteItem(title = "Textidé 34", txtContent = "Det var en gång en katt som hette hund som drömde att han var en kanin", id = "1", onClick = {}, containsRecordings = true)
             NoteItem(title = "Textidé 421", txtContent = "Det var en gång en katt som hette hund som drömde att han var en kanin", id = "1", onClick = {}, containsRecordings = false)

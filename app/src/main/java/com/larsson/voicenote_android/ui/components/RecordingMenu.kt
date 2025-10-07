@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.larsson.voicenote_android.data.repository.Recording
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 import java.time.LocalDateTime
 
 @Composable
@@ -85,7 +85,7 @@ private const val componentName = "Recording Menu Item Player"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 private fun RecordingMenuPreview() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         RecordingMenu(
             recordings = listOf(Recording(userTitle = "hej", "saf", LocalDateTime.now().toString(), "4300", "usf", "f32f", 4)),
             onClickPlay = {},

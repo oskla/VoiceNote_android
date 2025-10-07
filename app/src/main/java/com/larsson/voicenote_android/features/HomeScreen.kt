@@ -11,15 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.navigation.HomeNavigation
-import com.larsson.voicenote_android.navigation.Screen
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.NotesList
 import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
@@ -96,7 +94,7 @@ fun HomeScreenContent(
             .systemBarsPadding(),
     ) {
 
-        val backStack = remember { mutableStateListOf<Screen>(HomeNavigation.NotesList) }
+        val backStack = rememberNavBackStack(HomeNavigation.NotesList)
         TopToggleBar(
             onNavigateToNotesList = {
                 backStack.add(HomeNavigation.NotesList)

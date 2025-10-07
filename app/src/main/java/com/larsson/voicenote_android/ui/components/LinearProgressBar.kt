@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,42 +60,37 @@ fun LinearProgressBar(
             colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),
             interactionSource = interactionSource,
             thumb = {
-                Box(Modifier
-                    .clip(CircleShape)
-                    .size(20.dp)
-                    .background(MaterialTheme.colorScheme.onBackground))
+                Box(
+                    Modifier
+                        .clip(CircleShape)
+                        .size(20.dp)
+                        .background(MaterialTheme.colorScheme.onBackground)
+                )
             },
             track = {
                 val progress = animatedProgress / durationFloat
-                Box(Modifier
-                    .height(3.dp)
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.onBackground.copy(0.3f)))
-                Box(Modifier
-                    .height(3.dp)
-                    .fillMaxWidth(progress)
-                    .background(MaterialTheme.colorScheme.onBackground))
+                Box(
+                    Modifier
+                        .height(3.dp)
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.onBackground.copy(0.3f))
+                )
+                Box(
+                    Modifier
+                        .height(3.dp)
+                        .fillMaxWidth(progress)
+                        .background(MaterialTheme.colorScheme.onBackground)
+                )
             },
             valueRange = 0f..durationFloat
         )
-//        Slider(
-//            modifier = Modifier,
-//            value = animatedProgress,
-//            onValueChange = { newValue ->
-//                seekTo.invoke(newValue)
-//            },
-//            colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),
-//            valueRange = 0f..durationFloat,
-//            onValueChangeFinished = onSeekingFinished,
-//            interactionSource = interactionSource,
-//        )
     }
 }
 
 @Preview
 @Composable
 private fun PreviewLinearProgressBar() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         LinearProgressBar(
             currentPosition = remember { mutableStateOf(123) },
             color = Color.Black,

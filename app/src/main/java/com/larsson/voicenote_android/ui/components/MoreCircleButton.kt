@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
 fun MoreCircleButton(
@@ -52,7 +52,7 @@ private const val componentName = "More Circle Button"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun MoreCircleButtonPreview() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column {
             MoreCircleButton(icon = Icons.Default.Delete, onClick = {})
             Divider()

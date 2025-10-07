@@ -3,12 +3,11 @@ package com.larsson.voicenote_android.navigation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.larsson.voicenote_android.features.EditNoteScreen
 import com.larsson.voicenote_android.features.HomeScreen
@@ -20,7 +19,7 @@ fun NavGraph() {
     val openBottomSheet = rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val backStack = remember { mutableStateListOf<Screen>(Screen.Home) }
+    val backStack = rememberNavBackStack(Screen.Home)
 
     NavDisplay(
         backStack = backStack,

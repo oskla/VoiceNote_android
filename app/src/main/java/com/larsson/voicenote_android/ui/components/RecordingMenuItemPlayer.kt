@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
 fun RecordingMenuItemPlayer(
@@ -189,7 +189,7 @@ private const val componentName = "Recording Menu Item Player"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun RecordingMenuItemPlayerPreview() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column {
             RecordingMenuItemPlayer(
                 title = "hej",
