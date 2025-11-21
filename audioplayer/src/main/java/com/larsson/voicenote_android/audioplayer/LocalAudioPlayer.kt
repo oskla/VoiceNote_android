@@ -143,10 +143,11 @@ class LocalAudioPlayer(
     }
 
     override fun release() {
-//        controller?.stop()
-//        controller?.removeListener(controllerListener)
-//        controller?.release()
-//        controller = null
+        stopUpdatingPosition()
+        controller?.stop()
+        controller?.removeListener(controllerListener)
+        controller?.release()
+        controller = null
     }
 
     override fun stop() {

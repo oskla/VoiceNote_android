@@ -80,6 +80,11 @@ class AudioPlayerViewModel(
         }
     }
 
+    override fun onCleared() {
+        audioPlayer.release()
+        super.onCleared()
+    }
+
     private fun onSeekFinished() {}
 
     private fun recordingIdAlreadyExpanded(event: AudioPlayerEvent.ToggleExpanded) = event.recordingId == _expandedRecordingId.value
