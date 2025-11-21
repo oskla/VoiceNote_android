@@ -3,6 +3,7 @@ package com.larsson.voicenote_android.audioplayer
 import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -109,7 +110,7 @@ class LocalAudioPlayer(
 
     private fun setMediaItem(recordingId: String) {
         try {
-            val file = File(context.cacheDir, recordingId)
+            val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), recordingId)
 
             val item = MediaItem.Builder()
                 .setUri(Uri.fromFile(file))

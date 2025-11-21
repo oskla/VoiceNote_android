@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.os.Build
+import android.os.Environment
 import android.util.Log
 import java.io.File
 
@@ -31,7 +32,7 @@ class Recorder(private val context: Context) : AudioRecorder {
     }
 
     fun startRecording(fileName: String): File {
-        val file = File(context.cacheDir, fileName)
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName)
         Log.d(TAG, "fileName: $fileName")
         start(file)
         return file
@@ -74,7 +75,7 @@ class Recorder(private val context: Context) : AudioRecorder {
     private fun fetchMetaDataDuration() {
         val metadataRetriever = MediaMetadataRetriever()
         try {
-            metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
+            metadataRetriever.setDataSource("${context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS)}/${audioFile?.name}")
             metadataDuration = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         } catch (e: Exception) {
             Log.e(TAG, "Error setting dataSource when retrieving metadata. Error: ${e.message}")
@@ -83,7 +84,7 @@ class Recorder(private val context: Context) : AudioRecorder {
 
 
     fun deleteRecording(fileName: String) {
-        File(context.cacheDir, fileName).delete()
+        File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName).delete()
     }
 
     override fun pause() {
