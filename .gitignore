@@ -18,6 +18,7 @@
 /.idea/other.xml
 /.idea/runConfigurations.xml
 /.idea/kotlinc.xml
+/.idea/deviceManager.xml
 .DS_Store
 /build
 /captures

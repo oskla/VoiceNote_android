@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.entity.RecordingEntity
 
-@Database(entities = [NoteEntity::class, RecordingEntity::class], version = 9, exportSchema = false)
+@Database(entities = [NoteEntity::class, RecordingEntity::class], version = 9)
 abstract class NoteDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
     abstract fun recordingDao(): RecordingDao
@@ -25,7 +25,7 @@ abstract class NoteDatabase : RoomDatabase() {
                         context.applicationContext,
                         NoteDatabase::class.java,
                         "notes_database",
-                    ).fallbackToDestructiveMigration()
+                    ).fallbackToDestructiveMigration(true)
                         .build()
 
                     INSTANCE = instance

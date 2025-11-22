@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("kotlin-kapt")
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.androidx.room)
 }
 android {
     namespace = "com.larsson.voicenote_android"
@@ -45,10 +46,16 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
 }
 
 dependencies {
     implementation(project(":audioplayer"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -93,8 +100,6 @@ dependencies {
 
     // Room
     implementation(libs.bundles.room)
-//    implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
-//    implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
 }
