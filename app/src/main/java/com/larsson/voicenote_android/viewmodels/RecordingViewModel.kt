@@ -48,7 +48,7 @@ class RecordingViewModel(
         return recordingsRepo.getRecordingsTiedToNoteById(id = id).map { it.reversed() }
     }
 
-    fun stopRecording(noteId: String? = "0000") {
+    fun stopRecording(noteId: String?) {
         val id = getLocalUUID()
         recorder.stop()
 
@@ -57,7 +57,7 @@ class RecordingViewModel(
                 id = id,
                 link = audioFile?.path.toString(),
                 duration = recorder.getMetadataDuration(),
-                noteId = noteId ?: "0000"
+                noteId = noteId
             )
         }
 
