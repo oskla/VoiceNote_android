@@ -28,7 +28,7 @@ class RecordingsRepository(private val recordingDao: RecordingDao) {
         return recordingDao.getNumberOfRecordings().map { it?.plus(1) ?: 1 }
     }
 
-    suspend fun stopRecording(id: String, link: String, duration: String, noteId: String) {
+    suspend fun stopRecording(id: String, link: String, duration: String, noteId: String?) {
         val dateTimeString = LocalDateTime.now().toString()
         addRecording(
             recording = Recording(
@@ -67,6 +67,6 @@ data class Recording(
     val date: String,
     val duration: String,
     val id: String,
-    val noteId: String,
+    val noteId: String?,
     val recordingNumber: Int,
 )

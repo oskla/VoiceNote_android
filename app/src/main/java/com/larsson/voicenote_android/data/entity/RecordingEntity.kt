@@ -2,12 +2,23 @@ package com.larsson.voicenote_android.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.SET_NULL
 import androidx.room.PrimaryKey
 import com.larsson.voicenote_android.data.repository.Recording
 
 const val RECORDINGS_TABLE = "RECORDINGS_TABLE"
 
-@Entity(tableName = RECORDINGS_TABLE)
+@Entity(
+    tableName = RECORDINGS_TABLE,
+    // If you set noteId on a recording, that note must exist.
+    foreignKeys = [ForeignKey(
+        entity = NoteEntity::class,
+        parentColumns = ["noteId"], // Column in NoteEntity
+        childColumns = ["noteId"], // Column in RecordingEntity
+        onDelete = SET_NULL // When note deleted, keep recording but set noteId = null
+    )]
+)
 data class RecordingEntity(
     @PrimaryKey(autoGenerate = false) @ColumnInfo val recordingId: String,
     @ColumnInfo(name = "recording_number")
@@ -21,7 +32,7 @@ data class RecordingEntity(
     @ColumnInfo(name = "recording_duration")
     val recordingDuration: String,
     @ColumnInfo(name = "noteId")
-    val noteId: String
+    val noteId: String?
 )
 
 fun List<RecordingEntity>.toRecordings(): List<Recording> {
