@@ -74,3 +74,4 @@ room = ["androidx-room-ktx", "androidx-room-runtime"]
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}
+androidx-room = { id = "androidx.room", version.ref = "roomKtx" }
