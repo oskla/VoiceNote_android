@@ -108,13 +108,13 @@ class LocalAudioPlayer(
         positionJob = null
     }
 
-    private fun setMediaItem(recordingId: String) {
+    private fun setMediaItem(fileName: String, id: String) {
         try {
-            val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), recordingId)
+            val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName)
 
             val item = MediaItem.Builder()
                 .setUri(Uri.fromFile(file))
-                .setMediaId(recordingId)
+                .setMediaId(id)
                 .build()
 
             controller?.setMediaItem(item)
@@ -123,8 +123,8 @@ class LocalAudioPlayer(
         }
     }
 
-    override fun prepare(recordingId: String) {
-        setMediaItem(recordingId)
+    override fun prepare(fileName: String, id: String) {
+        setMediaItem(fileName = fileName, id = id)
         controller?.prepare()
     }
 

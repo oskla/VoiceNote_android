@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
@@ -188,7 +189,7 @@ private const val componentName = "Recording Menu Item Player"
 fun RecordingMenuItemPlayerPreview() {
     VoiceNoteTheme {
         val clickListener = object : UiAudioPlayerClickListener {
-            override fun onClickPlay(recordingId: String) {}
+            override fun onClickPlay(recording: Recording) {}
             override fun onClickPause() {}
             override fun onSeekTo(position: Float) {}
             override fun onSeekingFinished() {}

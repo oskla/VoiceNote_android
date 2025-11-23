@@ -92,8 +92,8 @@ internal fun EditNoteScreen(
             expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
             onBackClick = onBackClick,
             uiAudioPlayerClickListener = object : UiAudioPlayerClickListener {
-                override fun onClickPlay(recordingId: String) {
-                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recordingId))
+                override fun onClickPlay(recording: Recording) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recording))
                 }
 
                 override fun onClickPause() {

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.audioplayer.AudioPlayer
 import com.larsson.voicenote_android.audioplayer.PlaybackState
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,7 @@ class AudioPlayerViewModel(
     fun handleUIEvents(event: AudioPlayerEvent) {
         when (event) {
             AudioPlayerEvent.Pause -> pause()
-            is AudioPlayerEvent.Play -> play(recordingId = event.recordingId)
+            is AudioPlayerEvent.Play -> play(recording = event.recording)
             AudioPlayerEvent.SetToIdle -> {}
             is AudioPlayerEvent.SeekTo -> seekTo(position = event.position)
             AudioPlayerEvent.OnSeekFinished -> onSeekFinished()
@@ -55,9 +56,9 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun play(recordingId: String) {
-        if (audioPlayer.currentMediaItem.value?.mediaId != recordingId) {
-            audioPlayer.prepare(recordingId)
+    private fun play(recording: Recording) {
+        if (audioPlayer.currentMediaItem.value?.mediaId != recording.id) {
+            audioPlayer.prepare(recording.fileName, recording.id)
         }
         audioPlayer.play()
     }

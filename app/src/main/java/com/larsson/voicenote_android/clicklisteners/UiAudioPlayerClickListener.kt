@@ -1,7 +1,9 @@
 package com.larsson.voicenote_android.clicklisteners
 
+import com.larsson.voicenote_android.data.repository.Recording
+
 internal interface UiAudioPlayerClickListener {
-    fun onClickPlay(recordingId: String)
+    fun onClickPlay(recording: Recording)
     fun onClickPause()
     fun onSeekTo(position: Float)
     fun onSeekingFinished()
@@ -10,7 +12,7 @@ internal interface UiAudioPlayerClickListener {
 }
 
 internal val previewAudioPlayerClickListener = object : UiAudioPlayerClickListener {
-    override fun onClickPlay(recordingId: String) {}
+    override fun onClickPlay(recording: Recording) {}
     override fun onClickPause() {}
     override fun onSeekTo(position: Float) {}
     override fun onSeekingFinished() {}

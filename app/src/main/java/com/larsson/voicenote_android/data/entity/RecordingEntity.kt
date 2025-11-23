@@ -23,6 +23,8 @@ data class RecordingEntity(
     @PrimaryKey(autoGenerate = false) @ColumnInfo val recordingId: String,
     @ColumnInfo(name = "recording_number")
     val recordingNumber: Int,
+    @ColumnInfo(name = "file_name")
+    val recordingFileName: String,
     @ColumnInfo(name = "recording_title")
     val recordingTitle: String?,
     @ColumnInfo(name = "recording_link")
@@ -57,6 +59,7 @@ fun Recording.toRecordingEntity(): RecordingEntity {
         recordingLink = link,
         recordingDate = date,
         recordingDuration = duration,
-        noteId = noteId
+        noteId = noteId,
+        recordingFileName = fileName
     )
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "f4229686e81a0de5d2e52ec0034d7300",
+    "identityHash": "59421c0f7e767cb1bae338fd1077bb94",
     "entities": [
       {
         "tableName": "NOTES_TABLE",
@@ -42,7 +42,7 @@
       },
       {
         "tableName": "RECORDINGS_TABLE",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recordingId` TEXT NOT NULL, `recording_number` INTEGER NOT NULL, `recording_title` TEXT, `recording_link` TEXT NOT NULL, `recording_date` TEXT NOT NULL, `recording_duration` TEXT NOT NULL, `noteId` TEXT NOT NULL, PRIMARY KEY(`recordingId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recordingId` TEXT NOT NULL, `recording_number` INTEGER NOT NULL, `file_name` TEXT NOT NULL, `recording_title` TEXT, `recording_link` TEXT NOT NULL, `recording_date` TEXT NOT NULL, `recording_duration` TEXT NOT NULL, `noteId` TEXT, PRIMARY KEY(`recordingId`), FOREIGN KEY(`noteId`) REFERENCES `NOTES_TABLE`(`noteId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "recordingId",
@@ -54,6 +54,12 @@
             "fieldPath": "recordingNumber",
             "columnName": "recording_number",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordingFileName",
+            "columnName": "file_name",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -82,8 +88,7 @@
           {
             "fieldPath": "noteId",
             "columnName": "noteId",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -91,12 +96,25 @@
           "columnNames": [
             "recordingId"
           ]
-        }
+        },
+        "foreignKeys": [
+          {
+            "table": "NOTES_TABLE",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "noteId"
+            ],
+            "referencedColumns": [
+              "noteId"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f4229686e81a0de5d2e52ec0034d7300')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '59421c0f7e767cb1bae338fd1077bb94')"
     ]
   }
 }
