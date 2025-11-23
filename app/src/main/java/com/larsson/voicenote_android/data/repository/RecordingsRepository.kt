@@ -4,14 +4,19 @@ import android.util.Log
 import com.larsson.voicenote_android.data.entity.toRecordingEntity
 import com.larsson.voicenote_android.data.entity.toRecordings
 import com.larsson.voicenote_android.data.room.RecordingDao
+import com.larsson.voicenote_android.features.audiorecorder.Recorder
+import com.larsson.voicenote_android.helpers.getUUID
 import java.time.LocalDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-class RecordingsRepository(private val recordingDao: RecordingDao) {
-
+class RecordingsRepository(
+    private val recordingDao: RecordingDao,
+    private val recorder: Recorder,
+) {
     val TAG = "RecordingsRepo"
+
     fun getRecordings(): Flow<List<Recording>> {
         return recordingDao.getAllRecordings().map { it.toRecordings() }
     }
@@ -28,21 +33,30 @@ class RecordingsRepository(private val recordingDao: RecordingDao) {
         return recordingDao.getNumberOfRecordings().map { it?.plus(1) ?: 1 }
     }
 
-    suspend fun stopRecording(id: String, link: String, duration: String, noteId: String?) {
-        val dateTimeString = LocalDateTime.now().toString()
+    fun startRecording() {
+        val id = getUUID()
+        recorder.startRecording(id = id)
+    }
+
+    suspend fun stopRecording(noteId: String?) {
+        recorder.stop()
+
+        val currentAudioFile = recorder.getCurrentAudioFile() ?: throw IllegalStateException("No audio file available")
+        val recordingId = recorder.getCurrentRecordingId() ?: throw NullPointerException("Tried to add recording without id")
+
         addRecording(
             recording = Recording(
                 userTitle = null,
-                link = link,
-                date = dateTimeString,
-                duration = duration,
-                id = id,
+                link = currentAudioFile.path.toString(),
+                date = LocalDateTime.now().toString(),
+                duration = recorder.getMetadataDuration(),
+                id = recordingId,
                 noteId = noteId,
                 recordingNumber = getNextRecordingsCount().firstOrNull() ?: 1,
             ),
         )
-
     }
+
 
 //    fun getRecordingById(id: String): Flow<RecordingEntity> {
 //        return recordingDao.getRecording(id)
@@ -69,4 +83,7 @@ data class Recording(
     val id: String,
     val noteId: String?,
     val recordingNumber: Int,
-)
+//    val fileName: String,
+) {
+    val fileName = "$id.m4a"
+}

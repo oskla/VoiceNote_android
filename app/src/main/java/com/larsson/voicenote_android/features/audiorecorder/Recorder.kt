@@ -8,13 +8,15 @@ import android.os.Environment
 import android.util.Log
 import java.io.File
 
+private const val RECORDING_FILE_NAME_SUFFIX = ".m4a"
+
 class Recorder(private val context: Context) : AudioRecorder {
 
     private val TAG = "Recorder"
-
     private var recorder: MediaRecorder? = null
     private var audioFile: File? = null
     private var metadataDuration: String? = null
+    private var currentRecordingId: String? = null
 
     private fun createRecorder(): MediaRecorder {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -24,6 +26,10 @@ class Recorder(private val context: Context) : AudioRecorder {
         }
     }
 
+    fun getCurrentAudioFile(): File? {
+        return audioFile
+    }
+
     fun getMetadataDuration(): String {
         if (metadataDuration != null) {
             return metadataDuration as String
@@ -31,9 +37,13 @@ class Recorder(private val context: Context) : AudioRecorder {
         return "0"
     }
 
-    fun startRecording(fileName: String): File {
-        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName)
-        Log.d(TAG, "fileName: $fileName")
+    fun getCurrentRecordingId(): String? = currentRecordingId
+
+    fun startRecording(id: String): File {
+        currentRecordingId = id
+        val fullFileName = id + RECORDING_FILE_NAME_SUFFIX
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fullFileName)
+        Log.d(TAG, "fileName: $fullFileName")
         start(file)
         return file
     }
@@ -43,8 +53,8 @@ class Recorder(private val context: Context) : AudioRecorder {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            recorder?.setAudioEncodingBitRate(128000)
-            recorder?.setAudioSamplingRate(44100)
+            setAudioEncodingBitRate(128000)
+            setAudioSamplingRate(44100)
             setOutputFile(outputFile.absolutePath)
 
             prepare()

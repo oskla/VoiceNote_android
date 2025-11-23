@@ -13,7 +13,7 @@ interface AudioPlayer {
     fun stop()
     fun release()
     fun seekTo(position: Long)
-    fun prepare(recordingId: String)
+    fun prepare(fileName: String, id: String)
 }
 
 data class Position(
