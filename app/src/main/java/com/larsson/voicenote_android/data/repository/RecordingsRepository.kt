@@ -67,6 +67,19 @@ class RecordingsRepository(
 //    }
 
     suspend fun deleteRecording(recordingId: String) {
+        // Get the recording to retrieve the file path
+        val recording = recordingDao.getRecording(recordingId).firstOrNull()
+
+        // Delete the physical file if it exists
+        if (recording != null) {
+            Log.d(TAG, "deleting file!")
+            recorder.deleteRecording(recording.recordingFileName)
+        } else {
+            Log.d(TAG, "recording was null!")
+
+        }
+
+        // Delete from database
         recordingDao.deleteRecording(recordingId)
     }
 

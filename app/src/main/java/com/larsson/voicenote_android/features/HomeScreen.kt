@@ -70,10 +70,6 @@ fun HomeScreen(
 
             }
 
-            override fun onSeekingFinished() {
-                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnSeekFinished)
-            }
-
             override fun onToggleExpandContainer(recordingId: String) {
                 audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.ToggleExpanded(recordingId))
             }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "59421c0f7e767cb1bae338fd1077bb94",
+    "identityHash": "c7c8754fc6d7d46274932e77150101ae",
     "entities": [
       {
         "tableName": "NOTES_TABLE",
@@ -114,7 +114,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '59421c0f7e767cb1bae338fd1077bb94')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c7c8754fc6d7d46274932e77150101ae')"
     ]
   }
 }
