@@ -57,7 +57,6 @@ internal fun LinearProgressBar(
                 uiAudioPlayerClickListener.onSeekTo(newValue)
             },
             modifier = Modifier,
-            onValueChangeFinished = { uiAudioPlayerClickListener.onSeekingFinished() },
             colors = SliderDefaults.colors(thumbColor = color, activeTrackColor = color, inactiveTrackColor = color.copy(0.1f)),
             interactionSource = interactionSource,
             thumb = {

@@ -94,7 +94,17 @@ class Recorder(private val context: Context) : AudioRecorder {
 
 
     fun deleteRecording(fileName: String) {
-        File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName).delete()
+        try {
+            val deleted = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName).delete()
+            if (deleted) {
+                Log.d(TAG, "file successfully deleted: filename: $fileName")
+            } else {
+                Log.d(TAG, "deletion failed: $fileName")
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "${e.localizedMessage}")
+            // TODO should maybe handle this error somehow.
+        }
     }
 
     override fun pause() {

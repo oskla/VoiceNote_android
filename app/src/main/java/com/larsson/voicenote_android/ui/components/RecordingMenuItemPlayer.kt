@@ -192,7 +192,6 @@ fun RecordingMenuItemPlayerPreview() {
             override fun onClickPlay(recording: Recording) {}
             override fun onClickPause() {}
             override fun onSeekTo(position: Float) {}
-            override fun onSeekingFinished() {}
             override fun onToggleExpandContainer(recordingId: String) {}
             override fun onClickDelete(recordingId: String) {}
 

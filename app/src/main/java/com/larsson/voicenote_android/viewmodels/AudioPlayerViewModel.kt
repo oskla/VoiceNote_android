@@ -38,7 +38,6 @@ class AudioPlayerViewModel(
             is AudioPlayerEvent.Play -> play(recording = event.recording)
             AudioPlayerEvent.SetToIdle -> {}
             is AudioPlayerEvent.SeekTo -> seekTo(position = event.position)
-            AudioPlayerEvent.OnSeekFinished -> onSeekFinished()
             is AudioPlayerEvent.ToggleExpanded -> toggleExpanded(event)
             is AudioPlayerEvent.Delete -> deleteRecording(event.recordingId)
         }
@@ -71,10 +70,6 @@ class AudioPlayerViewModel(
         audioPlayer.seekTo(position.toLong())
     }
 
-    private fun stop() {
-        audioPlayer.stop()
-    }
-
     private fun deleteRecording(id: String) {
         viewModelScope.launch {
             recordingRepository.deleteRecording(id)
@@ -85,8 +80,6 @@ class AudioPlayerViewModel(
         audioPlayer.release()
         super.onCleared()
     }
-
-    private fun onSeekFinished() {}
 
     private fun recordingIdAlreadyExpanded(event: AudioPlayerEvent.ToggleExpanded) = event.recordingId == _expandedRecordingId.value
     private fun recordingIdCollapsed() = expandedRecordingId.value.isNotBlank()

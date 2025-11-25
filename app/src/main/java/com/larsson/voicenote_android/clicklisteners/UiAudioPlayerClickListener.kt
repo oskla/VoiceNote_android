@@ -6,7 +6,6 @@ internal interface UiAudioPlayerClickListener {
     fun onClickPlay(recording: Recording)
     fun onClickPause()
     fun onSeekTo(position: Float)
-    fun onSeekingFinished()
     fun onToggleExpandContainer(recordingId: String)
     fun onClickDelete(recordingId: String)
 }
@@ -15,7 +14,6 @@ internal val previewAudioPlayerClickListener = object : UiAudioPlayerClickListen
     override fun onClickPlay(recording: Recording) {}
     override fun onClickPause() {}
     override fun onSeekTo(position: Float) {}
-    override fun onSeekingFinished() {}
     override fun onToggleExpandContainer(recordingId: String) {}
     override fun onClickDelete(recordingId: String) {}
 }
