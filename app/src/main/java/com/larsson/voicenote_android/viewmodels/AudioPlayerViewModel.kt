@@ -36,23 +36,25 @@ class AudioPlayerViewModel(
         when (event) {
             AudioPlayerEvent.Pause -> pause()
             is AudioPlayerEvent.Play -> play(recording = event.recording)
-            AudioPlayerEvent.SetToIdle -> {}
             is AudioPlayerEvent.SeekTo -> seekTo(position = event.position)
-            is AudioPlayerEvent.ToggleExpanded -> toggleExpanded(event)
+            is AudioPlayerEvent.ExpandContainer -> expandContainer(event)
             is AudioPlayerEvent.Delete -> deleteRecording(event.recordingId)
+            is AudioPlayerEvent.OnTitleValueChange -> onTitleValueChange(title = event.title, id = event.recordingId)
         }
     }
 
-
-    private fun toggleExpanded(event: AudioPlayerEvent.ToggleExpanded) {
-        if (recordingIdAlreadyExpanded(event)) {
-            resetPlayback()
-        } else {
-            if (recordingIdCollapsed()) {
-                resetPlayback()
-            }
-            _expandedRecordingId.value = event.recordingId
+    private fun onTitleValueChange(title: String, id: String) {
+        viewModelScope.launch {
+            recordingRepository.updateTitleById(title = title, id = id)
         }
+    }
+
+    private fun expandContainer(event: AudioPlayerEvent.ExpandContainer) {
+        if (anyRecordingExpanded()) {
+            resetPlayback()
+        }
+        _expandedRecordingId.value = event.recordingId
+
     }
 
     private fun play(recording: Recording) {
@@ -81,8 +83,7 @@ class AudioPlayerViewModel(
         super.onCleared()
     }
 
-    private fun recordingIdAlreadyExpanded(event: AudioPlayerEvent.ToggleExpanded) = event.recordingId == _expandedRecordingId.value
-    private fun recordingIdCollapsed() = expandedRecordingId.value.isNotBlank()
+    private fun anyRecordingExpanded() = expandedRecordingId.value.isNotBlank()
     private fun resetPlayback() {
         _expandedRecordingId.value = ""
         pause()

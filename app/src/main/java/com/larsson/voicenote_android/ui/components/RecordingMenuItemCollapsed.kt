@@ -1,5 +1,6 @@
 package com.larsson.voicenote_android.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,16 +19,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
-fun RecordingMenuItemBase(
+fun RecordingMenuItemCollapsed(
+    id: String,
     title: String,
     date: String,
     duration: String,
     isFirstItem: Boolean,
+    onClickExpandContainer: (recordingId: String) -> Unit,
 ) {
     val roundedCornerShape = RoundedCornerShape(
         topStart = 8.dp,
@@ -37,7 +42,11 @@ fun RecordingMenuItemBase(
     )
 
     Card(
-        modifier = Modifier.wrapContentHeight(),
+        modifier = Modifier
+            .wrapContentHeight()
+            .clickable() {
+                onClickExpandContainer(id)
+            },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         elevation = CardDefaults.cardElevation(),
         shape = if (isFirstItem) roundedCornerShape else RectangleShape,
@@ -79,5 +88,17 @@ fun RecordingMenuItemBase(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewRecordingItemCollapsed() {
+    VoiceNoteTheme() {
+        RecordingMenuItemCollapsed(
+            title = "A lil recording", date = "2025-04-03", duration = "00:50", isFirstItem = false,
+            id = "",
+            onClickExpandContainer = {}
+        )
     }
 }

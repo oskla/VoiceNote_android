@@ -35,7 +35,6 @@ internal fun RecordingsList(
                     date = recording.date,
                     id = recording.id,
                     durationText = recording.duration,
-                    onToggleExpandContainer = { uiAudioPlayerClickListener.onToggleExpandContainer(recording.id) },
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
                     onClickPlay = { uiAudioPlayerClickListener.onClickPlay(recording) },
                     onClickDelete = { uiAudioPlayerClickListener.onClickDelete(recording.id) },

@@ -58,13 +58,10 @@ class RecordingsRepository(
     }
 
 
-//    fun getRecordingById(id: String): Flow<RecordingEntity> {
+    //    fun getRecordingById(id: String): Flow<RecordingEntity> {
 //        return recordingDao.getRecording(id)
 //    }
-//
-//    fun updateRecording(recordingEntity: RecordingEntity) {
-//        recordingDao.updateRecording(recordingEntity)
-//    }
+
 
     suspend fun deleteRecording(recordingId: String) {
         // Get the recording to retrieve the file path
@@ -79,12 +76,15 @@ class RecordingsRepository(
 
         }
 
-        // Delete from database
         recordingDao.deleteRecording(recordingId)
     }
 
     fun getRecordingsTiedToNoteById(id: String): Flow<List<Recording>> {
         return recordingDao.getRecordingsTiedToNoteById(id = id).map { it.toRecordings() }
+    }
+
+    suspend fun updateTitleById(title: String, id: String) {
+        return recordingDao.updateRecordingTitle(id = id, title = title)
     }
 }
 
@@ -96,7 +96,6 @@ data class Recording(
     val id: String,
     val noteId: String?,
     val recordingNumber: Int,
-//    val fileName: String,
 ) {
     val fileName = "$id.m4a"
 }
