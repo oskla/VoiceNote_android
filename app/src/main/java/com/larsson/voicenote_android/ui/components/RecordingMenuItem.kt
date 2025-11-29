@@ -2,7 +2,6 @@ package com.larsson.voicenote_android.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +35,6 @@ internal fun RecordingMenuItem(
     id: String,
     durationText: String,
     progress: State<Long>,
-    onToggleExpandContainer: () -> Unit,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     isFirstItem: Boolean,
@@ -48,10 +46,7 @@ internal fun RecordingMenuItem(
     val interactionSource = remember { MutableInteractionSource() }
     Column(
         modifier = modifier
-            .background(Color.Transparent)
-            .clickable(interactionSource = interactionSource, indication = null) {
-                onToggleExpandContainer()
-            },
+            .background(Color.Transparent),
     ) {
         if (isExpanded) {
             RecordingMenuItemPlayer(
@@ -70,11 +65,13 @@ internal fun RecordingMenuItem(
                 onClickDelete = onClickDelete
             )
         } else {
-            RecordingMenuItemBase(
+            RecordingMenuItemCollapsed(
+                id = id,
                 title = title,
                 date = dateFormatter(date),
                 duration = if (durationText.isNotBlank()) TimeFormatter().timeFormatter(durationText.toLong()) else "",
                 isFirstItem = isFirstItem,
+                onClickExpandContainer = { uiAudioPlayerClickListener.onCollapsedContainerClicked(it) }
             )
         }
     }
@@ -98,8 +95,6 @@ fun RecordingMenuItemPreview() {
                 id = "5",
                 durationText = "240",
                 progress = remember { mutableLongStateOf(40) },
-                onToggleExpandContainer = {
-                },
                 isFirstItem = false,
                 onClickPlay = {},
                 onClickPause = {},
@@ -116,7 +111,6 @@ fun RecordingMenuItemPreview() {
                 id = "5",
                 durationText = "1221",
                 progress = remember { mutableLongStateOf(0L) },
-                onToggleExpandContainer = { },
                 isFirstItem = true,
                 onClickPlay = {},
                 onClickPause = {},

@@ -70,13 +70,19 @@ fun HomeScreen(
 
             }
 
-            override fun onToggleExpandContainer(recordingId: String) {
-                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.ToggleExpanded(recordingId))
+            override fun onCollapsedContainerClicked(recordingId: String) {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.ExpandContainer(recordingId))
             }
 
             override fun onClickDelete(recordingId: String) {
                 audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Delete(recordingId))
             }
+
+            override fun onTitleValueChange(title: String, recordingId: String) {
+                audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnTitleValueChange(title = title, recordingId = recordingId))
+            }
+
+
         }
     )
 }
