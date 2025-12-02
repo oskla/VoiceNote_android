@@ -4,7 +4,7 @@
 
 
 
-This application was made for Android-phones, built in *Kotlin* with *Jetpack Compose*, *Room*, *Koin*, *Material3*, *Lottie*, *Coroutines*, *Navigation*, *Git*, *Figma, MediaPlayer, MediaRecorder.*
+This application was made for Android-phones, built in *Kotlin* with *Jetpack Compose*, *Room*, *Koin*, *Material3*, *Lottie*, *Coroutines*, *Navigation*, *Git*, *Figma, Media3 - ExoPlayer, MediaRecorder.*
 
 Except for some Material icons, everything is made by me, including the design.
 
