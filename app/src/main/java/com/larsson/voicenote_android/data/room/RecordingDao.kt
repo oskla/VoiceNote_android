@@ -8,30 +8,38 @@ import androidx.room.Query
 import androidx.room.Update
 import com.larsson.voicenote_android.data.entity.RECORDINGS_TABLE
 import com.larsson.voicenote_android.data.entity.RecordingEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecordingDao {
 
     @Query(value = "SELECT * FROM $RECORDINGS_TABLE ORDER BY recording_date DESC")
-    suspend fun getAllRecordings(): MutableList<RecordingEntity>
+    fun getAllRecordings(): Flow<List<RecordingEntity>>
 
     @Query("SELECT * FROM $RECORDINGS_TABLE WHERE recordingId LIKE :id")
-    suspend fun getRecording(id: String): RecordingEntity
+    fun getRecording(id: String): Flow<RecordingEntity>
 
     @Query(
         "SELECT * FROM $RECORDINGS_TABLE WHERE RECORDINGS_TABLE.noteId LIKE :id",
     )
-    suspend fun getRecordingsTiedToNoteById(id: String): MutableList<RecordingEntity>
+    fun getRecordingsTiedToNoteById(id: String): Flow<List<RecordingEntity>>
 
     @Query("SELECT COUNT(*) FROM $RECORDINGS_TABLE")
-    suspend fun getRecordingsCount(): Int
+    fun getRecordingsCount(): Flow<Int>
+
+    // Used for naming e.g "Recording 7", basically just counting items without userTitle
+    @Query("SELECT MAX(recording_number) FROM $RECORDINGS_TABLE WHERE recording_title IS NULL ORDER BY recording_number ASC")
+    fun getNumberOfRecordings(): Flow<Int?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecording(recordingEntity: RecordingEntity): Long // can return ID
 
     @Update
-    suspend fun updateRecording(recordingEntity: RecordingEntity)
+    fun updateRecording(recordingEntity: RecordingEntity)
 
-    @Delete
-    suspend fun deleteRecording(recordingEntity: RecordingEntity)
+    @Query("UPDATE $RECORDINGS_TABLE SET recording_title = :title WHERE recordingId = :id")
+    suspend fun updateRecordingTitle(id: String, title: String)
+
+    @Query("DELETE FROM $RECORDINGS_TABLE WHERE recordingId =:recordingId")
+    suspend fun deleteRecording(recordingId: String)
 }

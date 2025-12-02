@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 enum class Variant {
     NEW_NOTE_RECORD,
@@ -100,7 +100,7 @@ private const val componentName = "Bottom Box"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 private fun PreviewComponent() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column() {
             BottomBox(
                 onClickLeft = {},

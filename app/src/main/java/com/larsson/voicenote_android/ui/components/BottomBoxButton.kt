@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
 fun BottomBoxButton(
@@ -80,7 +80,7 @@ private const val componentName = "Bottom Box Button"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 private fun Preview2Component() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column() {
             BottomBoxButton(
                 text = "New note",

@@ -1,6 +1,7 @@
 package com.larsson.voicenote_android.di
 
-import com.larsson.voicenote_android.MediaManager
+import com.larsson.voicenote_android.audioplayer.AudioPlayer
+import com.larsson.voicenote_android.audioplayer.LocalAudioPlayer
 import com.larsson.voicenote_android.data.repository.NotesRepository
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
 import com.larsson.voicenote_android.data.room.NoteDatabase
@@ -16,8 +17,13 @@ var dataModule = module {}
 
 var viewModel = module {
     viewModel<NotesViewModel> { NotesViewModel(dbRepo = get()) }
-    viewModel<RecordingViewModel> { RecordingViewModel(recorder = get(), recordingsRepo = get()) }
-    viewModel<AudioPlayerViewModel> { AudioPlayerViewModel(mediaManager = get()) }
+    viewModel<RecordingViewModel> { RecordingViewModel(recordingsRepo = get()) }
+    viewModel<AudioPlayerViewModel> {
+        AudioPlayerViewModel(
+            audioPlayer = get(),
+            recordingRepository = get()
+        )
+    }
 }
 
 val recorder = module {
@@ -25,12 +31,12 @@ val recorder = module {
 }
 
 val audioPlayerModule = module {
-    single { MediaManager(androidContext()) }
+    single<AudioPlayer> { LocalAudioPlayer(androidContext()) }
 }
 
 var repositoryModule = module {
-    single<NotesRepository> { (NotesRepository(noteDao = get())) }
-    single<RecordingsRepository> { RecordingsRepository(recordingDao = get()) }
+    single<NotesRepository> { NotesRepository(noteDao = get()) }
+    single<RecordingsRepository> { RecordingsRepository(recordingDao = get(), recorder = get()) }
 }
 
 var daoModule = module {

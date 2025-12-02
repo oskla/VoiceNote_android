@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
 fun MoreCircleMenu(
@@ -76,7 +76,7 @@ private const val componentName = "MoreCircleMenu"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun MoreCircleMenuPreview() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column {
             MoreCircleMenu(onClickDelete = {}, onClickShare = {}, onClickDismiss = {})
         }

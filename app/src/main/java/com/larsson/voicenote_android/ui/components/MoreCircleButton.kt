@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
 fun MoreCircleButton(
@@ -52,7 +52,7 @@ private const val componentName = "More Circle Button"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun MoreCircleButtonPreview() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column {
             MoreCircleButton(icon = Icons.Default.Delete, onClick = {})
             Divider()

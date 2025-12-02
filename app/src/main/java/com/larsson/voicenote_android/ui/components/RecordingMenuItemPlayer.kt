@@ -16,51 +16,75 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.clicklisteners.previewAudioPlayerClickListener
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
-fun RecordingMenuItemPlayer(
+internal fun RecordingMenuItemPlayer(
     title: String,
     date: String,
     id: String,
     durationText: String,
     durationFloat: Float,
-    progress: Int,
+    progress: State<Long>,
     color: Color = MaterialTheme.colorScheme.background,
     isFirstItem: Boolean,
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
-    isPlaying: Boolean,
-    seekTo: (Float) -> Unit,
+    onClickDelete: () -> Unit,
+    isPlaying: State<Boolean>,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+    var textFieldValueState by rememberSaveable { mutableStateOf(title) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            // Only store the new title to room in onDispose to not overwork the DB.
+            if (textFieldValueState != title) {
+                uiAudioPlayerClickListener.onTitleValueChange(title = textFieldValueState, recordingId = id)
+            }
+        }
+    }
 
     Card(
-        modifier = Modifier.wrapContentHeight(),
-        backgroundColor = MaterialTheme.colorScheme.background,
-        elevation = 0.dp,
+        modifier = Modifier
+            .wrapContentHeight(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+        elevation = CardDefaults.cardElevation(),
         shape = if (isFirstItem) roundedCornerShape else RectangleShape,
     ) {
         Column(
@@ -69,17 +93,18 @@ fun RecordingMenuItemPlayer(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Row(
-
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 14.sp,
-                    fontFamily = SpaceGroteskFontFamily,
-                    fontWeight = FontWeight.W700,
+                BasicTextField(
+                    value = textFieldValueState,
+                    onValueChange = {
+                        textFieldValueState = it
+                    },
+                    textStyle = MaterialTheme.typography.labelSmall,
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                    singleLine = true,
                 )
                 Text(
                     text = durationText,
@@ -97,13 +122,11 @@ fun RecordingMenuItemPlayer(
                 currentPosition = progress,
                 durationFloat = durationFloat,
                 color = MaterialTheme.colorScheme.onBackground,
-                seekTo = { position ->
-                    seekTo(position)
-                },
+                uiAudioPlayerClickListener = uiAudioPlayerClickListener
             )
             AudioPlayerRow(
                 date = date,
-                onClickDelete = { TODO() },
+                onClickDelete = onClickDelete,
                 onClickPlay = onClickPlay,
                 onClickPause = onClickPause,
                 isPlaying = isPlaying,
@@ -118,7 +141,7 @@ fun AudioPlayerRow(
     onClickPlay: () -> Unit,
     onClickPause: () -> Unit,
     onClickDelete: () -> Unit,
-    isPlaying: Boolean,
+    isPlaying: State<Boolean>,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
@@ -126,12 +149,14 @@ fun AudioPlayerRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.Transparent),
             contentAlignment = Alignment.Center,
         ) {
+            val icon = if (isPlaying.value) Icons.Filled.Pause else Icons.Filled.PlayArrow
             Icon(
-                imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                imageVector = icon,
                 contentDescription = "play",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -139,7 +164,7 @@ fun AudioPlayerRow(
                     .width(35.dp)
                     .clickable(indication = null, interactionSource = interactionSource) {
                         Log.d("RecordingMenuItem", "isPlaying: $isPlaying")
-                        if (isPlaying) onClickPause() else onClickPlay()
+                        if (isPlaying.value) onClickPause() else onClickPlay()
                     },
             )
             Row(
@@ -165,7 +190,6 @@ fun AudioPlayerRow(
                         .clickable { onClickDelete.invoke() }
                         .height(30.dp)
                         .width(30.dp),
-
                 )
             }
         }
@@ -181,20 +205,21 @@ private const val componentName = "Recording Menu Item Player"
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
 fun RecordingMenuItemPlayerPreview() {
-    VoiceNote_androidTheme {
+    VoiceNoteTheme {
         Column {
             RecordingMenuItemPlayer(
                 title = "hej",
                 date = "2023-04-01",
                 id = "5",
                 durationText = "02:21",
-                progress = 30,
+                progress = remember { mutableLongStateOf(30) },
                 isFirstItem = true,
                 onClickPlay = { },
                 onClickPause = { /* TODO add onclick pause */ },
-                isPlaying = true,
+                isPlaying = remember { mutableStateOf(true) },
                 durationFloat = 2000F,
-                seekTo = {},
+                onClickDelete = {},
+                uiAudioPlayerClickListener = previewAudioPlayerClickListener,
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -202,13 +227,14 @@ fun RecordingMenuItemPlayerPreview() {
                 date = "2023-04-01",
                 id = "5",
                 durationText = "02:21",
-                progress = 40,
+                progress = remember { mutableLongStateOf(40) },
                 isFirstItem = false,
                 onClickPlay = { },
                 onClickPause = { /* TODO add onclick pause */ },
-                isPlaying = false,
+                isPlaying = remember { mutableStateOf(false) },
                 durationFloat = 2000F,
-                seekTo = {},
+                onClickDelete = {},
+                uiAudioPlayerClickListener = previewAudioPlayerClickListener,
             )
             Divider()
         }

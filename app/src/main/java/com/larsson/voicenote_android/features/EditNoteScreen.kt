@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.features
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,12 +10,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,15 +34,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavController
-import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.NoteEntity
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.data.repository.Note
+import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.components.BottomBox
-import com.larsson.voicenote_android.ui.components.BottomSheet
 import com.larsson.voicenote_android.ui.components.MoreCircleMenu
 import com.larsson.voicenote_android.ui.components.NoteView
+import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
@@ -49,106 +50,97 @@ import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 import kotlinx.coroutines.launch
 
-// TODO on swipe back, do something else, now it's just empty
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditNoteScreen(
+internal fun EditNoteScreen(
     viewModel: NotesViewModel,
     recordingViewModel: RecordingViewModel,
-    navController: NavController,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
     audioPlayerViewModel: AudioPlayerViewModel,
+    onBackClick: () -> Unit,
 ) {
     val TAG = "EDIT NOTE SCREEN"
 
-    val recordingState by recordingViewModel.recordings.collectAsState()
-    val playerState by audioPlayerViewModel.playerState.collectAsState()
-    val currentPosition by audioPlayerViewModel.currentPosition.collectAsState()
+    val isPlaying = audioPlayerViewModel.isPlaying.collectAsState()
+    val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
+    val recordingsTiedToNoteState =
+        recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
+    val selectedNote = viewModel.currentNoteStateFlow.collectAsState()
 
-    var selectedNote by remember { mutableStateOf<NoteEntity?>(null) }
-    val recordings = remember { mutableStateOf(emptyList<RecordingEntity>()) }
-    var isDataFetched by remember { mutableStateOf(false) }
-
-    fun uiEventSetToIdle() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SetToIdle)
-    fun uiEventPause() = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Pause)
-    fun uiEventPlay(recordingId: String) = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.Play(recordingId))
-    fun uiEventSeekTo(position: Int) = audioPlayerViewModel.handleUIEvents(AudioPlayerEvent.SeekTo(position))
-
-    when (playerState) {
-        PlayerState.Completed -> Log.d("Home", "State: Completed")
-        is PlayerState.Error -> Log.d("Home", "State: Error") // TODO show error dialog
-        PlayerState.Idle -> Log.d("Home", "State: Idle")
-        PlayerState.Paused -> Log.d("Home", "State: Paused")
-        is PlayerState.Playing -> Log.d("Home", "State: Playing")
-        PlayerState.End -> Log.d("Home", "State: End")
-        PlayerState.Initialized -> Log.d("Home", "State: Initialized")
-        PlayerState.Prepared -> Log.d("Home", "State: Prepared")
-        PlayerState.Stopped -> Log.d("Home", "State: Stopped")
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getNoteFromRoomById(noteId)
     }
 
-    LaunchedEffect(key1 = recordingState) {
-        val note = viewModel.getNoteFromRoomById(id = noteId)
-        recordings.value = recordingViewModel.getRecordingsTiedToNoteById(noteId)
-        selectedNote = note
-        isDataFetched = true
-    }
-
-    if (!isDataFetched) {
-        // TODO Show loader
-        return
-    }
-
-    BottomSheet(
+    RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
         recordingViewModel = recordingViewModel,
         recordingNoteId = noteId,
     )
 
-    selectedNote?.let { noteEntity ->
+    selectedNote.value?.let { note ->
         EditNoteContent(
-            selectedNote = noteEntity,
+            note = note,
             viewModel = viewModel,
-            navController = navController,
             noteId = noteId,
-            recordings = recordings,
+            recordings = recordingsTiedToNoteState,
             openBottomSheet = openBottomSheet,
-            onClickPlay = { recordingId -> uiEventPlay(recordingId) },
-            onClickPause = { uiEventPause() },
-            playerState = playerState,
+            isPlaying = isPlaying,
             currentPosition = currentPosition,
-            onClickContainer = { uiEventSetToIdle() },
-            seekTo = { position ->
-                uiEventSeekTo(position.toInt())
-            },
+            expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
+            onBackClick = onBackClick,
+            uiAudioPlayerClickListener = object : UiAudioPlayerClickListener {
+                override fun onClickPlay(recording: Recording) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recording))
+                }
+
+                override fun onClickPause() {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Pause)
+                }
+
+                override fun onSeekTo(position: Float) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.SeekTo(position))
+                }
+
+                override fun onCollapsedContainerClicked(recordingId: String) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.ExpandContainer(recordingId))
+                }
+
+                override fun onClickDelete(recordingId: String) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Delete(recordingId))
+                }
+
+                override fun onTitleValueChange(title: String, recordingId: String) {
+                    audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.OnTitleValueChange(title = title, recordingId = recordingId))
+                }
+
+            }
+
         )
     }
 }
 
 @Composable
-fun EditNoteContent(
-    selectedNote: NoteEntity,
+private fun EditNoteContent(
+    note: Note,
     viewModel: NotesViewModel,
-    navController: NavController,
     noteId: String?,
-    isNewNote: Boolean? = false,
-    recordings: MutableState<List<RecordingEntity>>,
+    recordings: State<List<Recording>>,
     openBottomSheet: MutableState<Boolean>,
-    onClickPlay: (String) -> Unit,
-    onClickPause: () -> Unit,
-    playerState: PlayerState,
-    currentPosition: Int,
-    seekTo: (Float) -> Unit,
-    onClickContainer: () -> Unit,
-
+    isPlaying: State<Boolean>,
+    currentPosition: State<Long>,
+    expandedContainerState: State<String>,
+    onBackClick: () -> Unit,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "EDIT NOTE CONTENT"
-    val title by remember { mutableStateOf(selectedNote.noteTitle) }
-    val textContent by remember { mutableStateOf(selectedNote.noteTxtContent) }
+    val title by remember { mutableStateOf(note.title) }
+    val textContent by remember { mutableStateOf(note.textContent) }
 
+    // TODO can i move the textfield-stuff into NoteView So that selectedNote can be accessed
+    //  here instead of in screen?
     var textFieldValueContent by remember { mutableStateOf(textContent) }
     var textFieldValueTitle by remember { mutableStateOf(title) }
     var showRecordingMenu by remember { mutableStateOf(false) }
@@ -157,8 +149,11 @@ fun EditNoteContent(
 
     val blur = 3.dp
 
+    // TODO remove constraintLayout
     ConstraintLayout(
-        modifier = Modifier,
+        modifier = Modifier
+            .navigationBarsPadding()
+            .systemBarsPadding(),
     ) {
         val (noteView, bottomBox, menu, background, moreMenu) = createRefs()
 
@@ -176,13 +171,13 @@ fun EditNoteContent(
                     )
                 }
 
-                navController.popBackStack()
+                onBackClick()
             },
             textFieldValueContent = textFieldValueContent,
             textFieldValueTitle = textFieldValueTitle,
             onTextChangeTitle = { textFieldValueTitle = it },
             onTextChangeContent = { textFieldValueContent = it },
-            date = dateFormatter(selectedNote.date),
+            date = dateFormatter(note.date),
             onMoreClick = { showMoreMenu = true },
         )
 
@@ -192,7 +187,7 @@ fun EditNoteContent(
                     coroutineScope.launch {
                         if (noteId != null) {
                             viewModel.deleteNoteByIdRoom(noteId)
-                            navController.popBackStack()
+                            onBackClick()
                         }
                     }
                 },
@@ -236,7 +231,14 @@ fun EditNoteContent(
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomEnd = 0.dp, bottomStart = 0.dp))
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 8.dp,
+                        topEnd = 8.dp,
+                        bottomEnd = 0.dp,
+                        bottomStart = 0.dp
+                    )
+                )
                 .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * 0.5f)
                 .constrainAs(menu) {
                     bottom.linkTo(bottomBox.top)
@@ -248,12 +250,10 @@ fun EditNoteContent(
         ) {
             RecordingMenu(
                 recordings = recordings.value,
-                onClickPlay = onClickPlay,
-                onClickPause = onClickPause,
-                playerState = playerState,
+                isPlaying = isPlaying,
                 currentPosition = currentPosition,
-                onClickContainer = onClickContainer,
-                seekTo = seekTo,
+                expandedContainerState = expandedContainerState,
+                uiAudioPlayerClickListener = uiAudioPlayerClickListener
             )
         }
 

@@ -7,25 +7,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.RecordingEntity
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.clicklisteners.previewAudioPlayerClickListener
+import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
+import java.time.LocalDateTime
 
 @Composable
-fun RecordingMenu(
+internal fun RecordingMenu(
     modifier: Modifier = Modifier,
-    recordings: List<RecordingEntity>,
-    onClickPlay: (String) -> Unit,
-    onClickPause: () -> Unit,
-    playerState: PlayerState,
-    onClickContainer: () -> Unit,
-    currentPosition: Int,
-    seekTo: (Float) -> Unit,
-
+    recordings: List<Recording>,
+    isPlaying: State<Boolean>,
+    currentPosition: State<Long>,
+    expandedContainerState: State<String>,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     LazyColumn(
         modifier = modifier
@@ -36,33 +39,33 @@ fun RecordingMenu(
     ) {
         if (recordings.isEmpty()) {
             item {
-                RecordingMenuItem( // TODO Clean this up, maybe cleanest to either make a separate component for this, or make a different state: "isEmpty".
-                    title = "You have no recordings yet",
-                    date = "",
-                    durationText = "",
-                    id = "",
-                    progress = 0,
-                    isSelected = false,
-                    onClickContainer = {},
-                    isFirstItem = true,
-                    onClickPlay = {},
-                    onClickPause = onClickPause,
-                    isPlaying = false,
-                    seekTo = {},
-                )
+//                RecordingMenuItem(
+//                    // TODO Clean this up, maybe cleanest to either make a separate
+//                    //  component for this, or make a different state: "isEmpty".
+//                    title = "You have no recordings yet",
+//                    date = "",
+//                    durationText = "",
+//                    id = "",
+//                    progress = remember { mutableLongStateOf(0L) },
+//                    isSelected = false,
+//                    onToggleExpandContainer = {},
+//                    isFirstItem = true,
+//                    onClickPlay = {},
+//                    onClickPause = onClickPause,
+//                    isPlaying = isPlaying,
+//                    seekTo = {},
+//                )
             }
         }
     }
     if (recordings.isNotEmpty()) {
         RecordingsList(
             recordings = recordings,
-            onClickPlay = onClickPlay,
-            onClickPause = onClickPause,
-            playerState = playerState,
-            onClickContainer = onClickContainer,
+            isPlaying = isPlaying,
             currentPosition = currentPosition,
-            seekTo = seekTo,
             isMenu = true,
+            expandedContainerId = expandedContainerState,
+            uiAudioPlayerClickListener = uiAudioPlayerClickListener
         )
     }
 }
@@ -75,16 +78,15 @@ private const val componentName = "Recording Menu Item Player"
 @Preview("$componentName (big font)", fontScale = 1.5f, showBackground = true)
 @Preview("$componentName (large screen)", device = Devices.PIXEL_C)
 @Composable
-fun RecordingMenuPreview() {
-    VoiceNote_androidTheme {
+private fun RecordingMenuPreview() {
+    VoiceNoteTheme {
         RecordingMenu(
-            recordings = listOf(),
-            onClickPlay = {},
-            onClickPause = {},
-            playerState = PlayerState.Paused,
-            onClickContainer = {},
-            seekTo = {},
-            currentPosition = 0,
+            recordings = listOf(Recording(userTitle = "hej", "saf", LocalDateTime.now().toString(), "4300", "usf", "f32f", 4)),
+            isPlaying = remember { mutableStateOf(true) },
+            currentPosition = remember { mutableLongStateOf(0L) },
+            modifier = Modifier,
+            expandedContainerState = remember { mutableStateOf("") },
+            uiAudioPlayerClickListener = previewAudioPlayerClickListener
         )
     }
 }

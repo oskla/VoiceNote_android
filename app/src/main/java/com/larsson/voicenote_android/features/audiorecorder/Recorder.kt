@@ -4,19 +4,19 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.os.Build
+import android.os.Environment
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileOutputStream
+
+private const val RECORDING_FILE_NAME_SUFFIX = ".m4a"
 
 class Recorder(private val context: Context) : AudioRecorder {
 
     private val TAG = "Recorder"
-
     private var recorder: MediaRecorder? = null
     private var audioFile: File? = null
-    private var metaData: String? = null
+    private var metadataDuration: String? = null
+    private var currentRecordingId: String? = null
 
     private fun createRecorder(): MediaRecorder {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -26,63 +26,85 @@ class Recorder(private val context: Context) : AudioRecorder {
         }
     }
 
-    fun getMetaData(): String {
-        if (metaData != null) {
-            return metaData as String
+    fun getCurrentAudioFile(): File? {
+        return audioFile
+    }
+
+    fun getMetadataDuration(): String {
+        if (metadataDuration != null) {
+            return metadataDuration as String
         }
         return "0"
     }
 
-    fun startRecording(fileName: String): File {
-        return File(context.cacheDir, fileName).also {
-            recorder?.start()
-            audioFile = it
-            Log.d(TAG, "fileName: $fileName")
-            start(it)
-        }
+    fun getCurrentRecordingId(): String? = currentRecordingId
+
+    fun startRecording(id: String): File {
+        currentRecordingId = id
+        val fullFileName = id + RECORDING_FILE_NAME_SUFFIX
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fullFileName)
+        Log.d(TAG, "fileName: $fullFileName")
+        start(file)
+        return file
     }
 
     override fun start(outputFile: File) {
-        createRecorder().apply {
+        val newRecorder = createRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS) // TODO probably change this to something of higher quality
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC) // TODO check this too in terms of quality
-
-            recorder?.setAudioEncodingBitRate(128000)
-            recorder?.setAudioSamplingRate(44100)
-            setOutputFile(FileOutputStream(outputFile).fd)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setAudioEncodingBitRate(128000)
+            setAudioSamplingRate(44100)
+            setOutputFile(outputFile.absolutePath)
 
             prepare()
             start()
 
             recorder = this
         }
+        recorder = newRecorder
+        audioFile = outputFile
     }
 
-    override suspend fun stop() {
-        recorder?.stop()
-        recorder?.reset()
-        recorder = null
-
-        Log.d(TAG, "pathhh: ${audioFile?.path}")
-        fetchMetaData()
-
-        Log.d(TAG, "Metadata: $metaData")
-    }
-    private suspend fun fetchMetaData() {
-        withContext(Dispatchers.IO) {
-            val metadataRetriever = MediaMetadataRetriever()
-            try {
-                metadataRetriever.setDataSource("${context.cacheDir}/${audioFile?.name}")
-                metaData = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error setting dataSource when retrieving metadata. Error: ${e.message}")
+    override fun stop() {
+        try {
+            recorder?.apply {
+                stop()
+                release()
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error stopping recorder: ${e.message}")
+        } finally {
+            recorder = null
+        }
+
+        Log.d(TAG, "path: ${audioFile?.path}")
+        fetchMetaDataDuration()
+    }
+
+    private fun fetchMetaDataDuration() {
+        val metadataRetriever = MediaMetadataRetriever()
+        try {
+            metadataRetriever.setDataSource("${context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS)}/${audioFile?.name}")
+            metadataDuration = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error setting dataSource when retrieving metadata. Error: ${e.message}")
         }
     }
 
+
     fun deleteRecording(fileName: String) {
-        File(context.cacheDir, fileName).delete()
+        try {
+            val deleted = File(context.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS), fileName).delete()
+            if (deleted) {
+                Log.d(TAG, "file successfully deleted: filename: $fileName")
+            } else {
+                Log.d(TAG, "deletion failed: $fileName")
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "${e.localizedMessage}")
+            // TODO should maybe handle this error somehow.
+        }
     }
 
     override fun pause() {

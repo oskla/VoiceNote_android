@@ -7,54 +7,42 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.PlayerState
-import com.larsson.voicenote_android.data.entity.RecordingEntity
+import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
+import com.larsson.voicenote_android.data.repository.Recording
 
 @Composable
-fun RecordingsList(
+internal fun RecordingsList(
     isMenu: Boolean,
-    recordings: List<RecordingEntity>,
-    onClickPlay: (String) -> Unit,
-    onClickPause: () -> Unit,
-    playerState: PlayerState,
-    onClickContainer: () -> Unit,
-    currentPosition: Int,
-    seekTo: (Float) -> Unit,
+    recordings: List<Recording>,
+    isPlaying: State<Boolean>,
+    expandedContainerId: State<String>,
+    currentPosition: State<Long>,
+    uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
-    var selectedRecordingId by remember { mutableStateOf<String?>(null) }
     val horizontalPadding = if (isMenu) 0.dp else 12.dp
 
     LazyColumn(modifier = Modifier.padding(horizontal = horizontalPadding), userScrollEnabled = true) {
         itemsIndexed(recordings) { index, recording ->
-            val isSelected = (recording.recordingId == selectedRecordingId) // Checks what recording is actually pressed.
-
-            Box() {
+            val isExpanded = expandedContainerId.value == recording.id
+            Box {
                 RecordingMenuItem(
                     color = MaterialTheme.colorScheme.background,
-                    title = recording.recordingTitle,
-                    date = recording.recordingDate,
-                    id = recording.recordingId,
-                    durationText = recording.recordingDuration,
-                    isSelected = isSelected,
-                    onClickContainer = {
-                        selectedRecordingId = if (isSelected) null else recording.recordingId
-                        onClickContainer.invoke() // calls on event that resets player
-                    },
+                    title = recording.userTitle ?: "Recording ${recording.recordingNumber}",
+                    date = recording.date,
+                    id = recording.id,
+                    durationText = recording.duration,
                     isFirstItem = if (isMenu) index < 1 else false, // top item will have rounded corners in menu component
-                    onClickPlay = { onClickPlay(recording.recordingId) },
-                    onClickPause = onClickPause,
-                    isPlaying = playerState is PlayerState.Playing,
+                    onClickPlay = { uiAudioPlayerClickListener.onClickPlay(recording) },
+                    onClickDelete = { uiAudioPlayerClickListener.onClickDelete(recording.id) },
+                    onClickPause = { uiAudioPlayerClickListener.onClickPause() },
+                    isPlaying = isPlaying,
+                    isExpanded = isExpanded,
                     progress = currentPosition,
-                    seekTo = { position ->
-                        seekTo(position)
-                    },
+                    uiAudioPlayerClickListener = uiAudioPlayerClickListener,
                 )
             }
             if (index != recordings.size - 1) {

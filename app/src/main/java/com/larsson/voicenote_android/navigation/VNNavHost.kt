@@ -1,4 +1,3 @@
-
 package com.larsson.voicenote_android.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -6,65 +5,53 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.larsson.voicenote_android.features.EditNoteScreen
 import com.larsson.voicenote_android.features.HomeScreen
-import com.larsson.voicenote_android.features.NewNoteScreen
-import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavGraph(navController: NavHostController = rememberNavController()) {
+fun NavGraph() {
     val openBottomSheet = rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Home.route,
-    ) {
-        composable(Screen.Home.route) {
-            HomeScreen(
-                notesViewModel = get(),
-                recordingViewModel = get(),
-                navController = navController,
-                openBottomSheet = openBottomSheet,
-                bottomSheetState = bottomSheetState,
-                audioPlayerViewModel = get(),
-            )
-        }
-        composable("${Screen.NewNote.route}/{noteId}") { navBackStackEntry ->
-            val noteId = navBackStackEntry.arguments?.getString("noteId")
-            if (noteId != null) {
-                NewNoteScreen(
-                    notesViewModel = get(),
-                    navController = navController,
-                    recordingViewModel = get(),
-                    openBottomSheet = openBottomSheet,
-                    bottomSheetState = bottomSheetState,
-                    noteId = noteId,
-                    audioPlayerViewModel = get(),
+    val backStack = rememberNavBackStack(Screen.Home)
 
-                )
-            }
-        }
-        composable(
-            route = "${Screen.EditNote.route}/{noteId}",
-        ) { navBackStackEntry ->
-            val noteId = navBackStackEntry.arguments?.getString("noteId")
-            if (noteId != null) {
-                EditNoteScreen(
-                    viewModel = get(),
-                    navController = navController,
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        modifier = Modifier,
+        entryProvider = entryProvider {
+            entry<Screen.Home> {
+                HomeScreen(
+                    notesViewModel = koinViewModel(),
+                    recordingViewModel = koinViewModel(),
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
-                    noteId = noteId,
-                    recordingViewModel = get(),
-                    audioPlayerViewModel = get(),
+                    audioPlayerViewModel = koinViewModel(),
+                    onNavigateToNote = { noteId ->
+                        backStack.add(Screen.EditNote(noteId))
+                    },
+                )
+            }
+
+            entry<Screen.EditNote>(
+                metadata = mapOf("extraDataKey" to "extraDataValue")
+            ) { key ->
+                EditNoteScreen(
+                    viewModel = koinViewModel(),
+                    openBottomSheet = openBottomSheet,
+                    bottomSheetState = bottomSheetState,
+                    noteId = key.noteId,
+                    recordingViewModel = koinViewModel(),
+                    audioPlayerViewModel = koinViewModel(),
+                    onBackClick = { backStack.removeLastOrNull() }
                 )
             }
         }
-    }
+    )
 }

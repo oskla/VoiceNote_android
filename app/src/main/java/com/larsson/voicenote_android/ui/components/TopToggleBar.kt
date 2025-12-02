@@ -15,11 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.MaterialTheme.shapes
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.larsson.voicenote_android.viewmodels.NotesViewModel
 
 enum class ToggleVariant {
     NOTES,
@@ -37,14 +35,10 @@ enum class ToggleVariant {
 
 @Composable
 fun TopToggleBar(
-    modifier: Modifier? = Modifier,
-    viewModel: NotesViewModel, // TODO Pass UI-events instead of passing VM
-
+    onNavigateToRecordingsList: () -> Unit,
+    onNavigateToNotesList: () -> Unit,
 ) {
     val currentVariant = remember { mutableStateOf(ToggleVariant.NOTES) }
-
-    LaunchedEffect(key1 = true) {
-    }
 
     Column(
         modifier = Modifier
@@ -65,8 +59,7 @@ fun TopToggleBar(
                         selectedRight = false,
                         currentVariant = currentVariant,
                     )
-                    viewModel.notesListVisible = true
-                    viewModel.recordingsListVisible = false
+                    onNavigateToNotesList()
                 }
 
                 ToggleVariant.RECORDINGS -> {
@@ -75,8 +68,8 @@ fun TopToggleBar(
                         selectedRight = true,
                         currentVariant = currentVariant,
                     )
-                    viewModel.notesListVisible = false
-                    viewModel.recordingsListVisible = true
+                    onNavigateToRecordingsList()
+
                 }
             }
         }
@@ -101,7 +94,7 @@ fun ToggleBar(
                 shape = shapes.medium,
             ),
 
-    ) {
+        ) {
         ToggleBox(
             text = "Notes",
             selected = selectedLeft,
@@ -119,7 +112,7 @@ fun ToggleBar(
             selected = selectedRight,
             modifier = Modifier.weight(1f),
 
-        )
+            )
     }
 }
 
@@ -145,7 +138,7 @@ fun ToggleBox(
             },
         contentAlignment = Alignment.Center,
 
-    ) {
+        ) {
         Text(text, color = if (selected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onBackground)
     }
 }

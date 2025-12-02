@@ -1,6 +1,5 @@
 package com.larsson.voicenote_android.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,41 +8,53 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Card
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
-import com.larsson.voicenote_android.ui.theme.VoiceNote_androidTheme
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
 @Composable
-fun RecordingItem(
+fun RecordingMenuItemCollapsed(
+    id: String,
     title: String,
     date: String,
-    id: String,
     duration: String,
-    onClick: (() -> Unit)? = null,
+    isFirstItem: Boolean,
+    onClickExpandContainer: (recordingId: String) -> Unit,
 ) {
+    val roundedCornerShape = RoundedCornerShape(
+        topStart = 8.dp,
+        topEnd = 8.dp,
+        bottomStart = 0.dp,
+        bottomEnd = 0.dp,
+    )
+
     Card(
-        backgroundColor = MaterialTheme.colorScheme.background,
-        modifier = Modifier.wrapContentSize(),
-        elevation = 0.dp,
-        shape = RectangleShape,
+        modifier = Modifier
+            .wrapContentHeight()
+            .clickable() {
+                onClickExpandContainer(id)
+            },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+        elevation = CardDefaults.cardElevation(),
+        shape = if (isFirstItem) roundedCornerShape else RectangleShape,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
-                .clickable(onClick = {}),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Text(
                 text = title,
@@ -52,7 +63,7 @@ fun RecordingItem(
                 fontFamily = SpaceGroteskFontFamily,
                 fontWeight = FontWeight.W700,
             )
-
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -80,19 +91,14 @@ fun RecordingItem(
     }
 }
 
-private const val componentName = "Recording Item"
-
-@Preview("$componentName (light)", showBackground = true)
-@Preview("$componentName (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("$componentName (big font)", fontScale = 1.5f, showBackground = true)
-@Preview("$componentName (large screen)", device = Devices.PIXEL_C)
+@Preview
 @Composable
-private fun PreviewComponent() {
-    VoiceNote_androidTheme {
-        Column() {
-            RecordingItem(title = "Pianolåten 1", date = "2023-03-14", id = "", duration = "03:45")
-            Spacer(modifier = Modifier.height(1.dp))
-            RecordingItem(title = "Pianolåten 2", date = "2023-02-14", id = "", duration = "01:05")
-        }
+private fun PreviewRecordingItemCollapsed() {
+    VoiceNoteTheme() {
+        RecordingMenuItemCollapsed(
+            title = "A lil recording", date = "2025-04-03", duration = "00:50", isFirstItem = false,
+            id = "",
+            onClickExpandContainer = {}
+        )
     }
 }
