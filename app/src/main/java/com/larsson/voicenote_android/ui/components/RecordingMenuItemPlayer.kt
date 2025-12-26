@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Pause
@@ -28,21 +29,26 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
-import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.clicklisteners.previewAudioPlayerClickListener
 import com.larsson.voicenote_android.ui.theme.SpaceGroteskFontFamily
 import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 
@@ -63,9 +69,20 @@ internal fun RecordingMenuItemPlayer(
     uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val roundedCornerShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+    var textFieldValueState by rememberSaveable { mutableStateOf(title) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            // Only store the new title to room in onDispose to not overwork the DB.
+            if (textFieldValueState != title) {
+                uiAudioPlayerClickListener.onTitleValueChange(title = textFieldValueState, recordingId = id)
+            }
+        }
+    }
 
     Card(
-        modifier = Modifier.wrapContentHeight(),
+        modifier = Modifier
+            .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         elevation = CardDefaults.cardElevation(),
         shape = if (isFirstItem) roundedCornerShape else RectangleShape,
@@ -76,17 +93,18 @@ internal fun RecordingMenuItemPlayer(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Row(
-
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 14.sp,
-                    fontFamily = SpaceGroteskFontFamily,
-                    fontWeight = FontWeight.W700,
+                BasicTextField(
+                    value = textFieldValueState,
+                    onValueChange = {
+                        textFieldValueState = it
+                    },
+                    textStyle = MaterialTheme.typography.labelSmall,
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                    singleLine = true,
                 )
                 Text(
                     text = durationText,
@@ -188,15 +206,6 @@ private const val componentName = "Recording Menu Item Player"
 @Composable
 fun RecordingMenuItemPlayerPreview() {
     VoiceNoteTheme {
-        val clickListener = object : UiAudioPlayerClickListener {
-            override fun onClickPlay(recording: Recording) {}
-            override fun onClickPause() {}
-            override fun onSeekTo(position: Float) {}
-            override fun onToggleExpandContainer(recordingId: String) {}
-            override fun onClickDelete(recordingId: String) {}
-
-        }
-
         Column {
             RecordingMenuItemPlayer(
                 title = "hej",
@@ -210,7 +219,7 @@ fun RecordingMenuItemPlayerPreview() {
                 isPlaying = remember { mutableStateOf(true) },
                 durationFloat = 2000F,
                 onClickDelete = {},
-                uiAudioPlayerClickListener = clickListener,
+                uiAudioPlayerClickListener = previewAudioPlayerClickListener,
             )
             Divider()
             RecordingMenuItemPlayer(
@@ -225,7 +234,7 @@ fun RecordingMenuItemPlayerPreview() {
                 isPlaying = remember { mutableStateOf(false) },
                 durationFloat = 2000F,
                 onClickDelete = {},
-                uiAudioPlayerClickListener = clickListener,
+                uiAudioPlayerClickListener = previewAudioPlayerClickListener,
             )
             Divider()
         }

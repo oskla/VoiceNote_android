@@ -37,6 +37,9 @@ interface RecordingDao {
     @Update
     fun updateRecording(recordingEntity: RecordingEntity)
 
+    @Query("UPDATE $RECORDINGS_TABLE SET recording_title = :title WHERE recordingId = :id")
+    suspend fun updateRecordingTitle(id: String, title: String)
+
     @Query("DELETE FROM $RECORDINGS_TABLE WHERE recordingId =:recordingId")
     suspend fun deleteRecording(recordingId: String)
 }
