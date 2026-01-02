@@ -1,4 +1,4 @@
-package com.larsson.voicenote_android.features
+package com.larsson.voicenote_android.features.homescreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.models.NoteId
 import com.larsson.voicenote_android.navigation.HomeNavigation
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.NotesList
@@ -26,31 +27,31 @@ import com.larsson.voicenote_android.ui.components.RecordingsList
 import com.larsson.voicenote_android.ui.components.TopToggleBar
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
-import com.larsson.voicenote_android.viewmodels.NotesViewModel
-import com.larsson.voicenote_android.viewmodels.RecordingViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    notesViewModel: NotesViewModel,
-    recordingViewModel: RecordingViewModel,
+    homeViewModel: HomeViewModel,
     audioPlayerViewModel: AudioPlayerViewModel,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     onNavigateToNote: (String) -> Unit,
 ) {
-    val recordingsState = recordingViewModel.recordings.collectAsState()
-    val notesState = notesViewModel.notesStateFlow.collectAsState()
+    val recordingsState = homeViewModel.recordings.collectAsState()
+    val notesState = homeViewModel.notesStateFlow.collectAsState()
     val isPlaying = audioPlayerViewModel.isPlaying.collectAsState()
     val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
 
-    HomeScreenContent(
-        notesState = notesState,
-        notesViewModel = notesViewModel,
+    RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
-        recordingViewModel = recordingViewModel,
+    )
+
+    HomeScreenContent(
+        notesState = notesState,
+        homeViewModel = homeViewModel,
+        openBottomSheet = openBottomSheet,
         recordingsState = recordingsState,
         audioPlayerViewModel = audioPlayerViewModel,
         isPlaying = isPlaying,
@@ -90,26 +91,18 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreenContent(
-    notesViewModel: NotesViewModel,
-    recordingViewModel: RecordingViewModel,
+    homeViewModel: HomeViewModel,
     notesState: State<List<Note>>,
     recordingsState: State<List<Recording>>,
     modifier: Modifier = Modifier,
     openBottomSheet: MutableState<Boolean>,
-    bottomSheetState: SheetState,
     audioPlayerViewModel: AudioPlayerViewModel,
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
-    onNavigateToNote: (String) -> Unit,
+    onNavigateToNote: (NoteId) -> Unit,
     uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "HOME SCREEN"
-
-    RecordingBottomSheet(
-        openBottomSheet = openBottomSheet,
-        bottomSheetState = bottomSheetState,
-        recordingViewModel = recordingViewModel,
-    )
 
     Column(
         modifier = modifier
@@ -160,7 +153,7 @@ internal fun HomeScreenContent(
                 openBottomSheet.value = true
             },
             onClickLeft = {
-                notesViewModel.addNoteToRoom("", "").also { newNote ->
+                homeViewModel.saveNote("", "").also { newNote ->
                     onNavigateToNote(newNote.id)
                 }
             },

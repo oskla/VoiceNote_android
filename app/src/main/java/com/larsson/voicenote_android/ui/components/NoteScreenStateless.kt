@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.larsson.voicenote_android.helpers.dateFormatter
+import com.larsson.voicenote_android.ui.theme.VoiceNoteTheme
 import java.time.LocalDateTime
 
 // Stateless reusable composable
@@ -74,6 +76,22 @@ fun NoteView(
             value = textFieldValueContent,
             onValueChange = onTextChangeContent,
             modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun PreviewNoteScreen() {
+    VoiceNoteTheme() {
+        NoteView(
+            textFieldValueContent = "molestiae",
+            textFieldValueTitle = "contentiones",
+            onBackClick = {},
+            onMoreClick = {},
+            onTextChangeTitle = {},
+            onTextChangeContent = {},
+            date = "maximus"
         )
     }
 }
