@@ -23,7 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -45,16 +45,13 @@ import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
-import com.larsson.voicenote_android.viewmodels.NotesViewModel
-import com.larsson.voicenote_android.viewmodels.RecordingViewModel
+import com.larsson.voicenote_android.features.editnotescreen.EditNoteViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EditNoteScreen(
-    viewModel: NotesViewModel,
-    recordingViewModel: RecordingViewModel,
+    editNoteViewModel: EditNoteViewModel,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     noteId: String,
@@ -66,24 +63,22 @@ internal fun EditNoteScreen(
     val isPlaying = audioPlayerViewModel.isPlaying.collectAsState()
     val currentPosition = audioPlayerViewModel.currentPosition.collectAsState()
     val recordingsTiedToNoteState =
-        recordingViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
-    val selectedNote = viewModel.currentNoteStateFlow.collectAsState()
+        editNoteViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
+    val selectedNote = editNoteViewModel.currentNoteStateFlow.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.getNoteFromRoomById(noteId)
+        editNoteViewModel.getNoteFromRoomById(noteId)
     }
 
     RecordingBottomSheet(
         openBottomSheet = openBottomSheet,
         bottomSheetState = bottomSheetState,
-        recordingViewModel = recordingViewModel,
         recordingNoteId = noteId,
     )
 
     selectedNote.value?.let { note ->
         EditNoteContent(
             note = note,
-            viewModel = viewModel,
             noteId = noteId,
             recordings = recordingsTiedToNoteState,
             openBottomSheet = openBottomSheet,
@@ -91,6 +86,16 @@ internal fun EditNoteScreen(
             currentPosition = currentPosition,
             expandedContainerState = audioPlayerViewModel.expandedRecordingId.collectAsState(),
             onBackClick = onBackClick,
+            onDeleteNote = { id ->
+                editNoteViewModel.deleteNote(id)
+            },
+            onUpdateNote = { title, textContent ->
+                editNoteViewModel.updateNoteRoom(
+                    title = title,
+                    txtContent = textContent,
+                    id = noteId,
+                )
+            },
             uiAudioPlayerClickListener = object : UiAudioPlayerClickListener {
                 override fun onClickPlay(recording: Recording) {
                     audioPlayerViewModel.handleUIEvents(event = AudioPlayerEvent.Play(recording))
@@ -125,7 +130,6 @@ internal fun EditNoteScreen(
 @Composable
 private fun EditNoteContent(
     note: Note,
-    viewModel: NotesViewModel,
     noteId: String?,
     recordings: State<List<Recording>>,
     openBottomSheet: MutableState<Boolean>,
@@ -133,19 +137,20 @@ private fun EditNoteContent(
     currentPosition: State<Long>,
     expandedContainerState: State<String>,
     onBackClick: () -> Unit,
+    onUpdateNote: (title: String, textContent: String) -> Unit,
+    onDeleteNote: (id: String) -> Unit,
     uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "EDIT NOTE CONTENT"
-    val title by remember { mutableStateOf(note.title) }
-    val textContent by remember { mutableStateOf(note.textContent) }
+    val initialTitle by remember { mutableStateOf(note.title) }
+    val initialTextContent by remember { mutableStateOf(note.textContent) }
 
     // TODO can i move the textfield-stuff into NoteView So that selectedNote can be accessed
     //  here instead of in screen?
-    var textFieldValueContent by remember { mutableStateOf(textContent) }
-    var textFieldValueTitle by remember { mutableStateOf(title) }
+    var textFieldValueContent by rememberSaveable { mutableStateOf(initialTextContent) }
+    var textFieldValueTitle by rememberSaveable { mutableStateOf(initialTitle) }
     var showRecordingMenu by remember { mutableStateOf(false) }
     var showMoreMenu by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     val blur = 3.dp
 
@@ -163,12 +168,8 @@ private fun EditNoteContent(
                 .blur(if (showMoreMenu) blur else 0.dp),
             onBackClick = {
                 // If note has not changed, don't update the note
-                if (title != textFieldValueTitle || textContent != textFieldValueContent) {
-                    viewModel.updateNoteRoom(
-                        title = textFieldValueTitle,
-                        txtContent = textFieldValueContent,
-                        id = noteId ?: "000",
-                    )
+                if (initialTitle != textFieldValueTitle || initialTextContent != textFieldValueContent) {
+                    onUpdateNote(textFieldValueTitle, textFieldValueContent)
                 }
 
                 onBackClick()
@@ -184,11 +185,9 @@ private fun EditNoteContent(
         if (showMoreMenu) {
             MoreCircleMenu(
                 onClickDelete = {
-                    coroutineScope.launch {
-                        if (noteId != null) {
-                            viewModel.deleteNoteByIdRoom(noteId)
-                            onBackClick()
-                        }
+                    if (noteId != null) {
+                        onDeleteNote(noteId)
+                        onBackClick()
                     }
                 },
                 onClickShare = {},

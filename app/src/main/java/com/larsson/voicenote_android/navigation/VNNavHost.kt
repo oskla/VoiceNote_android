@@ -10,7 +10,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.larsson.voicenote_android.features.EditNoteScreen
-import com.larsson.voicenote_android.features.HomeScreen
+import com.larsson.voicenote_android.features.homescreen.HomeScreen
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,8 +28,7 @@ fun NavGraph() {
         entryProvider = entryProvider {
             entry<Screen.Home> {
                 HomeScreen(
-                    notesViewModel = koinViewModel(),
-                    recordingViewModel = koinViewModel(),
+                    homeViewModel = koinViewModel(),
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
                     audioPlayerViewModel = koinViewModel(),
@@ -43,12 +42,11 @@ fun NavGraph() {
                 metadata = mapOf("extraDataKey" to "extraDataValue")
             ) { key ->
                 EditNoteScreen(
-                    viewModel = koinViewModel(),
                     openBottomSheet = openBottomSheet,
                     bottomSheetState = bottomSheetState,
                     noteId = key.noteId,
-                    recordingViewModel = koinViewModel(),
                     audioPlayerViewModel = koinViewModel(),
+                    editNoteViewModel = koinViewModel(),
                     onBackClick = { backStack.removeLastOrNull() }
                 )
             }
