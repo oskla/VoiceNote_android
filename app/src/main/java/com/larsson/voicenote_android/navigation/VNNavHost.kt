@@ -46,7 +46,7 @@ fun NavGraph() {
                     bottomSheetState = bottomSheetState,
                     noteId = key.noteId,
                     audioPlayerViewModel = koinViewModel(),
-                    editNoteViewModel = koinViewModel(),
+                    editNoteViewModel = koinViewModel(key = key.noteId),
                     onBackClick = { backStack.removeLastOrNull() }
                 )
             }

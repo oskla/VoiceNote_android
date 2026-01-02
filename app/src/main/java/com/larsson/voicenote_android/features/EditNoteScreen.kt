@@ -23,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -37,6 +36,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
+import com.larsson.voicenote_android.features.editnotescreen.EditNoteViewModel
 import com.larsson.voicenote_android.helpers.dateFormatter
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.MoreCircleMenu
@@ -45,7 +45,6 @@ import com.larsson.voicenote_android.ui.components.RecordingBottomSheet
 import com.larsson.voicenote_android.ui.components.RecordingMenu
 import com.larsson.voicenote_android.ui.components.Variant
 import com.larsson.voicenote_android.viewmodels.AudioPlayerViewModel
-import com.larsson.voicenote_android.features.editnotescreen.EditNoteViewModel
 import com.larsson.voicenote_android.viewmodels.interfaces.AudioPlayerEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,7 +65,7 @@ internal fun EditNoteScreen(
         editNoteViewModel.getRecordingsTiedToNoteById(noteId).collectAsState(emptyList())
     val selectedNote = editNoteViewModel.currentNoteStateFlow.collectAsState()
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = noteId) {
         editNoteViewModel.getNoteFromRoomById(noteId)
     }
 
@@ -142,13 +141,13 @@ private fun EditNoteContent(
     uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "EDIT NOTE CONTENT"
-    val initialTitle by remember { mutableStateOf(note.title) }
-    val initialTextContent by remember { mutableStateOf(note.textContent) }
+    val initialTitle by remember(noteId) { mutableStateOf(note.title) }
+    val initialTextContent by remember(noteId) { mutableStateOf(note.textContent) }
 
     // TODO can i move the textfield-stuff into NoteView So that selectedNote can be accessed
     //  here instead of in screen?
-    var textFieldValueContent by rememberSaveable { mutableStateOf(initialTextContent) }
-    var textFieldValueTitle by rememberSaveable { mutableStateOf(initialTitle) }
+    var textFieldValueContent by remember(noteId) { mutableStateOf(initialTextContent) }
+    var textFieldValueTitle by remember(noteId) { mutableStateOf(initialTitle) }
     var showRecordingMenu by remember { mutableStateOf(false) }
     var showMoreMenu by remember { mutableStateOf(false) }
 

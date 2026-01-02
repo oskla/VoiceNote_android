@@ -139,28 +139,6 @@ sealed interface HomeNavigation {
 - More menu (three dots) for deletion
 - Auto-saves on exit if modified
 
-## ViewModels
-
-**HomeViewModel** (`viewmodels/HomeViewModel.kt`):
-- Manages notes list state
-- Creates new notes with UUID and timestamp
-
-**NoteViewModel** (`viewmodels/NoteViewModel.kt`):
-- Single note state management
-- Auto-save on ViewModel clear
-- Delete functionality
-
-**RecordingViewModel** (`viewmodels/RecordingViewModel.kt`):
-- All recordings state
-- Recording lifecycle (start/stop)
-- Filtered recordings by noteId
-
-**AudioPlayerViewModel** (`viewmodels/AudioPlayerViewModel.kt`):
-- Event-driven with `AudioPlayerEvent` sealed interface
-- Playback state, position tracking
-- Expanded/collapsed recording UI state
-- Recording deletion and title updates
-
 ## Dependency Injection (Koin)
 
 **Initialization**: `VoiceNoteApplication.kt` (Application.onCreate)
