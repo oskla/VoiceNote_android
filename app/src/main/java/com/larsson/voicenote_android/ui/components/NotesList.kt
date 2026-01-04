@@ -20,7 +20,7 @@ fun NotesList(notes: State<List<Note>>, onNavigateToNote: (noteId: String) -> Un
                 title = note.title,
                 txtContent = note.textContent,
                 id = note.id,
-                containsRecordings = recordings.any { it.noteId == note.id },
+                containsRecordings = recordings.any { it.noteId == note.id }, // TODO this should probably already be in the Note-object
                 onClick = { onNavigateToNote(note.id) },
             )
             if (index != recordings.size - 1) {

@@ -3,6 +3,8 @@ package com.larsson.voicenote_android.data.repository // ktlint-disable package-
 import android.util.Log
 import com.larsson.voicenote_android.data.entity.NoteEntity
 import com.larsson.voicenote_android.data.room.NoteDao
+import com.larsson.voicenote_android.helpers.getUUID
+import java.time.LocalDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -72,4 +74,13 @@ data class Note(
     val title: String,
     val textContent: String,
     val date: String,
-)
+) {
+    companion object {
+        val emptyNote = Note(
+            id = getUUID(),
+            title = "",
+            textContent = "",
+            date = LocalDateTime.now().toString()
+        )
+    }
+}

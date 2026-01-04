@@ -25,7 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieConstants
 import com.larsson.voicenote_android.ui.lottie.LottieRecording
-import com.larsson.voicenote_android.viewmodels.RecordingViewModel
+import com.larsson.voicenote_android.features.audiorecorder.RecordingBottomSheetViewModel
+import org.koin.androidx.compose.koinViewModel
 
 // TODO ask for permission again if you say no
 
@@ -35,13 +36,13 @@ fun RecordingBottomSheet(
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
     modifier: Modifier = Modifier,
-    recordingViewModel: RecordingViewModel,
+    recordingBottomSheetViewModel: RecordingBottomSheetViewModel = koinViewModel(),
     recordingNoteId: String? = null
 ) {
     val TAG = "Recording bottom Sheet"
     if (openBottomSheet.value) {
         LaunchedEffect(key1 = true) {
-            recordingViewModel.startRecording()
+            recordingBottomSheetViewModel.startRecording()
             Log.d(TAG, "recording started")
         }
 
@@ -51,7 +52,7 @@ fun RecordingBottomSheet(
                 .systemBarsPadding(),
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = {
-                recordingViewModel.stopRecording(noteId = recordingNoteId)
+                recordingBottomSheetViewModel.stopRecording(noteId = recordingNoteId)
                 openBottomSheet.value = false
             },
             sheetState = bottomSheetState,
