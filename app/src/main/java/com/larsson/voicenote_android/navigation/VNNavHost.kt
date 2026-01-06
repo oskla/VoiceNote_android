@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.larsson.voicenote_android.features.EditNoteScreen
+import com.larsson.voicenote_android.features.editnotescreen.EditNoteScreen
 import com.larsson.voicenote_android.features.homescreen.HomeScreen
 import org.koin.androidx.compose.koinViewModel
 

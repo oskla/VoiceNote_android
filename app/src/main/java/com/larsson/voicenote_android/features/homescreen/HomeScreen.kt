@@ -19,6 +19,7 @@ import com.larsson.voicenote_android.clicklisteners.UiAudioPlayerClickListener
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.models.NoteId
+import com.larsson.voicenote_android.models.draftNoteId
 import com.larsson.voicenote_android.navigation.HomeNavigation
 import com.larsson.voicenote_android.ui.components.BottomBox
 import com.larsson.voicenote_android.ui.components.NotesList
@@ -36,7 +37,7 @@ fun HomeScreen(
     audioPlayerViewModel: AudioPlayerViewModel,
     openBottomSheet: MutableState<Boolean>,
     bottomSheetState: SheetState,
-    onNavigateToNote: (String) -> Unit,
+    onNavigateToNote: (NoteId?) -> Unit,
 ) {
     val recordingsState = homeViewModel.recordings.collectAsState()
     val notesState = homeViewModel.notesStateFlow.collectAsState()
@@ -50,7 +51,6 @@ fun HomeScreen(
 
     HomeScreenContent(
         notesState = notesState,
-        homeViewModel = homeViewModel,
         openBottomSheet = openBottomSheet,
         recordingsState = recordingsState,
         audioPlayerViewModel = audioPlayerViewModel,
@@ -91,7 +91,6 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreenContent(
-    homeViewModel: HomeViewModel,
     notesState: State<List<Note>>,
     recordingsState: State<List<Recording>>,
     modifier: Modifier = Modifier,
@@ -99,7 +98,7 @@ internal fun HomeScreenContent(
     audioPlayerViewModel: AudioPlayerViewModel,
     isPlaying: State<Boolean>,
     currentPosition: State<Long>,
-    onNavigateToNote: (NoteId) -> Unit,
+    onNavigateToNote: (NoteId?) -> Unit,
     uiAudioPlayerClickListener: UiAudioPlayerClickListener
 ) {
     val TAG = "HOME SCREEN"
@@ -153,9 +152,7 @@ internal fun HomeScreenContent(
                 openBottomSheet.value = true
             },
             onClickLeft = {
-                homeViewModel.saveNote("", "").also { newNote ->
-                    onNavigateToNote(newNote.id)
-                }
+                onNavigateToNote(draftNoteId)
             },
         )
     }

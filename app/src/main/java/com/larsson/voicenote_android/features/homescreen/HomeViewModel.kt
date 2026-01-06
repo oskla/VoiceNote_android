@@ -1,14 +1,11 @@
 package com.larsson.voicenote_android.features.homescreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.larsson.voicenote_android.data.repository.Note
 import com.larsson.voicenote_android.data.repository.NotesRepository
 import com.larsson.voicenote_android.data.repository.Recording
 import com.larsson.voicenote_android.data.repository.RecordingsRepository
-import com.larsson.voicenote_android.helpers.getUUID
-import java.time.LocalDateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,21 +42,5 @@ class HomeViewModel(
                 _notesStateFlow.value = it
             }
         }
-    }
-
-    fun saveNote(title: String, txtContent: String): Note {
-        val id = getUUID()
-        val newNote = Note(
-            title = title,
-            textContent = txtContent,
-            id = id,
-            date = LocalDateTime.now().toString()
-        )
-        viewModelScope.launch {
-            notesRepository.addNote(newNote)
-        }
-        Log.d(TAG, "NoteId on Note: $id")
-
-        return newNote
     }
 }
